@@ -21,7 +21,7 @@ class Login
             <link rel="stylesheet" href="/css/bootstrap/datatables.bootstrap.css">
             <link rel="stylesheet" href="/css/contenido/custom.min.css">
             <link rel="stylesheet" href="/css/validate/screen.css">
-        html;
+html;
 
         $extraFooter = <<<html
             <script src="/js/jquery.min.js"></script>
@@ -120,7 +120,7 @@ class Login
                     })
                 })
             </script>
-        html;
+html;
         View::set('header', $extraHeader);
         View::set('footer', $extraFooter);
         View::render("login");

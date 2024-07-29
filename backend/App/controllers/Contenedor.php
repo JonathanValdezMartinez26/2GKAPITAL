@@ -82,7 +82,7 @@ class Contenedor extends Controller
         HTML;
 
 
-        if ($permiso_ahorro == '1' || $this->__usuario == 'LGFR' || $this->__usuario == 'PAES' || $this->__usuario == 'PMAB' || $this->__usuario == 'AMGM' || $this->__usuario == 'DCRI' || $this->__usuario == 'GUGJ' || $this->__usuario == 'JUSA' || $this->__usuario == 'HEDC') {
+        if ($permiso_ahorro == '1' || $this->__usuario == 'LGFR' || $this->__usuario == 'PAES' || $this->__usuario == 'PMAB' || $this->__usuario == 'AMGM' || $this->__usuario == 'DCRI' || $this->__usuario == 'GUGJ' || $this->__usuario == 'JUSA' || $this->__usuario == 'HEDC' || $this->__usuario == 'JACJ') {
             $menu .= <<<HTML
             <hr>
             <h3>General WEB AHORRO</h3>
@@ -98,7 +98,7 @@ class Contenedor extends Controller
             HTML;
         }
 
-        if ($this->__usuario == 'AMGM' || $this->__usuario == 'LGFR' || $this->__usuario == 'PAES' || $this->__usuario == 'PMAB' || $this->__usuario == 'DCRI' || $this->__usuario == 'GUGJ' || $this->__usuario == 'JUSA' || $this->__usuario == 'HEDC') {
+        if ($this->__usuario == 'AMGM' || $this->__usuario == 'LGFR' || $this->__usuario == 'PAES' || $this->__usuario == 'PMAB' || $this->__usuario == 'DCRI' || $this->__usuario == 'GUGJ' || $this->__usuario == 'JUSA' || $this->__usuario == 'HEDC' || $this->__usuario == 'JACJ') {
             $menu .= <<<HTML
                 <li><a href="/AdminSucursales/SaldosDiarios/"><i class="glyphicon glyphicon-paste"> </i>&nbsp; Admin Sucursales </a> </li>
              </ul>
