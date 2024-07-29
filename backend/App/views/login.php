@@ -25,8 +25,12 @@ echo $header;
     <div class="login_wrapper" style="margin-top: 0%;">
             <div class="animate form login_form">
                 <section class="login_content" style="padding: 100px 0 0;">
+					<br>
+					<br>
+					<br>
+					<br>
                     <div style="text-align: center;">
-                        <img  src="/img/logo.png" alt="Login" width="350" height="130">
+                        <img  src="/img/logo.png" alt="Login" width="350" height="100">
                     </div>
                     <br>
                     <form id="login" action="/Login/crearSession" method="POST" class="form-horizontal" name="login">
@@ -52,8 +56,8 @@ echo $header;
                             <br/>
 
                             <div>
-                                <h1><i class="fa fa-paw"></i> Más con Menos</h1>
-                                <p>© 2023 Todos los derechos reservados, Más con Menos, usted acepta los terminos de Privacidad y Condiciones al loguearse al sistema</p>
+                                <h1><i class="fa fa-paw"></i> 2GKAPITAL | Tu independencia financiera</h1>
+                                <p>© 2023 Todos los derechos reservados, 2GKAPITAL, usted acepta los terminos de Privacidad y Condiciones al loguearse al sistema.</p>
                             </div>
                         </div>
                     </form>
