@@ -53,7 +53,7 @@ class Database
         $dsn = 'oci:dbname=ESIACOM';
 
         //OR connect using the Oracle Instant Client
-        $dsn = 'oci:dbname=//25.13.83.206:1521/ESIACOM;charset=UTF8';
+        $dsn = 'oci:dbname=//2gkapital:1521/ESIACOM;charset=UTF8';
 
         $username = 'ESIACOM';
         $password = 'ESIACOM';
