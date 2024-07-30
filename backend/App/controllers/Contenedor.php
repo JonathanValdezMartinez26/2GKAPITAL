@@ -82,7 +82,7 @@ class Contenedor extends Controller
         HTML;
 
 
-        if ($permiso_ahorro == '1' || $this->__usuario == 'LGFR' || $this->__usuario == 'PAES' || $this->__usuario == 'PMAB' || $this->__usuario == 'AMGM' || $this->__usuario == 'DCRI' || $this->__usuario == 'GUGJ' || $this->__usuario == 'JUSA' || $this->__usuario == 'HEDC' || $this->__usuario == 'JACJ') {
+        if ($permiso_ahorro == '1' || $this->__usuario == 'LGFR' || $this->__usuario == 'GASC' || $this->__usuario == 'PAES' || $this->__usuario == 'PMAB' || $this->__usuario == 'AMGM' || $this->__usuario == 'DCRI' || $this->__usuario == 'GUGJ' || $this->__usuario == 'JUSA' || $this->__usuario == 'HEDC' || $this->__usuario == 'JACJ') {
             $menu .= <<<HTML
             <hr>
             <h3>General WEB AHORRO</h3>
