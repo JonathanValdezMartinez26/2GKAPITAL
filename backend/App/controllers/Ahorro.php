@@ -16,7 +16,7 @@ class Ahorro extends Controller
 {
     private $_contenedor;
     private $operacionesNulas = [2, 5]; // [Comisión, Transferencia]
-    private $urlHuellas = 'http://18.117.29.228/:8008/huellas/endpoints/';
+    private $urlHuellas = 'http://18.117.29.228:8008/huellas/endpoints/';
     private $XLSX = '<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>';
     private $swal2 = '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
     private $huellas = '<script src="/js/huellas/es6-shim.js"></script><script src="/js/huellas/fingerprint.sdk.min.js"></script><script src="/js/huellas/huellas.js"></script><script src="/js/huellas/websdk.client.bundle.min.js"></script>';
