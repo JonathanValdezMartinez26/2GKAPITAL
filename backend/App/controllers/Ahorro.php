@@ -4233,7 +4233,7 @@ class Ahorro extends Controller
         <body style="font-family:Helvetica; padding: 0; margin: 0">
             <div>
                 <div style="text-align:center; font-size: 20px; font-weight: bold;">
-                    <label>Más con Menos</label>
+                    <label>2GKAPITAL</label>
                 </div>
                 <div style="text-align:center; font-size: 15px;">
                     <label>COMPROBANTE DE {$datos['COMPROBANTE']}</label>
@@ -4360,7 +4360,7 @@ class Ahorro extends Controller
         <body style="font-family:Helvetica; padding: 0; margin: 0">
             <div>
                 <div style="text-align:center; font-size: 20px; font-weight: bold;">
-                    <label>Más con Menos</label>
+                    <label>2GKAPITAL</label>
                 </div>
                 <div style="text-align:center; font-size: 15px;">
                     <label>COMPROBANTE DE ARQUEO</label>
