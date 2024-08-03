@@ -38,7 +38,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryOne($qry, ['cajera' => $cajera]);
         } catch (Exception $e) {
             return 0;
@@ -51,7 +51,7 @@ class CajaAhorro
         SELECT NOMBRE, CDGCURP FROM EF WHERE NOMBRE != 'Desconocido'
         sql;
 
-        $mysqli = Database::getInstance();
+        $mysqli = new Database();
         return $mysqli->queryAll($query);
     }
 
@@ -65,7 +65,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -90,7 +90,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -116,7 +116,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -137,7 +137,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($query);
             if ($res) return $res['MONTO_MINIMO'];
             return 0;
@@ -179,7 +179,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -202,7 +202,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($qry);
             if ($res) return $res;
             return array();
@@ -225,7 +225,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($qry);
             if ($res) return $res;
             return array();
@@ -248,7 +248,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($qry);
             if ($res) return $res;
             return array();
@@ -270,7 +270,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return self::Responde(true, "Consulta realizada correctamente.", $res);
             return self::Responde(false, "No se encontraron beneficiarios para el contrato {$contrato}.");
@@ -313,7 +313,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryAll($query_busca_cliente);
         } catch (Exception $e) {
             return "";
@@ -369,7 +369,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($queryValidacion);
             if (!$res) return self::Responde(false, "No se encontraron datos para el cliente {$datos['cliente']}.");
             if ($res['NO_CONTRATOS'] >= 1) return self::Responde(false, "El cliente {$datos['cliente']} ya cuenta con un contrato de ahorro.", $res);
@@ -417,7 +417,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($query);
             if (!$res) return self::Responde(false, "No se encontraron datos para el cliente {$datos['cliente']}.");
             if ($res['NO_CONTRATOS'] == 0) return self::Responde(false, "El cliente {$datos['cliente']} no cuenta con un contrato de ahorro.", $res);
@@ -449,7 +449,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($queryValidacion, ['cliente' => $datos['credito']]);
             if ($res) return self::Responde(false, "El cliente ya cuenta con un contrato de ahorro");
 
@@ -520,7 +520,7 @@ class CajaAhorro
 
 
             try {
-                $mysqli = Database::getInstance();
+                $mysqli = new Database();
                 $res = $mysqli->insertaMultiple($inserts, $datosInsert);
                 if ($res) {
                     LogTransaccionesAhorro::LogTransacciones($inserts, $datosInsert, $_SESSION['cdgco_ahorro'], $_SESSION['usuario'], $noContrato, "Registro de nuevo contrato ahorro corriente");
@@ -585,7 +585,7 @@ class CajaAhorro
         ];
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->insertaMultiple($query, $datosInsert, $validacion);
 
             if ($res) {
@@ -640,7 +640,7 @@ class CajaAhorro
         ];
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->insertaMultiple($query, $datosInsert, $validacion);
             if ($res) {
                 LogTransaccionesAhorro::LogTransacciones($query, $datosInsert, $_SESSION['cdgco_ahorro'], $_SESSION['usuario'], $datos['contrato'], "Registro de " . $tipoMov . " en " . $datos['producto']);
@@ -815,7 +815,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryOne($queryTicket);
         } catch (Exception $e) {
             return 0;
@@ -1053,7 +1053,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryOne($query);
         } catch (Exception $e) {
             return 0;
@@ -1124,7 +1124,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($queryValidacion);
             if (!$res) return self::Responde(false, "No se encontraron datos para el cliente {$datos['cliente']}.");
             if ($res['NO_CONTRATOS'] == 0) return self::Responde(false, "El cliente {$datos['cliente']} no cuenta con un contrato de ahorro.", $res);
@@ -1147,7 +1147,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($queryValidacion, ['cliente' => $datos['credito']]);
             if ($res) {
                 foreach ($res as $key => $value) {
@@ -1209,7 +1209,7 @@ class CajaAhorro
             ];
 
             try {
-                $mysqli = Database::getInstance();
+                $mysqli = new Database();
                 $res = $mysqli->insertaMultiple($inserts, $parametros);
                 LogTransaccionesAhorro::LogTransacciones($inserts, $parametros, $_SESSION['cdgco_ahorro'], $_SESSION['usuario'], $noContrato, "Registro de nueva cuenta de ahorro Peque");
                 if ($res) return self::Responde(true, "Contrato de ahorro registrado correctamente.", ['contrato' => $noContrato]);
@@ -1248,7 +1248,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if (count($res) === 0) {
                 $qryVal = <<<sql
@@ -1331,7 +1331,7 @@ class CajaAhorro
         ];
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->insertaMultiple($query, $datosInsert);
             if ($res) {
                 LogTransaccionesAhorro::LogTransacciones($query, $datosInsert, $_SESSION['cdgco_ahorro'], $_SESSION['usuario'], $datos['contrato'], "Registro de inversión de cuenta ahorro corriente");
@@ -1357,7 +1357,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryOne($query);
         } catch (Exception $e) {
             return 0;
@@ -1386,7 +1386,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if (count($res) === 0) return self::Responde(false, "No se encontraron inversiones para el contrato {$datos['contrato']}.");
             return self::Responde(true, "Consulta realizada correctamente.", $res);
@@ -1423,7 +1423,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryOne($query);
         } catch (Exception $e) {
             return 0;
@@ -1452,7 +1452,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryOne($query);
         } catch (Exception $e) {
             return 0;
@@ -1487,7 +1487,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryOne($query);
         } catch (Exception $e) {
             return 0;
@@ -1507,7 +1507,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryOne($query);
         } catch (Exception $e) {
             return 0;
@@ -1567,7 +1567,7 @@ class CajaAhorro
 
         $tipoMov = $tipoRetiro === 1 ? "express" : "programado";
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->insertaMultiple($query, $datosInsert);
             if ($res) {
                 LogTransaccionesAhorro::LogTransacciones($query, $datosInsert, $_SESSION['cdgco_ahorro'], $_SESSION['usuario'], $datos['contrato'], "Registro de solicitud de retiro " . $tipoMov . " de cuenta de ahorro corriente");
@@ -1603,7 +1603,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryAll($qry);
         } catch (Exception $e) {
             return array();
@@ -1647,7 +1647,7 @@ class CajaAhorro
 
         $qry .= " ORDER BY TRUNC(SR.FECHA_SOLICITUD), SR.FECHA_ESTATUS DESC";
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($qry);
             if (count($res) === 0) return self::Responde(false, "No se encontraron solicitudes de retiro para el producto {$datos['producto']}.", null);
             return self::Responde(true, "Consulta realizada correctamente.", $res);
@@ -1684,7 +1684,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($qry);
             if (!$res) return self::Responde(false, "No se encontraron datos para el retiro solicitado.");
             return self::Responde(true, "Consulta realizada correctamente.", $res);
@@ -1753,7 +1753,7 @@ class CajaAhorro
         ];
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->insertaMultiple($query, $datosInsert, $validacion);
 
             LogTransaccionesAhorro::LogTransacciones($query[0], $datosInsert[0], $_SESSION['cdgco_ahorro'], $_SESSION['usuario'], $datos['contrato'], "Actualización de estatus por entrega de retiro " . $tipoRetiro);
@@ -1796,7 +1796,7 @@ class CajaAhorro
         ];
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->insertaMultiple($query, $datosInsert);
             if ($res) {
                 LogTransaccionesAhorro::LogTransacciones($query, $datosInsert, $_SESSION['cdgco_ahorro'], $_SESSION['usuario'], $datos['contrato'], "Registro de devolución de retiro " . ($datos['tipo'] == 1 ? "express" : "programado") . " de cuenta de ahorro corriente");
@@ -1830,7 +1830,7 @@ class CajaAhorro
         $qry .= $datos["sucursal"] ? " AND LTA.SUCURSAL = :sucursal" : "";
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $resultado = $mysqli->queryAll($qry, $datos);
             if (count($resultado) === 0) return self::Responde(false, "No se encontraron registros para la consulta.", $qry);
             return self::Responde(true, "Consulta realizada correctamente.", $resultado);
@@ -1877,7 +1877,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryAll($qry);
         } catch (Exception $e) {
             return array();
@@ -1903,7 +1903,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($qryDatosGenerale);
             if (!$res) return array();
             return $res;
@@ -1990,7 +1990,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($qryMovimientos);
             if (count($res) === 0) return array();
             return $res;
@@ -2057,7 +2057,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($qryMovimientos);
             if (count($res) === 0) return array();
             return $res;
@@ -2086,7 +2086,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($qryCuentas);
             if (count($res) === 0) return array();
             return $res;
@@ -2158,7 +2158,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($qryMovimientos);
             if (count($res) === 0) return array();
             return $res;
@@ -2183,7 +2183,7 @@ class CajaAhorro
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($qry);
             if (!$res) return self::Responde(true, "No se encontraron retiros para el día.");
             return self::Responde(false, "Retiros del día.", $res);
@@ -2205,7 +2205,7 @@ class CajaAhorro
 sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($qry);
             if (!$res) return ['MONTO_MINIMO' => 300, 'MONTO_MAXIMO' => 10000];
             return $res;
@@ -2411,7 +2411,7 @@ sql;
 
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -2644,7 +2644,7 @@ sql;
 
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -2667,7 +2667,7 @@ sql;
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -2694,7 +2694,7 @@ sql;
 sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -2712,7 +2712,7 @@ sql;
         WHERE CODIGO = $update->_ticket
 sql;
 
-        $mysqli = Database::getInstance();
+        $mysqli = new Database();
         return $mysqli->insert($query);
     }
 
@@ -2757,7 +2757,7 @@ sql;
         $qry .= " ORDER BY AR.FECHA DESC";
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($qry);
             if ($res) return self::Responde(true, "Consulta realizada correctamente.", $res);
             return self::Responde(false, "No se encontraron registros para la consulta.", $qry);
@@ -2778,7 +2778,7 @@ sql;
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($qryValidacion);
             if (!$res) return self::Responde(false, "No se encontró el saldo de la sucursal {$datos['sucursal']}.");
             if ($res['SALDO'] > $datos['monto']) return self::Responde(false, "No es posible realizar el arqueo ya que hay un saldo negativo.");
@@ -2861,7 +2861,7 @@ sql;
         }
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryOne($qry);
         } catch (Exception $e) {
             return [];
@@ -2876,7 +2876,7 @@ sql;
         WHERE CODIGO = $update->_ticket
 sql;
 
-        $mysqli = Database::getInstance();
+        $mysqli = new Database();
         return $mysqli->insert($query);
     }
 
@@ -2927,7 +2927,7 @@ sql;
 sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -2975,7 +2975,7 @@ sql;
 sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -3032,7 +3032,7 @@ sql;
 sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -3100,7 +3100,7 @@ sql;
 sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryAll($query);
             if ($res) return $res;
             return array();
@@ -3123,7 +3123,7 @@ sql;
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($qry);
             if (!$res) {
                 $accion = $datos['estatus'] === '1' ? 'aprobada' : 'rechazada';
@@ -3149,7 +3149,7 @@ sql;
         ];
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->insertar($qry, $params);
             return self::Responde(true, "Solicitud actualizada correctamente.");
         } catch (Exception $e) {
@@ -3182,7 +3182,7 @@ sql;
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $mysqli->insertar($qry, []);
             return self::Responde(true, "Huellas registradas correctamente.");
         } catch (Exception $e) {
@@ -3211,7 +3211,7 @@ sql;
         $qry .= $datos["cliente"] ? " AND CLIENTE = '{$datos["cliente"]}'" : "";
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             return $mysqli->queryAll($qry);
         } catch (Exception $e) {
             return [];
@@ -3230,7 +3230,7 @@ sql;
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->queryOne($qry);
             return self::Responde(true, "Consulta realizada correctamente.", $res);
         } catch (Exception $e) {
@@ -3256,7 +3256,7 @@ sql;
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->insertar($qry, []);
             return self::Responde(true, "Huellas actualizadas correctamente.", $res);
         } catch (Exception $e) {
@@ -3274,7 +3274,7 @@ sql;
         sql;
 
         try {
-            $mysqli = Database::getInstance();
+            $mysqli = new Database();
             $res = $mysqli->eliminar($qry);
             return self::Responde(true, "Huellas eliminadas correctamente.", $res);
         } catch (Exception $e) {

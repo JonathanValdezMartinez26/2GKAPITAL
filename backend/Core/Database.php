@@ -1,10 +1,8 @@
 <?php
 
 namespace Core;
-// defined("APPPATH") or die("Access denied");
 
-use \Core\App;
-use \PDO;
+use PDO;
 
 /**
  * @class Conn
@@ -12,76 +10,54 @@ use \PDO;
 
 class Database
 {
-    const MAIL = "cesar.cor.riv@gmail.com" /*"tecnico@webmaster.com"*/;
-    const TEMA = 'ecommerce';
-    static $_instance;
-    static $_mysqli;
+    private $gkapital;
+    public $db_activa;
 
-    static $_debug;
-    static $_mail;
-
-    private function __construct()
+    function __construct()
     {
-        $this->conectar();
+        $this->DB_GKAPITAL();
+
+        // La base por defecto seria 2gkapital"
+        $this->db_activa = $this->gkapital;
     }
 
-    private function __clone()
+    private function Conecta($s, $u = null, $p = null)
     {
-    }
-
-    public static function getInstance($debug = true, $mail = false)
-    {
-
-        self::$_debug = $debug;
-        self::$_mail = $mail;
-
-        if (!(self::$_instance instanceof self)) {
-            self::$_instance = new self();
-        }
-        return self::$_instance;
-    }
-
-    public static function getConexion()
-    {
-        return self::$_mysqli;
-    }
-
-    private function conectar()
-    {
-
-        //load from config/config.ini
-        $dsn = 'oci:dbname=ESIACOM';
-
-        //OR connect using the Oracle Instant Client
-        $dsn = 'oci:dbname=//localhost:1521/ESIACOM;charset=UTF8';
-
-        $username = 'ESIACOM';
-        $password = 'ESIACOM';
-
-
-
-        $dbh = null;
-
-
+        $host = 'oci:dbname=//' . $s . ':1521/ESIACOM;charset=UTF8';
+        $usuario = $u ?? 'ESIACOM';
+        $password = $p ?? 'ESIACOM';
         try {
-
-            $this->_mysqli =  new PDO($dsn, $username, $password);
-            //$this->_mysqli->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+            return new PDO($host, $usuario, $password);
         } catch (\PDOException $e) {
-            if (self::$_debug)
-                echo $e->getMessage();
-            if (self::$_mail)
-                mail(self::MAIL, 'error en conexion ' . self::TEMA, $e->getMessage());
-
-            die();
+            echo self::muestraError($e);
+            return null;
         }
+    }
+
+    private function muestraError($e, $sql = null, $parametros = null)
+    {
+        $error = "Error en DB: " . $e->getMessage();
+
+        if ($sql != null) $error .= "\nSql: " . $sql;
+        if ($parametros != null) $error .= "\nDatos: " . print_r($parametros, 1);
+        echo $error . "\n";
+        return $error;
+    }
+
+    private function DB_GKAPITAL()
+    {
+        $servidor = '2GKAPITAL';
+        $this->gkapital = self::Conecta($servidor);
+    }
+
+    public function SetDB_GKAPITAL()
+    {
+        $this->db_activa = $this->gkapital;
     }
 
     public function insert($sql)
     {
-
-        $stmt = $this->_mysqli->prepare($sql);
+        $stmt = $this->db_activa->prepare($sql);
         $result = $stmt->execute();
 
         if ($result) {
@@ -96,8 +72,8 @@ class Database
     public function insertar($sql, $datos)
     {
         try {
-            if (!$this->_mysqli->prepare($sql)->execute($datos)) {
-                throw new \Exception("Error en insertar: " . print_r($this->_mysqli->errorInfo(), 1) . "\nSql : $sql \nDatos : " . print_r($datos, 1));
+            if (!$this->db_activa->prepare($sql)->execute($datos)) {
+                throw new \Exception("Error en insertar: " . print_r($this->db_activa->errorInfo(), 1) . "\nSql : $sql \nDatos : " . print_r($datos, 1));
             }
         } catch (\PDOException $e) {
             throw new \Exception("Error en insertar: " . $e->getMessage() . "\nSql : $sql \nDatos : " . print_r($datos, 1));
@@ -106,7 +82,7 @@ class Database
 
     public function insertCheques($sql, $parametros)
     {
-        $stmt = $this->_mysqli->prepare($sql);
+        $stmt = $this->db_activa->prepare($sql);
         $result = $stmt->execute($parametros);
 
         if ($result) return $result;
@@ -118,40 +94,40 @@ class Database
     public function insertaMultiple($sql, $registros, $validacion = null)
     {
         try {
-            $this->_mysqli->beginTransaction();
+            $this->db_activa->beginTransaction();
             foreach ($registros as $i => $valores) {
-                $stmt = $this->_mysqli->prepare($sql[$i]);
+                $stmt = $this->db_activa->prepare($sql[$i]);
                 $result = $stmt->execute($valores);
                 if (!$result) {
                     $err = $stmt->errorInfo();
-                    $this->_mysqli->rollBack();
+                    $this->db_activa->rollBack();
                     throw new \Exception("Error: " . print_r($err, 1) . "\nSql : " . $sql[$i] . "\nDatos : " . print_r($valores, 1));
                 }
             }
 
             if ($validacion != null) {
-                $stmt = $this->_mysqli->prepare($validacion['query']);
+                $stmt = $this->db_activa->prepare($validacion['query']);
                 $stmt->execute($validacion['datos']);
                 $result = $stmt->fetch(PDO::FETCH_ASSOC);
                 $resValidacion = $validacion['funcion']($result);
                 if ($resValidacion['success'] == false) {
-                    $this->_mysqli->rollBack();
+                    $this->db_activa->rollBack();
                     throw new \Exception($resValidacion['mensaje']);
                 }
             }
 
-            $this->_mysqli->commit();
+            $this->db_activa->commit();
             return true;
         } catch (\PDOException $e) {
-            $this->_mysqli->rollBack();
-            throw new \Exception("Error en insertaMultiple: " . $e->getMessage() . "\nSql : $sql");
+            $this->db_activa->rollBack();
+            throw new \Exception("Error en insertaMultiple: " . $e->getMessage());
         }
     }
 
     public function EjecutaSP($sp, $parametros)
     {
         try {
-            $stmt = $this->_mysqli->prepare($sp);
+            $stmt = $this->db_activa->prepare($sp);
             $outParam = 'OK';
             foreach ($parametros as $parametro => $valor) {
                 if ($valor === "__RETURN__") {
@@ -170,7 +146,7 @@ class Database
     public function eliminar($sql)
     {
         try {
-            return $this->_mysqli->prepare($sql)->execute();
+            return $this->db_activa->prepare($sql)->execute();
         } catch (\PDOException $e) {
             throw new \Exception("Error en eliminar: " . $e->getMessage() . "\nSql : $sql");
         }
@@ -181,27 +157,21 @@ class Database
 
         if ($params == '') {
             try {
-                $stmt = $this->_mysqli->query($sql);
+                $stmt = $this->db_activa->query($sql);
                 return array_shift($stmt->fetchAll(PDO::FETCH_ASSOC));
             } catch (\PDOException $e) {
-                if (self::$_mail)
-                    mail(self::MAIL, 'error en queryOne ' . self::TEMA, "Error sql : " . $e->getMessage() . "\nSql : $sql \n params :\n" . print_r($params, 1));
-                if (self::$_debug)
-                    echo "Error sql : " . $e->getMessage() . "\nSql : $sql \n params :\n" . print_r($params, 1);
+                self::muestraError($e, $sql, $params);
                 return false;
             }
         } else {
             try {
-                $stmt = $this->_mysqli->prepare($sql);
+                $stmt = $this->db_activa->prepare($sql);
                 foreach ($params as $values => $val)
                     $stmt->bindParam($values, $val);
                 $stmt->execute($params);
                 return array_shift($stmt->fetchAll(PDO::FETCH_ASSOC));
             } catch (\PDOException $e) {
-                if (self::$_mail)
-                    mail(self::MAIL, 'error en queryOne ' . self::TEMA, "Error sql : " . $e->getMessage() . "\nSql : $sql \n params :\n" . print_r($params, 1));
-                if (self::$_debug)
-                    echo "Error sql : " . $e->getMessage() . "\nSql : $sql \n params :\n" . print_r($params, 1);
+                self::muestraError($e, $sql, $params);
                 return false;
             }
         }
@@ -211,27 +181,21 @@ class Database
     {
         if ($params == '') {
             try {
-                $stmt = $this->_mysqli->query($sql);
+                $stmt = $this->db_activa->query($sql);
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch (\PDOException $e) {
-                if (self::$_mail)
-                    mail(self::MAIL, 'error en queryAll ' . self::TEMA, "Error sql : " . $e->getMessage() . "\nSql : $sql \n params :\n" . print_r($params, 1));
-                if (self::$_debug)
-                    echo "Error sql : " . $e->getMessage() . "\nSql : $sql \n params :\n" . print_r($params, 1);
+                self::muestraError($e, $sql, $params);
                 return false;
             }
         } else {
             try {
-                $stmt = $this->_mysqli->prepare($sql);
+                $stmt = $this->db_activa->prepare($sql);
                 foreach ($params as $values => $val)
                     $stmt->bindParam($values, $val);
                 $stmt->execute($params);
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch (\PDOException $e) {
-                if (self::$_mail)
-                    mail(self::MAIL, 'error en queryAll ' . self::TEMA, "Error sql : " . $e->getMessage() . "\nSql : $sql \n params :\n" . print_r($params, 1));
-                if (self::$_debug)
-                    echo "Error sql : " . $e->getMessage() . "\nSql : $sql \n params :\n" . print_r($params, 1);
+                self::muestraError($e, $sql, $params);
                 return false;
             }
         }
@@ -263,7 +227,7 @@ class Database
 
         $query_text = "CALL SPACCIONPAGODIA_PRUEBA(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         ///$query_text = "CALL SPACCIONPAGODIA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";/////este es el que funciona bien cuando se actualice la base de datos de produccion
-        $stmt = $this->_mysqli->prepare($query_text);
+        $stmt = $this->db_activa->prepare($query_text);
         $stmt->bindParam(1, $empresa, PDO::PARAM_STR);
         $stmt->bindParam(2, $fecha, PDO::PARAM_STR);
         $stmt->bindParam(3, $fecha_aux, PDO::PARAM_STR);
@@ -316,7 +280,7 @@ class Database
 
         $query_text = "CALL SPACCIONPAGODIA_PRUEBA(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         //$query_text = "CALL SPACCIONPAGODIA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
-        $stmt = $this->_mysqli->prepare($query_text);
+        $stmt = $this->db_activa->prepare($query_text);
         $stmt->bindParam(1, $empresa, PDO::PARAM_STR);
         $stmt->bindParam(2, $fecha, PDO::PARAM_STR);
         $stmt->bindParam(3, $fecha_aux, PDO::PARAM_STR);
@@ -355,7 +319,7 @@ class Database
         $resultado = "";
 
         $query_text = "CALL SPACTUALIZASUC(?, ?, ?, ?, ?)";
-        $stmt = $this->_mysqli->prepare($query_text);
+        $stmt = $this->db_activa->prepare($query_text);
         $stmt->bindParam(1, $empresa, PDO::PARAM_STR);
         $stmt->bindParam(2, $no_credito, PDO::PARAM_STR);
         $stmt->bindParam(3, $ciclo, PDO::PARAM_STR);
@@ -399,7 +363,7 @@ class Database
 
         $query_text = "CALL ESIACOM.SPACCIONGARPREN(?,?,?,?,?,?,?,?,?,?,?,?)
 ";
-        $stmt = $this->_mysqli->prepare($query_text);
+        $stmt = $this->db_activa->prepare($query_text);
         $stmt->bindParam(1, $empresa, PDO::PARAM_STR);
         $stmt->bindParam(2, $no_credito, PDO::PARAM_STR);
         $stmt->bindParam(3, $ciclo, PDO::PARAM_STR);
@@ -447,7 +411,7 @@ class Database
 
         $query_text = "CALL ESIACOM.SPACCIONGARPREN(?,?,?,?,?,?,?,?,?,?,?,?)
 ";
-        $stmt = $this->_mysqli->prepare($query_text);
+        $stmt = $this->db_activa->prepare($query_text);
         $stmt->bindParam(1, $empresa, PDO::PARAM_STR);
         $stmt->bindParam(2, $no_credito, PDO::PARAM_STR);
         $stmt->bindParam(3, $ciclo, PDO::PARAM_STR);
@@ -494,7 +458,7 @@ class Database
 
         $query_text = "CALL ESIACOM.SPACCIONGARPREN(?,?,?,?,?,?,?,?,?,?,?,?)
 ";
-        $stmt = $this->_mysqli->prepare($query_text);
+        $stmt = $this->db_activa->prepare($query_text);
         $stmt->bindParam(1, $empresa, PDO::PARAM_STR);
         $stmt->bindParam(2, $no_credito, PDO::PARAM_STR);
         $stmt->bindParam(3, $secuencia, PDO::PARAM_STR);
@@ -533,7 +497,7 @@ class Database
 
         $query_text = "CALL SPACTUALIZACODIGOGPO(?,?,?,?)";
 
-        $stmt = $this->_mysqli->prepare($query_text);
+        $stmt = $this->db_activa->prepare($query_text);
         $stmt->bindParam(1, $empresa, PDO::PARAM_STR);
         $stmt->bindParam(2, $credito_actual, PDO::PARAM_STR);
         $stmt->bindParam(3, $credito_nuevo, PDO::PARAM_STR);
@@ -562,7 +526,7 @@ class Database
 
         $query_text = "CALL SPACTUALIZACICLOGPO(?,?,?,?)";
 
-        $stmt = $this->_mysqli->prepare($query_text);
+        $stmt = $this->db_activa->prepare($query_text);
         $stmt->bindParam(1, $empresa, PDO::PARAM_STR);
         $stmt->bindParam(2, $credito_actual, PDO::PARAM_STR);
         $stmt->bindParam(3, $ciclo_n, PDO::PARAM_STR);
@@ -591,7 +555,7 @@ class Database
 
         $query_text = "CALL SPACTUALIZASITUACION(?,?,?,?,?)";
 
-        $stmt = $this->_mysqli->prepare($query_text);
+        $stmt = $this->db_activa->prepare($query_text);
         $stmt->bindParam(1, $empresa, PDO::PARAM_STR);
         $stmt->bindParam(2, $credito_actual, PDO::PARAM_STR);
         $stmt->bindParam(3, $ciclo_n, PDO::PARAM_STR);

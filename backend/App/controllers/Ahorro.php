@@ -4958,123 +4958,97 @@ class Ahorro extends Controller
         $monto_letra = self::NumeroLetras($datos['MONTO_APERTURA']);
         $firma = "/img/firma_1.jpg";
 
-        return <<<html
+        return <<<HTML
         <div class="contenedor">
             <p>
-                CONTRATO PRIVADO DE MUTUO A PLAZO INDETERMINADO QUE CELEBRAN POR UNA PARTE EL (LA)
-                <b>C. {$datos['NOMBRE']}</b>, EN LO SUCESIVO COMO EL “MUTUANTE Y/O PRESTAMISTA” Y POR LA OTRA
-                PARTE EL <b>C. ANTONIO LORENZO HERNÁNDEZ</b>, EN LO SUCESIVO EL “MUTUARIO Y/O PRESTATARIO”, DE
-                CONFORMIDAD CON LAS SIGUIENTES:
+                CONTRATO MÚLTIPLE DE DEPÓSITO DE DINERO EN MONEDA NACIONAL QUE CELEBRAN, POR UNA PARTE, CAJA SOLIDARIA 2G KAPIATAL, ENTIDAD COOPERATIVA DE AHORRO Y PRESTAMO POPULAR, A LA QUE EN LO SUCESIVO SE LE DENOMINARÁ COMO "CAJA SOLIDARIA 2G KAPITAL", Y POR LA OTRA PARTE, LA(S) PERSONA(S) CUYO(S) NOMBRE(S) SE PRECISA EN LA SOLICITUD DEL PRESENTE INSTRUMENTO, EN ADELANTE EL "SOCIOS", A QUIENES EN SU CONJUNTO SE LES DENOMINARÁ COMO LAS "PARTES", AL TENOR DE LAS SIGUIENTES:
             </p>
             <h3>DECLARACIONES</h3>
             <div calss="decalraciones">
                 <ol>
-                    <li>Declara <b>"EL MUTUARIO Y/O PRESTATARIO"</b> bajo protesta de decir verdad:</li>
+                    <li>Declara el <b>SOCIO</b> que:</li>
                     <ol class="listaLetras">
                         <li>
-                            Ser persona física con plena capacidad jurídica para la celebración del presente
-                            contrato y para obligarse individualmente a todos sus términos con pleno
-                            conocimiento de su objetivo y efectos jurídicos.
+                            Es una persona física de nacionalidad mexicana, con pleno ejercicio y goce de sus facultades para la celebración de este Contrato.
                         </li>
                         <li>
-                            Tener su domicilio en <b>AMBAR MANZANA 29 L31CA LOMA DE SAN FRANCISCO ALMOLOYA DE JUAREZ,  ALMOLOYA DE JUAREZ, CP. 50940, MEXICO</b>, mismo que 
-                            señala para todos sus efectos derivados de este contrato.
+                           Sus datos generales son los que han quedado asentados en la Solicitud de Apertura de ahorro, que corresponda (la "Solicitud"), la cual forma parte integrante de este Contrato, en la que precisa su deseo de contratar una cuenta de depósito, en los términos y condiciones estipuladas en este Contrato.
                         </li>
                         <li>
-                            Que cuenta con la capacidad y solvencia económica suficiente para cumplir con las
-                            obligaciones a su cargo derivadas del presente contrato.
+                            Los Recursos depositados en la Cuenta son de su propiedad y en todo momento proceden y procederán de fuentes lícitas, manifestando que entiende plenamente las disposiciones relativas a operaciones con recursos de procedencia ilícita y sus consecuencias.
+                        </li>
+                        <li>
+                            Conoce y acepta que <b>CAJA SOLIDARIA 2G CAPITA</b> L puede rechazar la realización de cualquier operación y/o servicio al amparo del presente Contrato en los casos en que el Solicitante y/o Socio se encuentre en la Lista de Personas Bloqueadas emitida por la Unidad de Inteligencia Financiera, o bien, en la lista "Specially Designated Nationals List (SDN)" de la "Office of Foreign Assets Control (OFAC)".
+                        </li>
+                        <li>
+                            Conoce y acepta que <b>CAJA SOLIDARIA 2G KAPITAL</b> podrá bloquear en cualquier momento los Recursos del Socio cuando así lo solicite la Unidad de Inteligencia Financiera de la Secretaría de Hacienda y Crédito Público por encontrarse este último en la lista de Personas Bloqueadas. Actúa en nombre y por cuenta propia manifestando que tiene conocimiento que actuar en nombre y por cuenta de un tercero o proporcionar datos y documentación falsa constituye un delito.
+                        </li>
+                        <li>
+                            Su estado civil o régimen matrimonial es el que se desprende de la Solicitud.
+                        </li>
+                        <li>
+                            Tiene conocimiento y otorga su consentimiento a <b>CAJA SOLIDARIA 2G KAPITAL</b> para que actúe como responsable de sus datos personales y de sus datos personales patrimoniales/financieros que, de acuerdo a lo estipulado en el Aviso de Privacidad Integral para Socios Ahorro publicado en http://www.cajasolidaria2gkapital.com.mx le han sido solicitados o le sean solicitados en el futuro por CAJA SOLIDARIA 2G KAPITAL. De igual manera manifiesta que conoce las finalidades para las que CAJA SOLIDARIA 2G KAPITAL recaba sus datos personales generales y personales patrimoniales/financieros.
+                        </li>
+                        <li>
+                            Tiene conocimiento de que, en caso que sea su voluntad revocar el consentimiento que ha otorgado a CAJA SOLIDARIA 2G KAPITAL para el tratamiento de sus datos personales generales y personales patrimoniales/financieros, así como ejercer los derechos que la Ley Federal de Protección de Datos Personales en Posesión de los Particulares le otorga, deberá llenar debidamente el formulario que CAJA SOLIDARIA 2G KAPITAL pone a su disposición en las siguientes modalidades: a) a través de la página de internet http://www.cajasolidaria2gkapital.com.mx en la sección de Privacidad; b) En la Oficina de Servicio y/o Sucursales de CAJA SOLIDARIA 2G KAPITAL más cercana a su domicilio. Para aclarar dudas sobre el procedimiento y requisitos para el ejercicio de los derechos y para la revocación de su consentimiento al tratamiento de sus Datos Personales, podrá llamar al siguiente número telefónico (55) 5555555, extensión 55 así como, ingresar al sitio de Internet http://www.cajasolidaria2gkapital.com.mx en la sección de Privacidad, o bien, ponerse en contacto con la Gerencia de Privacidad de Datos, de la Información de CAJA SOLIDARIA 2G KAPITAL, quien dará trámite a las solicitudes para el ejercicio de estos derechos, y atenderá cualquier duda que pudiera tener respecto al tratamiento de su información. Los datos de contacto son los siguientes: Dirigido a: Oficial de Cumplimiento. Domicilio: S. Rafael 6, Tecamac Centro. Tecamac, Estado de México C.P. 55740 correo electrónico: oficialdecumplimiento@cajasolidaria2gkapital.com.mx
+                        </li>
+                        <li>
+                            Manifiesta que <b>CAJA SOLIDARIA 2G KAPITAL</b> ha hecho de su conocimiento que sus datos personales generales y personales patrimoniales/financieros serán manejados de forma confidencial, y serán protegidos a través de medidas de seguridad tecnológicas, físicas y administrativas.
+                        </li>
+                        <li>
+                            Declara bajo protesta de decir verdad que la información y documentación proporcionada por él es verídica y carece de toda falsedad.
+                        </li>
+                        <li>
+                            Manifiesta que CAJA SOLIDARIA 2G KAPITAL ha hecho de su conocimiento que podrá consultar las disposiciones legales referidas en el presente Contrato, en el Registro de Contratos de Adhesión (RECA) así como en las Oficinas de Servicio y/o Sucursales de CAJA SOLIDARIA 2G KAPITAL.
                         </li>
                     </ol>
-                    <li>Declara el <b>“MUTUANTE Y/O PRESTAMISTA”:</b></li>
+                    <li>Declara <b>CAJA DE AHORRO CAJA SOLIDARIA 2G KAPITAL</b>, que:</li>
                     <ol class="listaLetras">
-                        <li>Contar con la capacidad suficiente para la celebración del presente contrato.</li>
                         <li>
-                            Que su domicilio para los efectos de este contrato es el ubicado en <b>{$datos['DIRECCION']}</b>.
+                            Es una sociedad anónima debidamente constituida de acuerdo a las leyes de los Estados Unidos Mexicanos, y cuenta con las autorizaciones necesarias para operar y organizarse como Caja de ahorro, por lo que cuenta con las facultades para la celebración y cumplimiento de este Contrato.
+                        </li>
+                        <li>
+                            Está inscrita en el Registro Federal de Contribuyentes con la clave <b>RFC_2GKAPITAL</b>, y su página de internet es http://www.cajasolidaria2Gkapital.com.mx Tiene su domicilio en <b>calle. S. Rafael 6, Tecamac Centro. Tecamac, Estado de México C.P. 55740</b>
+                        </li>
+                        <li>
+                            Contrato se encuentra debidamente inscrito en el Registro de Contratos de Adhesión de la CONDUSEF de acuerdo al Producto (término definido en la cláusula Primera siguiente) contratado, bajo los siguientes números: e.1) "mi Ahorró CAJA SOLIDARIA 2G KAPITAL" RECA No. _____________________.
                         </li>
                     </ol>
-                    <li><b>LAS PARTES</b> declaran:</li>
+                    <li>Declaran las Partes que:</li>
                     <ol class="listaLetras">
                         <li>
-                            Que reconocen recíprocamente la capacidad jurídica con la que comparecen a la
-                            celebración de este contrato, manifestando que el mismo está libre de cualquier
-                            vicio del consentimiento que pudiera afectar su plena validez.
-                        </li>
-                        <li>
-                            Que manifiestan su consentimiento para celebrar el presente contrato de mutuo con
-                            interés.
-                        </li>
-                        <li>
-                            Que reconocen en forma mutua la personalidad con que actúan en la celebración del
-                            presente instrumento.
+                            Conocen el contenido del presente Contrato el cual se podrá individualizar conforme la Carátula que corresponda de cualquiera de los Productos enunciados en el siguiente:
                         </li>
                     </ol>
                 </ol>
             </div>
             <h3>CLAUSULAS</h3>
+            <h5>CAPÍTULO PRIMERO. DEFINICIONES</h5>
             <p>
-                <b>PRIMERA.-</b> <b>OBJETO DEL CONTRATO.</b> Que las partes tienen pleno conocimiento que el
-                objeto del presente contrato es el préstamo de dinero con interés a un plazo indeterminado.
-            </p>
-            <p>
-                <b>SEGUNDA.-</b> <b>MONTO DEL PRESTAMO.</b> Será variable conforme a los depósitos o
-                exhibiciones que haga el “MUTUANTE Y/O PRESTAMISTA” al “MUTUARIO Y/O PRESTATARIO”.
-            </p>
-            <p>
-                <b>TERCERA.-</b> <b>PLAZO.</b> Las partes convienen que el préstamo no contará con un plazo
-                determinado, por lo que una vez que el “MUTUANTE Y/O PRESTAMISTA” reclame la devolución del
-                monto mutuado le será devuelto en un plazo de siete días hábiles después de su solicitud de
-                devolución, la cual deberá hacer por escrito al “MUTUARIO Y/O PRESTATARIO”; el interés
-                ordinario que obtendrá el “MUTUARIO Y/O PRESTATARIO” será del 5% anualizado.
-            </p>
-            <p>
-                <b>CUARTA.-</b> <b>RECIBO DE DINERO.</b> “MUTUARIO Y/O PRESTATARIO” recibe del “MUTUANTE Y/O
-                PRESTAMISTA” a su más entera satisfacción la cantidad de <b>{$monto} ({$monto_letra})</b>,
-                otorgando como el recibo más amplio y eficaz de la recepción de dicho dinero la firma del
-                presente contrato; dicha cantidad será el mínimo que se podrá exhibir o entregar para
-                celebrar el presente contrato.
-            </p>
-            <p>
-                <b>QUINTA.-</b> <b>LUGAR DE PAGO.</b> “MUTUANTE Y/O PRESTAMISTA” acudirá al domicilio del
-                “MUTUARIO Y/O PRESTATARIO” o al lugar que éste le indique a recibir el pago, conforme a lo
-                señalado en la cláusula TERCERA del presente contrato, el “MUTUANTE Y/O PRESTAMISTA” deberá
-                acudir personalmente.
-            </p>
-            <p>
-                <b>SEXTA.-</b> <b>INTERÉS MORATORIO.</b> Si el “MUTUARIO Y/O PRESTATARIO” incumpliera en el pago de las amortizaciones pactadas,
-                 “MUTUANTE Y/O PRESTAMISTA” aplicará intereses moratorios a razón de 4.5% 
-                mensual sobre el capital devengado y no pagado conforme a la cláusula tercera del presente instrumento.
-            </p>
-            <p>
-                <b>SEPTIMA.-</b> <b>INCUMPLIMIENTO.</b> En caso de incumplimiento de pago del “MUTUARIO Y/O
-                PRESTATARIO”, el “MUTUANTE Y/O PRESTAMISTA” podrá reclamar el cumplimiento forzoso del
-                presente contrato mediante los procesos legales que la Ley vigente determine.
-            </p>
-            <p>
-                <b>OCTAVA.-</b> <b>OTROS CONTRATOS.</b> En caso de que el “MUTUANTE Y/O PRESTAMISTA” tuviera
-                algún otro tipo de negociación con el “MUTUARIO Y/O PRESTATARIO”; autoriza desde este
-                momento que en caso de cualquier tipo de incumplimiento referente a pagos, se pueda aplicar
-                del presente contrato el pago pendiente a los otros instrumentos o contratos que existan.
-            </p>
-            <p>
-                <b>NOVENA.-</b> En caso de fallecimiento del “MUTUANTE Y/O PRESTAMISTA”, el adeudo que
-                exista en esa fecha deberá ser cubierto a la persona que haya señalado como beneficiario;
-                para que esto proceda, se deberá acreditar en forma fehaciente el hecho con el acta de
-                defunción correspondiente.
-            </p>
-            <p>
-                <b>DECIMA.-</b> Para la celebración del presente Contrato el “MUTUANTE Y/O PRESTAMISTA”
-                acepta cubrir al “MUTUARIO Y/O PRESTATARIO” a la firma del presente la cantidad de $200.00
-                (DOSCIENTOS PESOS 00/100 M. N.) por concepto de gastos de papelería.
-            </p>
-            <p>
-                <b>DECIMA PRIMERA.-</b> <b>LAS PARTES</b> manifiestan que no existe dolo ni cláusula
-                contraria a derecho, no dándose los supuestos de ignorancia ni extrema necesidad,
-                conscientes de su alcance y valor jurídico lo firman de conformidad.
-            </p>
-            <p>
-                <b>DECIMA SEGUNDA.-</b> <b>COMPETENCIA.</b> Para el cumplimiento y resolución del presente
-                contrato las partes se someten a la jurisdicción y competencia de los Juzgados de la Ciudad
-                de México, renunciando expresamente a la jurisdicción de futuro domicilio.
+                <b>PRIMERA.- DEFINICIONES.</b> Para efectos del presente Contrato, los siguientes términos escritos con mayúscula inicial tendrán los significados que se expresan a continuación, igualmente aplicables en singular o plural:<br>
+                <b>Banca Electrónica:</b> Al conjunto de servicios y operaciones bancarias que CAJA SOLIDARIA 2G KAPITAL realiza con el Socio a través de los Medio Electrónicos identificados como CAJA SOLIDARIA 2G KAPITAL Net (Banca Net), CAJA SOLIDARIA 2G KAPITAL SMS (Pago Móvil) y App CAJA SOLIDARIA 2G KAPITAL(Banca Móvil).<br>
+                <b>Cajero Automático:</b> Dispositivo de acceso de autoservicio que le permite al Socio realizar diversas consultas y operaciones, tales como la disposición de dinero en efectivo y al cual el Socio accede mediante la Tarjeta de Débito.<br>
+                <b>Carátula:</b> Documento mediante el cual se individualiza el Producto elegido por el Socio y precisan las características esenciales de este Contrato, el cual forma parte integral del mismo.<br>
+                <b>Socio:</b> La(s) persona(s) cuyo(s) nombre(s) se precisa en la solicitud del presente instrumento.<br>
+                <b>Comercios Afiliados:</b> Corresponsales bancarios y no bancarios propios o terceros de <b>CAJA SOLIDARIA 2G KAPITAL</b>., en los cuales el Socio puede realizar transacciones con la Tarjeta de Débito como instrumento de pago o Medio de Disposición del dinero depositado en la Cuenta.<br>
+                <b>Comisión:</b> Cantidad establecida por <b>CAJA SOLIDARIA 2G KAPITAL</b> por los servicios y transacciones relacionados con la Cuenta y que se estipulan en el presente Contrato.<br>
+                <b>SERVTEL:</b> Medio telefónico mediante el cual <b>CAJA SOLIDARIA 2G KAPITAL</b> y el Socio podrán convenir determinados Servicios.<br>
+                <b>Cuenta:</b> Cuenta bancaria que <b>CAJA SOLIDARIA 2G KAPITAL</b> abrirá al Socio en términos de lo dispuesto en el presente Contrato, considerándose una Cuenta por cada Producto contratado por el Socio.<br>
+                <b>Días Hábiles:</b> Días del año en que <b>CAJA SOLIDARIA 2G KAPITAL</b> abra sus Oficinas de Servicios y Sucursales para atención al público, que no sean domingos ni considerados inhábiles por las autoridades bancarias en que las instituciones de crédito estén autorizadas para celebrar operaciones con el público.<br>
+                <b>Divisas:</b> dólares de los Estados Unidos de América (dólares americanos), así como cualquier otra moneda extranjera libremente transferible y convertible de inmediato a dólares americanos.<br>
+                <b>Fecha de Corte:<b> Mes aniversario considerando la fecha de firma del presente Contrato.<br>
+                <b>Horas Hábiles:</b> Al horario comprendido de las 08:00 a las 18:00 horas, hora centro de México en el cual <b>CAJA SOLIDARIA 2G KAPITAL</b> brinda atención en sus Oficinas de Servicio y/ Sucursales, mismo que podrá ser modificado en cualquier momento por <b>CAJA SOLIDARIA 2G KAPITAL</b>.<br>
+                <b>Identificación Oficial:</b> La credencial para votar vigente con fotografía, la cédula profesional o el pasaporte mexicano, expedidos por las autoridades competentes, de acuerdo con la normatividad aplicable.<br>
+                <b>Inversión:</b> Operación mediante la cual el Socio podrá ordenar a <b>CAJA SOLIDARIA 2G KAPITAL</b> invertir los Recursos o parte de estos en pagarés con rendimiento liquidable al vencimiento conforme a los montos autorizados por <b>CAJA SOLIDARIA 2G KAPITAL</b> y lo estipulado en el capítulo Cuarto del presente Contrato, dicha inversión tendrá la calidad de préstamo mercantil.<br>
+                <b>Medios de Disposición:</b> Se entenderá como aquellos medios por los cuales el Socio podrá disponer de los Recursos que obran en la Cuenta, incluyendo cajeros automáticos, disposición en ventanilla, comercios afiliados, comisionistas bancarios, la Tarjeta de Débito presentada por el Socio y Banca Electrónica.<br>
+                <b>Mis Apartados:</b> Funcionalidad exclusiva de la cuenta Mi Ahorro <b>CAJA SOLIDARIA 2G KAPITAL</b> que posibilita al Socio generar apartados de dinero a la vista con el fin de cumplir sus metas financieras personales, en los términos que él mismo establezca y bajo las condiciones ofertadas previamente por <b>CAJA SOLIDARIA 2G KAPITAL</b> previstas en el presente Contrato y en el "Reglamento de Ahorro, Prestamos e Inversiones", Emitido por esta institución.<br>
+                <b>NIP:</b> Número de identificación personal asociado a una Tarjeta de Débito, confidencial, intransferible y que será medio de autentificación del Socio mediante una cadena de caracteres numéricos.<br>
+                <b>Oficina de Servicios:</b> Lugar establecido de <b>CAJA SOLIDARIA 2G KAPITAL</b> con atención al público sin comprender operaciones bancarias de ventanilla.<br>
+                <b>Pago Móvil:</b> Al servicio de Banca Electrónica en el cual el dispositivo de acceso consiste en un teléfono móvil del Socio, cuyo número de línea se encuentre asociado al servicio y mediante el cual el Socio sólo recibirá notificaciones.<br>
+                <b>Recursos:</b> El importe en dinero depositado en la Cuenta, mismo que el Socio puede disponer mediante los Medios de Disposición previstos en el presente Contrato.<br>
+                <b>Remesa:</b> Cantidad en moneda nacional o extranjera proveniente del exterior, transferida a través de empresas, originada por un remitente (persona física residente en el exterior que transfiere recursos económicos a sus familiares en México) para ser entregada en territorio nacional a un beneficiario (persona física residente en México que recibe los recursos que transfiere el remitente).<br>
+                <b>Sucursal:</b> Aquellas instalaciones de <b>CAJA SOLIDARIA 2G KAPITAL</b> distintas a Oficinas de Servicio destinadas a la atención al público usuario, para la celebración de operaciones y prestación de servicios.<br>
+                <b>Tarjeta de Débito:</b> Tarjeta de plástico con banda magnética y chip que el socio proporcione a <b>CAJA SOLIDARIA 2G KAPITAL</b>, de conformidad con lo dispuesto en el Contrato, la cual será utilizada por el Socio como un Medio de Disposición del dinero depositado en la Cuenta.<br>
             </p>
             <table style="width: 100%">
                 <tr>
@@ -5145,7 +5119,7 @@ class Ahorro extends Controller
                 </tr>
             </table>
         </div>    
-        html;
+        HTML;
     }
 
     public function GetContratoInversion($codigoInversion)
