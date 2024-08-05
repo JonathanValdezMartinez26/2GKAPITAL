@@ -5049,6 +5049,7 @@ class Ahorro extends Controller
                 <b>Remesa:</b> Cantidad en moneda nacional o extranjera proveniente del exterior, transferida a través de empresas, originada por un remitente (persona física residente en el exterior que transfiere recursos económicos a sus familiares en México) para ser entregada en territorio nacional a un beneficiario (persona física residente en México que recibe los recursos que transfiere el remitente).<br>
                 <b>Sucursal:</b> Aquellas instalaciones de <b>CAJA SOLIDARIA 2G KAPITAL</b> distintas a Oficinas de Servicio destinadas a la atención al público usuario, para la celebración de operaciones y prestación de servicios.<br>
                 <b>Tarjeta de Débito:</b> Tarjeta de plástico con banda magnética y chip que el socio proporcione a <b>CAJA SOLIDARIA 2G KAPITAL</b>, de conformidad con lo dispuesto en el Contrato, la cual será utilizada por el Socio como un Medio de Disposición del dinero depositado en la Cuenta.<br>
+                <b>Trasferencia Electrónica SPEI:</b> Servicio ofrecido por <b>CAJA SOLIDARIA 2G KAPITAL</b> en sus Oficinas de Servicios y/o Sucursales para que el Socio disponga de los Recursos de la Cuenta a través del Sistema de Pagos Electrónicos Interbancarios mediante su instrucción para el abono a otra cuenta del Socio o de terceros.<br>
             </p>
             <table style="width: 100%">
                 <tr>

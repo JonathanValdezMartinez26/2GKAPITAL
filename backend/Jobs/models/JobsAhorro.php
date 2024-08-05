@@ -3,7 +3,7 @@
 namespace Jobs\models;
 
 include_once dirname(__DIR__) . "\..\Core\Model.php";
-include_once dirname(__DIR__) . "\..\Core\Database_jobs.php";
+include_once dirname(__DIR__) . "\..\Core\Database.php";
 
 use Core\Model;
 use Core\Database;
