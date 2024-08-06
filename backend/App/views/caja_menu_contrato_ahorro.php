@@ -173,10 +173,9 @@ $derecha = new TarjetaMano('derecha');
                                         <div class="row">
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="manejo_cta">Tipo Ahorro</label>
-                                                    <select class="form-control mr-sm-3" id="manejo_cta" name="manejo_cta" readonly>
+                                                    <label for="tipo_ahorro">Tipo Ahorro</label>
+                                                    <select class="form-control mr-sm-3" id="tipo_ahorro" name="tipo_ahorro" disabled>
                                                         <option value="1">Ordinario</option>
-                                                        <option value="2">Plus</option>
                                                     </select>
                                                 </div>
                                             </div>
