@@ -2041,7 +2041,7 @@ class Ahorro extends Controller
         $extraFooter = <<<html
         <script>
             const saldoMinimoApertura = $saldoMinimoApertura
-            const montoMaximo = 1000000
+            const montoMaximo = 4000000
             const sucursal_ahorro = "$suc"
             const usuario_ahorro = "$usr"
             const noSucursal = "{$_SESSION['cdgco_ahorro']}"

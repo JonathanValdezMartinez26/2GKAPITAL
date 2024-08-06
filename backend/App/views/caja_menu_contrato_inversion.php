@@ -130,7 +130,7 @@ $buscarCliente = new BuscarCliente('Para hacer la apertura de una cuenta de Inve
                                                 <span style="font-size: x-large;">$</span>
                                             </div>
                                             <div class="col-md-10">
-                                                <input type="number" class="form-control" id="monto" name="monto" min="1" max="1000000" placeholder="0.00" style="font-size: 25px;" oninput=validaDeposito(event) onkeydown=soloNumeros(event) onblur=validaBlur(event) disabled>
+                                                <input type="number" class="form-control" id="monto" name="monto" min="1" max="4000000" placeholder="0.00" style="font-size: 25px;" oninput=validaDeposito(event) onkeydown=soloNumeros(event) onblur=validaBlur(event) disabled>
                                             </div>
                                         </div>
                                     </div>
