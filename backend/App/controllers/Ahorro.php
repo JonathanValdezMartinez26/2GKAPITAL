@@ -535,8 +535,8 @@ class Ahorro extends Controller
     public function ContratoCuentaCorriente()
     {
         $saldosMM = CajaAhorroDao::GetSaldoMinimoApertura($_SESSION['cdgco_ahorro']);
-        $saldoMinimoApertura = $saldosMM['MONTO_MINIMO'];
-        $costoInscripcion = 200;
+        $saldoMinimoApertura = 650; //$saldosMM['MONTO_MINIMO'];
+        $costoInscripcion = 400;
         $mensajeCaptura = "Capture las huellas del cliente haciendo clic sobre una imagen.";
 
         $extraFooter = <<<html
@@ -5022,7 +5022,7 @@ class Ahorro extends Controller
                             Es una sociedad anónima debidamente constituida de acuerdo a las leyes de los Estados Unidos Mexicanos, y cuenta con las autorizaciones necesarias para operar y organizarse como Caja de ahorro, por lo que cuenta con las facultades para la celebración y cumplimiento de este Contrato.
                         </li>
                         <li>
-                            Está inscrita en el Registro Federal de Contribuyentes con la clave <b>RFC_2GKAPITAL</b>, y su página de internet es $pagina Tiene su domicilio en $domimicilio.
+                            Está inscrita en el Registro Federal de Contribuyentes con la clave <b>RFC_2GKAPITAL</b>, y su página de internet es $pagina Tiene su domicilio en $domicilio.
                         </li>
                         <li>
                             Contrato se encuentra debidamente inscrito en el Registro de Contratos de Adhesión de la CONDUSEF de acuerdo al Producto (término definido en la cláusula Primera siguiente) contratado, bajo los siguientes números: e.1) "mi Ahorró $gk" RECA No. _____________________.

@@ -149,7 +149,7 @@ $derecha = new TarjetaMano('derecha');
                                     <form id="registroInicialAhorro" name="registroInicialAhorro">
                                         <p><b><span class="fa fa-sticky-note"></span> Datos básicos de apertura para la cuenta de Ahorro Corriente</b></p>
                                         <div class="row">
-                                            <div class="col-md-5">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="Fecha">Fecha de apertura</label>
                                                     <input type="text" class="form-control" id="fecha" name="fecha" value="<?= $fecha; ?>" readonly>
@@ -157,20 +157,10 @@ $derecha = new TarjetaMano('derecha');
                                             </div>
                                             <div class="col-md-3">
                                                 <div class="form-group">
-                                                    <label for="tipo">Tasa anual</label>
-                                                    <select class="form-control mr-sm-3" autofocus="" type="select" id="tasa" name="tasa" disabled>
-                                                        <option value="5">5 %</option>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-4">
-                                                <div class="form-group">
                                                     <label for="monto_min">Monto mínimo <span class="fa fa-info"></span></label>
                                                     <input type="text" class="form-control" id="monto_min" name="monto_min" value="<?= number_format($saldoMinimoApertura, 2, '.', ','); ?>" readonly>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="row">
                                             <div class="col-md-5">
                                                 <div class="form-group">
                                                     <label for="manejo_cta">Manejo de ahorro cuenta</label>
@@ -179,7 +169,26 @@ $derecha = new TarjetaMano('derecha');
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-md-7">
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="manejo_cta">Tipo Ahorro</label>
+                                                    <select class="form-control mr-sm-3" id="manejo_cta" name="manejo_cta" readonly>
+                                                        <option value="1">Ordinario</option>
+                                                        <option value="2">Plus</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="tipo">Tasa anual</label>
+                                                    <select class="form-control mr-sm-3" autofocus="" type="select" id="tasa" name="tasa" disabled>
+                                                        <option value="5">5.5 %</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label for="sucursal">Sucursal *</label>
                                                     <select class="form-control mr-sm-3" id="sucursal" name="sucursal" disabled>
@@ -433,7 +442,7 @@ $derecha = new TarjetaMano('derecha');
                                 <h4>-</h4>
                             </div>
                             <div class="col-md-7">
-                                <h4>Inscripción</h4>
+                                <h4>Costo Anual</h4>
                             </div>
                             <div class="col-md-1" style="display: flex; justify-content: flex-end;">
                                 <h4>$</h4>
