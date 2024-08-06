@@ -3219,8 +3219,8 @@ script;
                 $totalSaldo -= $Layoutt[$increment]["EGRESO"];
             }
 
-            if ($Layoutt[$increment]["CONCEPTO"] === 'INGRESO' || $Layoutt[$increment]["CONCEPTO"] === 'FONDEO SUCURSAL') $totalIngreso += $Layoutt[$increment]["INGRESO"];
-            if ($Layoutt[$increment]["CONCEPTO"] === 'EGRESO') $totalEgreso += $Layoutt[$increment]["EGRESO"];
+            if ($Layoutt[$increment]["TIPO_MOVIMIENTO"] === 'INGRESO') $totalIngreso += $Layoutt[$increment]["INGRESO"];
+            if ($Layoutt[$increment]["TIPO_MOVIMIENTO"] === 'EGRESO') $totalEgreso += $Layoutt[$increment]["EGRESO"];
             //////////////////
 
 
