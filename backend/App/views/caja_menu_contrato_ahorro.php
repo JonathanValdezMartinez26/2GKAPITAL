@@ -171,19 +171,22 @@ $derecha = new TarjetaMano('derecha');
                                             </div>
                                         </div>
                                         <div class="row">
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="tipo_ahorro">Tipo Ahorro</label>
-                                                    <select class="form-control mr-sm-3" id="tipo_ahorro" name="tipo_ahorro" disabled>
-                                                        <option value="1">Ordinario</option>
+                                                    <label for="tipo_ahorro">Producto</label>
+                                                    <select class="form-control mr-sm-3" id="tipo_ahorro" name="tipo_ahorro">
+                                                        <?= $opcTipoAhorro; ?>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-2">
                                                 <div class="form-group">
                                                     <label for="tipo">Tasa anual</label>
                                                     <select class="form-control mr-sm-3" autofocus="" type="select" id="tasa" name="tasa" disabled>
-                                                        <option value="5">5.5 %</option>
+                                                        <?= $opcTasaAhorro; ?>
+                                                    </select>
+                                                    <select id="infoProducto" disabled style="display: none;">
+                                                        <?= $opcInfoAhorro; ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -447,7 +450,7 @@ $derecha = new TarjetaMano('derecha');
                                 <h4>$</h4>
                             </div>
                             <div class="col-md-3">
-                                <input class="form-control" id="inscripcion" name="inscripcion" value="<?= $costoInscripcion ?>.00" readonly>
+                                <input class="form-control" id="inscripcion" name="inscripcion" readonly>
                             </div>
                         </div>
                         <div class="row">
@@ -459,12 +462,12 @@ $derecha = new TarjetaMano('derecha');
                             </div>
                             <div class="col-md-3">
                                 <input class="form-control" id="saldo_inicial" name="saldo_inicial" value="0.00" readonly>
-                                <input type="hidden" class="form-control" id="sma" name="sma" value="<?= $saldoMinimoApertura ?>" readonly>
+                                <input type="hidden" class="form-control" id="sma" name="sma" readonly>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-12" style="display: flex; justify-content: center; color: red; height: 20px;">
-                                <label id="tipSaldo" style="opacity:0; font-size: 18px;">El saldo inicial debe ser mínimo de $<?= $saldoMinimoApertura - $costoInscripcion ?>.00</label>
+                                <label id="tipSaldo" style="opacity:0; font-size: 18px;"></label>
                             </div>
                         </div>
                         <div class="modal-footer">

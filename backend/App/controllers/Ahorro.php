@@ -534,15 +534,15 @@ class Ahorro extends Controller
     // Apertura de contratos para cuentas de ahorro corriente
     public function ContratoCuentaCorriente()
     {
-        $saldosMM = CajaAhorroDao::GetSaldoMinimoApertura($_SESSION['cdgco_ahorro']);
-        $saldoMinimoApertura = 650; //$saldosMM['MONTO_MINIMO'];
-        $costoInscripcion = 400;
+        // $saldosMM = CajaAhorroDao::GetSaldoMinimoApertura($_SESSION['cdgco_ahorro']);
+        // $saldoMinimoApertura = 650; //$saldosMM['MONTO_MINIMO'];
+        // $costoInscripcion = 400;
         $mensajeCaptura = "Capture las huellas del cliente haciendo clic sobre una imagen.";
 
         $extraFooter = <<<html
         <script>
-            const saldoMinimoApertura = $saldoMinimoApertura
-            const costoInscripcion = $costoInscripcion
+            let saldoMinimoApertura = 0
+            let costoInscripcion = 0
             const montoMaximo = 1000000
             const txtGuardaContrato = "GUARDAR DATOS Y PROCEDER AL COBRO"
             const txtGuardaPago = "REGISTRAR DEPÓSITO DE APERTURA"
@@ -574,6 +574,27 @@ class Ahorro extends Controller
                 document.querySelector("#manoizquierda").addEventListener("actualizaHuella", actualizaHuella)
                 
                 if(document.querySelector("#clienteBuscado").value !== "") buscaCliente()
+
+                actualizaInscripcion()
+
+                document.querySelector("#tipo_ahorro").addEventListener("change", () => {
+                    document.querySelector("#tasa").selectedIndex = document.querySelector("#tipo_ahorro").selectedIndex
+                    document.querySelector("#infoProducto").selectedIndex = document.querySelector("#tipo_ahorro").selectedIndex
+
+                    document.querySelector("#monto").value = ""
+                    document.querySelector("#monto").dispatchEvent(new Event("input"))
+                    actualizaInscripcion()
+                })
+            }
+
+            const actualizaInscripcion = () => {
+                const info = document.querySelector("#infoProducto")
+                costoInscripcion = info.value
+                saldoMinimoApertura = info.options[info.selectedIndex].text
+
+                document.querySelector("#inscripcion").value = parseFloat(costoInscripcion).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                document.querySelector("#tipSaldo").innerText = "El monto mínimo de apertura debe ser de $" + parseFloat(saldoMinimoApertura).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                document.querySelector("#sma").value = parseFloat(saldoMinimoApertura).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
             }
          
             {$this->showError}
@@ -718,7 +739,6 @@ class Ahorro extends Controller
              
             const habilitaBeneficiario = (numBeneficiario, habilitar) => {
                 document.querySelector("#beneficiario_" + numBeneficiario).disabled = !habilitar
-                document.querySelector("#tasa").disabled = false
                 document.querySelector("#sucursal").disabled = false
             }
              
@@ -753,12 +773,12 @@ class Ahorro extends Controller
                 document.querySelector("#btnGeneraContrato").style.display = "none"
                 document.querySelector("#btnGuardar").innerText = txtGuardaContrato
                 document.querySelector("#marcadores").style.opacity = "0"
-                document.querySelector("#tasa").disabled = true
                 document.querySelector("#sucursal").disabled = true
                 document.querySelector("#contratoOK").value = ""
                 document.querySelector("#ejecutivo_comision").childNodes.forEach((option) => {
                     if (option.value === "tmp") option.remove()
                 })
+                actualizaInscripcion()
             }
             
             const generaContrato = async (e) => {
@@ -795,9 +815,12 @@ class Ahorro extends Controller
                     const datosContrato = $("#registroInicialAhorro").serializeArray()
                     addParametro(datosContrato, "credito", noCredito)
                     addParametro(datosContrato, "ejecutivo", "{$_SESSION['usuario']}")
+
+                    const tasa = document.querySelector("#tasa")
+                    addParametro(datosContrato, "tasa", tasa.options[tasa.selectedIndex].text)
                      
                     if (document.querySelector("#contrato").value !== "") return regPago(document.querySelector("#contrato").value)
-                     
+
                     consultaServidor("/Ahorro/AgregaContratoAhorro/", $.param(datosContrato), (respuesta) => {
                         if (!respuesta.success) {
                             console.error(respuesta.error)
@@ -842,7 +865,7 @@ class Ahorro extends Controller
                 if (monto <= 0) {
                     e.preventDefault()
                     e.target.value = ""
-                    showError("El monto a depositar debe ser mayor a 0.")
+                    //showError("El monto a depositar debe ser mayor a 0.")
                 }
                  
                 if (monto > montoMaximo) {
@@ -1167,16 +1190,28 @@ class Ahorro extends Controller
             $opcParentescos .= "<option value='{$parentesco['CODIGO']}'>{$parentesco['DESCRIPCION']}</option>";
         }
 
+        $tipoAhorro = CajaAhorroDao::GetTipoAhorro();
+        $opcTipoAhorro = "";
+        $opcTasaAhorro = "";
+        $opcInfoAhorro = "";
+        foreach ($tipoAhorro as $tipo) {
+            $opcTipoAhorro .= "<option value='{$tipo['CODIGO']}'>{$tipo['DESCRIPCION']}</option>";
+            $opcTasaAhorro .= "<option value='{$tipo['TASA']}'>{$tipo['TASA']}</option>";
+            $opcInfoAhorro .= "<option value='{$tipo['COSTO_INSCRIPCION']}'>{$tipo['SALDO_APERTURA']}</option>";
+        }
 
         if ($_GET['cliente']) View::set('cliente', $_GET['cliente']);
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Contrato Ahorro Corriente", [$this->huellas])));
         View::set('footer', $this->_contenedor->footer($extraFooter));
-        view::set('saldoMinimoApertura', $saldoMinimoApertura);
-        view::set('costoInscripcion', $costoInscripcion);
+        view::set('opcTipoAhorro', $opcTipoAhorro);
+        view::set('opcTasaAhorro', $opcTasaAhorro);
+        view::set('opcInfoAhorro', $opcInfoAhorro);
         View::set('fecha', date('d/m/Y H:i:s'));
         view::set('opcParentescos', $opcParentescos);
         view::set('sucursales', $opcSucursales);
         view::set('ejecutivos', $opcEjecutivos);
+        view::set('opcTipoAhorro', $opcTipoAhorro);
+        view::set('opcTasaAhorro', $opcTasaAhorro);
         View::set('mensajeCaptura', $mensajeCaptura);
         View::render("caja_menu_contrato_ahorro");
     }

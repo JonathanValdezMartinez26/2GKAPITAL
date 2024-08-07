@@ -459,7 +459,7 @@ class CajaAhorro
             INSERT INTO ASIGNA_PROD_AHORRO
                 (CONTRATO, CDGCL, FECHA_APERTURA, CDGPR_PRIORITARIO, ESTATUS, SALDO, TASA, CDGCO, CDGPE_COMISIONA, CDGPE_REGISTRO)
             VALUES
-                (:contrato, :cliente, :fecha_apertura, '1', 'A', 0, :tasa, :sucursal, :ejecutivo_comisiona, :ejecutivo_registro)
+                (:contrato, :cliente, :fecha_apertura, :producto, 'A', 0, :tasa, :sucursal, :ejecutivo_comisiona, :ejecutivo_registro)
             sql;
 
             $queryBen = <<<sql
@@ -481,6 +481,7 @@ class CajaAhorro
                     'sucursal' => $datos['sucursal'],
                     'ejecutivo_comisiona' => $datos['ejecutivo_comision'],
                     'ejecutivo_registro' => $datos['ejecutivo'],
+                    'producto' => $datos['tipo_ahorro']
                 ]
             ];
 
@@ -3279,6 +3280,30 @@ sql;
             return self::Responde(true, "Huellas eliminadas correctamente.", $res);
         } catch (Exception $e) {
             return self::Responde(false, "Error al eliminar huellas.", null, $e->getMessage());
+        }
+    }
+
+    public static function GetTipoAhorro()
+    {
+        $qry = <<<SQL
+        SELECT
+            CODIGO,
+            DESCRIPCION,
+            COSTO_INSCRIPCION,
+            SALDO_APERTURA,
+            TASA
+        FROM
+            PR_PRIORITARIO
+        WHERE
+            ESTATUS = 'A'
+            AND CODIGO > 2
+        SQL;
+
+        try {
+            $mysqli = new Database();
+            return $mysqli->queryAll($qry);
+        } catch (Exception $e) {
+            return [];
         }
     }
 }
