@@ -727,7 +727,7 @@ sql;
         )
         sql;
 
-        if ($datos['fechaI'] && $datos['fechaF']) $qrySaldos .= "WHERE FECHA BETWEEN TO_DATE('{$datos['fechaI']}', 'YYYY-MM-DD') AND TO_DATE('{$datos['fechaF']}', 'YYYY-MM-DD')";
+        if ($datos['fechaI'] && $datos['fechaF']) $qrySaldos .= "WHERE TO_DATE(FECHA, 'DD/MM/YYYY') BETWEEN TO_DATE('{$datos['fechaI']}', 'YYYY-MM-DD') AND TO_DATE('{$datos['fechaF']}', 'YYYY-MM-DD')";
 
         $qrySaldos .= "ORDER BY FECHA DESC, NOMBRE";
         try {

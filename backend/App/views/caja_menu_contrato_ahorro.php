@@ -155,13 +155,13 @@ $derecha = new TarjetaMano('derecha');
                                                     <input type="text" class="form-control" id="fecha" name="fecha" value="<?= $fecha; ?>" readonly>
                                                 </div>
                                             </div>
-                                            <div class="col-md-3">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
-                                                    <label for="monto_min">Monto mínimo <span class="fa fa-info"></span></label>
-                                                    <input type="text" class="form-control" id="monto_min" name="monto_min" value="<?= number_format($saldoMinimoApertura, 2, '.', ','); ?>" readonly>
+                                                    <label for="monto_min">Monto mínimo sin cuota anual</label>
+                                                    <input type="text" class="form-control" id="monto_min" name="monto_min" value="50" readonly>
                                                 </div>
                                             </div>
-                                            <div class="col-md-5">
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="manejo_cta">Manejo de ahorro cuenta</label>
                                                     <select class="form-control mr-sm-3" id="manejo_cta" name="manejo_cta" readonly>
