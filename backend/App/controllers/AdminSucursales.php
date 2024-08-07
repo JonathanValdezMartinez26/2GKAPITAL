@@ -2354,7 +2354,7 @@ html;
                 confirmarMovimiento("Solicitudes de retiro Express", null, mensaje)
                     .then((confirmacion) => {
                         if (!confirmacion) return
-                         
+                        
                         consultaServidor(
                             "/AdminSucursales/ActualizaSolicitudRetiro/",
                             { idSolicitud, estatus: valor, ejecutivo: "{$_SESSION['usuario']}" },

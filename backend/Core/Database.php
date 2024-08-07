@@ -152,6 +152,18 @@ class Database
         }
     }
 
+    public function actualizar($sql)
+    {
+        try {
+            if (!$this->db_activa->prepare($sql)->execute())
+                throw new \Exception("Error en actualizar: " . print_r($this->db_activa->errorInfo(), 1) . "\nSql : $sql");
+
+            return true;
+        } catch (\PDOException $e) {
+            throw new \Exception("Error en actualizar: " . $e->getMessage() . "\nSql : $sql");
+        }
+    }
+
     public function queryOne($sql, $params = '')
     {
 

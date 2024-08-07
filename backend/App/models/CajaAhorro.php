@@ -3125,8 +3125,8 @@ sql;
 
         try {
             $mysqli = new Database();
-            $res = $mysqli->queryOne($qry);
-            if (!$res) {
+            $res = $mysqli->actualizar($qry);
+            if ($res === true) {
                 $accion = $datos['estatus'] === '1' ? 'aprobada' : 'rechazada';
                 return self::Responde(true, "Solicitud " . $accion . " correctamente.");
             }
