@@ -4991,8 +4991,12 @@ class Ahorro extends Controller
         return implode(" ", $tmp);
     }
 
-    public function GetContratoAhorro($codigoInversion)
+    public function GetContratoAhorro($codigoAhorro)
     {
+        $datos = CajaAhorroDao::DatosContratoAhorro($codigoAhorro);
+        if (!$datos) exit("No se encontró información para el codigo de inversion: " . $codigoAhorro);
+
+        $firma = "/img/firma_1.jpg";
         return <<<HTML
         <div>
             <p style="margin-top:0pt; margin-bottom:8pt; text-align:justify; line-height:108%; font-size:8pt;"><strong><span style="font-family:Verdana;">CONTRATO M&Uacute;LTIPLE DE DEP&Oacute;SITO DE DINERO EN MONEDA NACIONAL QUE CELEBRAN, POR UNA PARTE, CAJA SOLIDARIA 2G KAPIATAL, ENTIDAD COOPERATIVA DE AHORRO Y PRESTAMO POPULAR, A LA QUE EN LO SUCESIVO SE LE DENOMINAR&Aacute; COMO &quot;CAJA SOLIDARIA 2G KAPITAL&quot;, Y POR LA OTRA PARTE, LA(S) PERSONA(S) CUYO(S) NOMBRE(S) SE PRECISA EN LA SOLICITUD DEL PRESENTE INSTRUMENTO, EN ADELANTE EL &quot;SOCIOS&quot;, A QUIENES EN SU CONJUNTO SE LES DENOMINAR&Aacute; COMO LAS &quot;PARTES&quot;, AL TENOR DE LAS SIGUIENTES:</span></strong></p>
@@ -5240,12 +5244,15 @@ class Ahorro extends Controller
             <p style="margin-top:0pt; margin-bottom:8pt; text-align:center; line-height:8.9pt;"><span style="font-family:Verdana; font-size:7pt;">EL SOCIO/ EL TITULAR</span></p>
             <p style="margin-top:0pt; margin-bottom:8pt; line-height:8.9pt;"><span style="font-family:Verdana; font-size:7pt;">&nbsp;</span></p>
             <p style="margin-top:0pt; margin-bottom:8pt; line-height:8.9pt;"><br></p>
-            <p style="margin-top: 0pt; margin-bottom: 8pt; line-height: 8.9pt; text-align: center;"><span style="font-family:Verdana; font-size:7pt;">&nbsp;<u>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</u></span></p>
+            <p style="margin-top: 0pt; margin-bottom: 8pt; line-height: 8.9pt; text-align: center;"><span style="font-family:Verdana; font-size:7pt;">&nbsp;<u>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</u></span></p>
+            <p style="margin-top: 0pt; margin-bottom: 8pt; line-height: 8.9pt; text-align: center;"><span style="font-family:Verdana; font-size:7pt;">{$datos['NOMBRE']}</span></p>
             <p style="margin-top:0pt; margin-bottom:0pt; text-align:center; line-height:9.1pt; widows:0; orphans:0;"><span style="font-family:Verdana; font-size:6.5pt;">Si no sabe o no puede firmar El Socio firma a su ruego y en su nombre un tercero indicando su nombre y</span></p>
             <p style="margin-top:0pt; margin-bottom:0pt; text-align:center; line-height:9.1pt; widows:0; orphans:0;"><span style="font-family:Verdana; font-size:6.5pt;">estampando la huella digital del Socio.</span></p>
             <p style="margin-top:0pt; margin-bottom:8pt; text-align:justify; line-height:108%; font-size:7pt;"><span style="font-family:Verdana;">&nbsp;</span></p>
+            <p style="margin-top:0pt; margin-bottom:8pt; text-align:justify; line-height:108%; font-size:7pt;"><span style="font-family:Verdana;">&nbsp;</span></p>
+            <p style="margin-top:0pt; margin-bottom:8pt; text-align:justify; line-height:108%; font-size:7pt;"><span style="font-family:Verdana;">&nbsp;</span></p>
             <p style="margin-top: 0pt; margin-bottom: 10pt; line-height: 9.6pt; text-align: center;"><u>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp;</u>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<u>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</u></p>
-            <p style="margin-top: 0pt; margin-bottom: 10pt; line-height: 9.6pt; text-align: center;"><span style="font-family:Verdana; font-size:7pt;">Gerente de Sucursal&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span><span style="font-family:Verdana; font-size:7pt;">Comit&eacute;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span></p>
+            <p style="margin-top: 0pt; margin-bottom: 10pt; line-height: 9.6pt; text-align: center;"><span style="font-family:Verdana; font-size:7pt;">Gerente de Sucursal&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span><span style="font-family:Verdana; font-size:7pt;">Comit&eacute;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span></p>
             <p style="margin-top:0pt; margin-bottom:10pt; line-height:9.6pt; widows:0; orphans:0;"><span style="font-family:Verdana; font-size:7pt;">&nbsp;</span></p>
         </div>
         HTML;
