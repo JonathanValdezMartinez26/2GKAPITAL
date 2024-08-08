@@ -4102,31 +4102,94 @@ class Ahorro extends Controller
 
         $style = <<<HTML
         <style>
-            body {
-                margin: 0;
-                padding: 0;
+            .awlist1 {
+                list-style: none;
+                counter-reset: awlistcounter2_1
             }
-            .titulo {
-                text-align: center;
-                font-weight: bold;
-                font-size: 14pt;
+
+            .awlist1>li:before {
+                content: counter(awlistcounter2_1, lower-latin) ')';
+                counter-increment: awlistcounter2_1
             }
-            .sub-titulo {
-                text-align: center;
-                font-weight: bold;
-                font-size: 12pt;
+
+            .awlist2 {
+                list-style: none;
+                counter-reset: awlistcounter2_1 8
             }
-            .listaLetras {
-                list-style-type: lower-alpha;
+
+            .awlist2>li:before {
+                content: counter(awlistcounter2_1, lower-latin) ')';
+                counter-increment: awlistcounter2_1
             }
-            .fechaTitulo {
-                text-align: right;
-                padding-top: 50px;
-                margin-bottom: 180px;
-                font-weight: normal;
+
+            .awlist3 {
+                list-style: none;
+                counter-reset: awlistcounter5_1
             }
-            li {
-                font-size: 11pt;
+
+            .awlist3>li:before {
+                content: counter(awlistcounter5_1, lower-latin) ')';
+                counter-increment: awlistcounter5_1
+            }
+
+            .awlist4 {
+                list-style: none;
+                counter-reset: awlistcounter5_1 2
+            }
+
+            .awlist4>li:before {
+                content: counter(awlistcounter5_1, lower-latin) ')';
+                counter-increment: awlistcounter5_1
+            }
+
+            .awlist5 {
+                list-style: none;
+                counter-reset: awlistcounter9_0
+            }
+
+            .awlist5>li:before {
+                content: counter(awlistcounter9_0, lower-latin) ')';
+                counter-increment: awlistcounter9_0
+            }
+
+            .awlist6 {
+                list-style: none;
+                counter-reset: awlistcounter9_0 1
+            }
+
+            .awlist6>li:before {
+                content: counter(awlistcounter9_0, lower-latin) ')';
+                counter-increment: awlistcounter9_0
+            }
+
+            .awlist7 {
+                list-style: none;
+                counter-reset: awlistcounter12_0
+            }
+
+            .awlist7>li:before {
+                content: counter(awlistcounter12_0, lower-latin) ')';
+                counter-increment: awlistcounter12_0
+            }
+
+            .awlist8 {
+                list-style: none;
+                counter-reset: awlistcounter13_0
+            }
+
+            .awlist8>li:before {
+                content: counter(awlistcounter13_0, lower-latin) ')';
+                counter-increment: awlistcounter13_0
+            }
+
+            .awlist9 {
+                list-style: none;
+                counter-reset: awlistcounter17_0
+            }
+
+            .awlist9>li:before {
+                content: counter(awlistcounter17_0, lower-latin) ')';
+                counter-increment: awlistcounter17_0
             }
         </style>  
         HTML;
@@ -4994,251 +5057,4098 @@ class Ahorro extends Controller
     public function GetContratoAhorro($codigoAhorro)
     {
         $datos = CajaAhorroDao::DatosContratoAhorro($codigoAhorro);
-        if (!$datos) exit("No se encontró información para el codigo de inversion: " . $codigoAhorro);
+        if (!$datos) exit("No se encontró información para el contrato de ahorro: " . $codigoAhorro);
 
         $firma = "/img/firma_1.jpg";
         return <<<HTML
         <div>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:13px;font-family:"Calibri Light",sans-serif;'>CONTRATO M&Uacute;LTIPLE DE DEP&Oacute;SITO DE DINERO EN MONEDA NACIONAL QUE CELEBRAN, POR UNA PARTE, CAJA SOLIDARIA 2G KAPIATAL, ENTIDAD COOPERATIVA DE AHORRO Y PRESTAMO POPULAR, A LA QUE EN LO SUCESIVO SE LE DENOMINAR&Aacute; COMO &quot;CAJA SOLIDARIA 2G KAPITAL&quot;, Y POR LA OTRA PARTE, LA(S) PERSONA(S) CUYO(S) NOMBRE(S) SE PRECISA EN LA SOLICITUD DEL PRESENTE INSTRUMENTO, EN ADELANTE LOS &quot;SOCIOS&quot;, A QUIENES EN SU CONJUNTO SE LES DENOMINAR&Aacute; COMO LAS &quot;PARTES&quot;, AL TENOR DE LAS SIGUIENTES:</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:13px;font-family:"Calibri Light",sans-serif;'>&nbsp;</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><strong><u><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>DECLARACIONES</span></u></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>I. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Declara el Socio, que:</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>a)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Es una persona f&iacute;sica de nacionalidad mexicana, con pleno ejercicio y goce de sus facultades para la celebraci&oacute;n de este Contrato.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>b)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Sus datos generales son los que han quedado asentados en la Solicitud de Apertura de ahorro, que corresponda (la &quot;Solicitud&quot;), la cual forma parte integrante de este Contrato, en la que precisa su deseo de contratar una cuenta de dep&oacute;sito, en los t&eacute;rminos y condiciones estipuladas en este Contrato.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>c)&nbsp;</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>Los Recursos depositados en la Cuenta son de su propiedad y en todo momento proceden y proceder&aacute;n de fuentes l&iacute;citas, manifestando que entiende plenamente las disposiciones relativas a operaciones con recursos de procedencia il&iacute;cita y sus consecuencias.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>d)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Conoce y acepta que CAJA SOLIDARIA 2G KAPITAL puede rechazar la realizaci&oacute;n de cualquier operaci&oacute;n y/o servicio al amparo del presente Contrato en los casos en que el Solicitante y/o Socio se encuentre en la Lista de Personas Bloqueadas emitida por la Unidad de Inteligencia Financiera, o bien, en la lista &quot;Specially Designated Nationals List (SDN)&quot; de la &quot;Office of Foreign Assets Control (OFAC)&quot;.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>e)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Conoce y acepta que CAJA SOLIDARIA 2G KAPITAL podr&aacute; bloquear en cualquier momento los Recursos del Socio cuando as&iacute; lo solicite la Unidad de Inteligencia Financiera de la Secretar&iacute;a de Hacienda y Cr&eacute;dito P&uacute;blico por encontrarse este &uacute;ltimo en la lista de Personas Bloqueadas. Act&uacute;a en nombre y por cuenta propia manifestando que tiene conocimiento que actuar en nombre y por cuenta de un tercero o proporcionar datos y documentaci&oacute;n falsa constituye un delito.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>d)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Su estado civil o r&eacute;gimen matrimonial es el que se desprende de la Solicitud.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>f)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Tiene conocimiento y otorga su consentimiento a CAJA SOLIDARIA 2G KAPITAL para que act&uacute;e como responsable de sus datos personales y de sus datos personales patrimoniales/financieros que, de acuerdo a lo estipulado en el Aviso de Privacidad Integral para Socios Ahorro publicado en&nbsp;</span><a href="http://www.cajasolidaria2gkapital.com.mx"><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>www.2gkapital.com.mx</span></a><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;le han sido solicitados o le sean solicitados en el futuro por CAJA SOLIDARIA 2G KAPITAL. De igual manera manifiesta que conoce las finalidades para las que CAJA SOLIDARIA 2G KAPITAL recaba sus datos personales generales y personales patrimoniales/financieros.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>g)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Tiene conocimiento de que, en caso que sea su voluntad revocar el consentimiento que ha otorgado a CAJA SOLIDARIA 2G KAPITAL para el tratamiento de sus datos personales generales y personales patrimoniales/financieros, as&iacute; como ejercer los derechos que la Ley Federal de Protecci&oacute;n de Datos Personales en Posesi&oacute;n de los Particulares le otorga, deber&aacute; llenar debidamente el formulario que CAJA SOLIDARIA 2G KAPITAL pone a su disposici&oacute;n en las siguientes modalidades: a) a trav&eacute;s de la p&aacute;gina de internet&nbsp;</span><a href="http://www.cajasolidaria2gkapital.com.mx"><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>www.2gkapital.com.mx</span></a><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;en la secci&oacute;n de Privacidad; b) En la Oficina de Servicio y/o Sucursales de CAJA SOLIDARIA 2G KAPITAL m&aacute;s cercana a su domicilio. Para aclarar dudas sobre el procedimiento y requisitos para el ejercicio de los derechos y para la revocaci&oacute;n de su consentimiento al tratamiento de sus Datos Personales, podr&aacute; llamar al siguiente n&uacute;mero telef&oacute;nico (55) 5555555, extensi&oacute;n 55 as&iacute; como, <u>ingresar al sitio de Internet&nbsp;</u></span><a href="http://www.cajasolidaria2gkapital.com.mx"><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>www.2gkapital.com.mx</span></a><u><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;en la secci&oacute;n de Privacidad,</span></u><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;<u>o bien, ponerse en contacto con la Gerencia de Privacidad de Datos</u>, de la Informaci&oacute;n de CAJA SOLIDARIA 2G KAPITAL, quien dar&aacute; tr&aacute;mite a las solicitudes para el ejercicio de estos derechos, y atender&aacute; cualquier duda que pudiera tener respecto al tratamiento de su informaci&oacute;n. Los datos de contacto son los siguientes: Dirigido a: Oficial de Cumplimiento.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>h)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Domicilio:<strong>&nbsp;<u>S. Rafael 6, Tecamac Centro. Tecamac, Estado de M&eacute;xico C.P. 55740 c</u></strong><u>orreo electr&oacute;nico:&nbsp;</u></span><a href="mailto:oficialdecumplimiento@2gkapital.com.mx"><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>oficialdecumplimiento@2gkapital.com.mx</span></a></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>i)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Manifiesta que CAJA SOLIDARIA 2G KAPITAL ha hecho de su conocimiento que sus datos personales generales y personales patrimoniales/financieros ser&aacute;n manejados de forma confidencial, y ser&aacute;n protegidos a trav&eacute;s de medidas de seguridad tecnol&oacute;gicas, f&iacute;sicas y administrativas.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>j)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Declara bajo protesta de decir verdad que la informaci&oacute;n y documentaci&oacute;n proporcionada por &eacute;l es ver&iacute;dica y carece de toda falsedad.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>k)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Manifiesta que CAJA SOLIDARIA 2G KAPITAL ha hecho de su conocimiento que podr&aacute; consultar las disposiciones legales referidas en el presente Contrato, en el Registro de Contratos de Adhesi&oacute;n (RECA) as&iacute; como en las Oficinas de Servicio y/o Sucursales de CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>II. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Declara CAJA DE AHORRO CAJA SOLIDARIA 2G KAPITAL, que:</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>a)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Es una sociedad an&oacute;nima debidamente constituida de acuerdo a las leyes de los Estados Unidos Mexicanos, y cuenta con las autorizaciones necesarias para operar y organizarse como Caja de ahorro, por lo que cuenta con las facultades para la celebraci&oacute;n y cumplimiento de este Contrato.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>b)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Est&aacute; inscrita en el Registro Federal de Contribuyentes con la clave _______, y su p&aacute;gina de internet es&nbsp;</span><a href="http://www.cajasolidaria2Gkapital.com.mx"><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>www.2gkapital.com.mx</span></a></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>Tiene su domicilio en calle. <strong><u>S. Rafael 6, Tecamac Centro. Tecamac, Estado de M&eacute;xico C.P. 55740</u></strong></span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>El lugar donde el Socio podr&aacute; consultar las cuentas activas de CAJA SOLIDARIA 2G KAPITAL en internet es&nbsp;</span><a href="http://www.cajasolidaria2gkapital.com.mx"><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>www.2gkapital.com.mx</span></a></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>c)</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Contrato se encuentra debidamente inscrito en el Registro de Contratos de Adhesi&oacute;n de la CONDUSEF de acuerdo al Producto (t&eacute;rmino definido en la cl&aacute;usula Primera siguiente) contratado, bajo los siguientes n&uacute;meros:&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:72.0pt;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;font-family:"Verdana",sans-serif;background:yellow;'>e.1)</span><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;&quot;mi Ahorr&oacute; CAJA SOLIDARIA 2G KAPITAL&quot; RECA No. _________</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>b) &nbsp;Declaran las Partes que:</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:54.0pt;font-size:11.0pt;font-family:"Calibri",sans-serif;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>Conocen el contenido del presente Contrato el cual se podr&aacute; individualizar conforme la Car&aacute;tula que corresponda de cualquiera de los Productos enunciados en el siguiente:</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:54.0pt;font-size:11.0pt;font-family:"Calibri",sans-serif;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:54.0pt;font-size:11.0pt;font-family:"Calibri",sans-serif;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>INDICE</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;'><strong><span style='font-size:11px;font-family:"Calibri Light",sans-serif;'>CAP&Iacute;TULO PRIMERO. DEFINICIONES&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;'><strong><span style='font-size:11px;font-family:"Calibri Light",sans-serif;'>CAP&Iacute;TULO SEGUNDO. DEL CONTRATO&nbsp; &nbsp; &nbsp;&nbsp;</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;'><strong><span style='font-size:11px;font-family:"Calibri Light",sans-serif;'>CAP&Iacute;TULO TERCERO. DE LA CUENTA EJE DE DEP&Oacute;SITO DE DINERO A LA VISTA &quot;MI AHORRO CAJA DE AHORRO&quot;</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;'><strong><span style='font-size:11px;font-family:"Calibri Light",sans-serif;'>CAP&Iacute;TULO CUARTO. DE LAS INVERSIONES CAJA DE AHORRO&nbsp; &nbsp; &nbsp;&nbsp;</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;'><strong><span style='font-size:11px;font-family:"Calibri Light",sans-serif;'>CAPITULO QUINTO. LUGARES PARA EFECTUAR RETITOS Y MEDIOS DE DISPOSICI&Oacute;N</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;'><strong><span style='font-size:11px;font-family:"Calibri Light",sans-serif;'>CAP&Iacute;TULO SEXTO. DISPOSICIONES GENERALES</span></strong><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></strong></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">Expuestas las anteriores Declaraciones, las Partes que suscriben el presente Contrato manifiestan su voluntad de otorgar y sujetarse al tenor de las siguientes:</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><strong><u><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CL&Aacute;USULAS</span></u></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>CAP&Iacute;TULO PRIMERO. DEFINICIONES</span></strong></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">PRIMERA. - DEFINICIONES.&nbsp;</span></span><span style="font-size:9px;">Para efectos del presente Contrato, los siguientes t&eacute;rminos escritos con may&uacute;scula inicial tendr&aacute;n los<br>&nbsp;significados que se expresan a continuaci&oacute;n, igualmente aplicables en singular o plural:</span></p>
-            <p style='margin:0cm;text-align:left;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Banca Electr&oacute;nica:&nbsp;</span></span><span style="font-size:9px;">Al conjunto de servicios y operaciones bancarias que CAJA SOLIDARIA 2G KAPITAL realiza con el Socio a trav&eacute;s de los Medios<br>&nbsp;Electr&oacute;nicos identificados como CAJA SOLIDARIA 2G KAPITAL&nbsp;</span><span style="font-size:9px;">Net&nbsp;</span><span style="font-size:9px;">(Banca&nbsp;</span><span style="font-size:9px;">Net),&nbsp;</span><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL SMS (Pago M&oacute;vil) y App CAJA SOLIDARIA 2G KAPITAL(Banca M&oacute;vil).<br>&nbsp;</span><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Cajero Autom&aacute;tico:&nbsp;</span></span><span style="font-size:9px;">Dispositivo de acceso de autoservicio que le permite al Socio realizar diversas consultas y operaciones, tales c</span><span style="font-size:9px;">omo&nbsp;</span><span style="font-size:9px;">la disposici&oacute;n de dinero en efectivo y al cual el Socio accede mediante la Tarjeta de D&eacute;bito.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Car&aacute;tula:&nbsp;</span></span><span style="font-size:9px;">Documento mediante el cual se individualiza el Producto elegido por el Socio y precisan las caracter&iacute;sticas esenciales de<br>&nbsp;este Contrato, el cual forma&nbsp;</span><span style="font-size:9px;">parte&nbsp;</span><span style="font-size:9px;">integral del mismo.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Socio:&nbsp;</span></span><span style="font-size:9px;">La(s) persona(s) cuyo(s) nombre(s) se precisa en la solicitud del presente instrumento.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Comercios Afiliados:&nbsp;</span></span><span style="font-size:9px;">Corresponsales bancarios y no bancarios propios o terceros de CAJA SOLIDARIA 2G KAPITAL., en los cuales el Socio puede realizar transacciones con la Tarjeta de D&eacute;bito como instrumento de pago o Medio de Disposici&oacute;n del dinero depositado en la Cuenta.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Comisi&oacute;n:&nbsp;</span></span><span style="font-size:9px;">Cantidad establecida por CAJA SOLIDARIA 2G KAPITAL por los servicios y transacciones relacionados con la Cuenta y que se estipulan en el presente Contrato.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">SERVTEL:&nbsp;</span></span><span style="font-size:9px;">Medio telef&oacute;nico mediante el cual CAJA SOLIDARIA 2G KAPITAL y el Socio podr&aacute;n convenir determinados Servicios.<br>&nbsp;</span><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Cuenta:&nbsp;</span></span><span style="font-size:9px;">Cuenta bancaria que CAJA SOLIDARIA 2G KAPITAL abrir&aacute; al Socio en t&eacute;rminos de lo dispuesto en el presente Contrato, consider&aacute;ndose<br>&nbsp;una Cuenta por cada Producto contratado por el Socio.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">D&iacute;as H&aacute;biles:&nbsp;</span></span><span style="font-size:9px;">D&iacute;as del a&ntilde;o en que CAJA SOLIDARIA 2G KAPITAL abra sus Oficinas de Servicios y Sucursales para atenci&oacute;n al p&uacute;blico, que no sean<br>&nbsp;domingos ni considerados inh&aacute;biles por las autoridades bancarias en que las instituciones de cr&eacute;dito est&eacute;n autorizadas para celebrar<br>&nbsp;operaciones con el p&uacute;blico.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Divisas:&nbsp;</span></span><span style="font-size:9px;">d&oacute;lares de los Estados Unidos de Am&eacute;rica (d&oacute;lares americanos), as&iacute; como cualquier otra moneda extranjera libremente<br>&nbsp;transferible y convertible de inmediato a d&oacute;lares americanos.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Fecha de Corte:&nbsp;</span></span><span style="font-size:9px;">Mes aniversario considerando la fecha de firma del presente Contrato.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Horas H&aacute;biles:&nbsp;</span></span><span style="font-size:9px;">Al horario comprendido de las 08:00 a las 18:00 horas, hora centro de M&eacute;xico en el cual CAJA SOLIDARIA 2G KAPITAL brinda atenci&oacute;n<br>&nbsp;en sus Oficinas de Servicio y/ Sucursales, mismo que podr&aacute; ser modificado en cualquier momento por CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Identificaci&oacute;n Oficial:&nbsp;</span></span><span style="font-size:9px;">La credencial para votar vigente con fotograf&iacute;a, la c&eacute;dula profesional o el pasaporte mexicano, expedidos por las<br>&nbsp;autoridades competentes, de acuerdo con la normatividad aplicable.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Inversi&oacute;n:&nbsp;</span></span><span style="font-size:9px;">Operaci&oacute;n mediante la cual el Socio podr&aacute; ordenar a CAJA SOLIDARIA 2G KAPITAL invertir los Recursos o parte de estos en pagar&eacute;s con rendimiento liquidable al vencimiento conforme a los montos autorizados por CAJA SOLIDARIA 2G KAPITAL y lo estipulado en el cap&iacute;tulo Cuarto del presente Contrato, dicha inversi&oacute;n tendr&aacute; la calidad de pr&eacute;stamo mercantil.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Medios de Disposici&oacute;n:&nbsp;</span></span><span style="font-size:9px;">Se entender&aacute; como aquellos medios por los cuales el Socio podr&aacute; disponer de los Recursos que obran en la<br>&nbsp;Cuenta, incluyendo cajeros autom&aacute;ticos, disposici&oacute;n en ventanilla, comercios afiliados, comisionistas bancarios, la Tarjeta de D&eacute;bito<br>&nbsp;presentada por el Socio y Banca Electr&oacute;nica.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Mis Apartados:&nbsp;</span></span><span style="font-size:9px;">Funcionalidad exclusiva de la cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL que posibilita al Socio generar apartados de dinero a la vista con el fin de cumplir sus metas financieras personales, en los t&eacute;rminos que &eacute;l mismo establezca y bajo las condiciones<br> ofertadas previamente por CAJA SOLIDARIA 2G KAPITAL previstas en el presente Contrato y en el &ldquo;<strong>Reglamento de Ahorro, Prestamos e Inversiones</strong>&rdquo;, Emitido por esta instituci&oacute;n.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">NIP:&nbsp;</span></span><span style="font-size:9px;">N&uacute;mero de identificaci&oacute;n personal asociado a una Tarjeta de D&eacute;bito, confidencial, intransferible y que ser&aacute; medio de autentificaci&oacute;n<br>&nbsp;del Socio mediante una cadena de caracteres num&eacute;ricos.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Oficina de Servicios:&nbsp;</span></span><span style="font-size:9px;">Lugar establecido de CAJA SOLIDARIA 2G KAPITAL con atenci&oacute;n al p&uacute;blico sin comprender operaciones bancarias de ventanilla.<br>&nbsp;</span><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Pago M&oacute;vil:&nbsp;</span></span><span style="font-size:9px;">Al servicio de Banca Electr&oacute;nica en el cual el dispositivo de acceso consiste en un tel&eacute;fono m&oacute;vil del Socio, cuyo n&uacute;mero<br>&nbsp;de l&iacute;nea se encuentre asociado al servicio y mediante el cual el Socio s&oacute;lo recibir&aacute; notificaciones.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Recursos:&nbsp;</span></span><span style="font-size:9px;">El importe en dinero depositado en la Cuenta, mismo que el Socio puede disponer mediante los Medios de Disposici&oacute;n<br>&nbsp;previstos en el presente Contrato.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Remesa:&nbsp;</span></span><span style="font-size:9px;">Cantidad en moneda nacional o extranjera proveniente del exterior, transferida a trav&eacute;s de empresas, originada por un<br>&nbsp;remitente (persona f&iacute;sica residente en el exterior que transfiere recursos econ&oacute;micos a sus familiares en M&eacute;xico) para ser entregada en territorio nacional a un beneficiario (persona f&iacute;sica residente en M&eacute;xico que recibe los recursos que transfiere el remitente).</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Sucursal:&nbsp;</span></span><span style="font-size:9px;">Aquellas instalaciones de CAJA SOLIDARIA 2G KAPITAL distintas a Oficinas de Servicio destinadas a la atenci&oacute;n al p&uacute;blico usuario, para la celebraci&oacute;n de operaciones y prestaci&oacute;n de servicios.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Tarjeta de D&eacute;bito:&nbsp;</span></span><span style="font-size:9px;">Tarjeta de pl&aacute;stico con banda magn&eacute;tica y chip que el socio proporcione a CAJA SOLIDARIA 2G KAPITAL, de conformidad con lo dispuesto en el Contrato, la cual ser&aacute; utilizada por el Socio como un Medio de Disposici&oacute;n del dinero depositado en la Cuenta.<br>&nbsp;</span><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">Trasferencia Electr&oacute;nica SPEI:&nbsp;</span></span><span style="font-size:9px;">Servicio ofrecido por CAJA SOLIDARIA 2G KAPITAL en sus Oficinas de Servicios y/o Sucursales para que el Socio disponga de los Recursos de la Cuenta a trav&eacute;s del Sistema de Pagos Electr&oacute;nicos Interbancarios mediante su instrucci&oacute;n para el abono a otra cuenta del Socio o de terceros.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>CAP&Iacute;TULO SEGUNDO. DEL CONTRATO</span></strong></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">SEGUNDA. - OBJETO.&nbsp;</span></span><span style="font-size:9px;">Este Contrato tiene por objeto regular los t&eacute;rminos y condiciones conforme los cuales CAJA SOLIDARIA 2G KAPITAL habr&aacute; de operar la Cuenta de dep&oacute;sito bancario de dinero a la vista que el Socio contrate, cuyas caracter&iacute;sticas se describen m&aacute;s adelante (en lo sucesivo, los &quot;Productos&quot;). Cualquiera o todos los Productos que sean contratados y firmados por primera vez mediante el presente instrumento, ser&aacute; con la finalidad de poner a disposici&oacute;n del Socio los Recursos que se depositen en la Cuenta de cada Producto contratado. Cada producto o servicio adicional que sea contratado por el Socio deber&aacute; contar con su consentimiento expreso.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style="font-size:9px;">El Producto que el Socio solicite a CAJA SOLIDARIA 2G KAPITAL en conformidad con el presente Contrato ser&aacute; el que sea se&ntilde;alado en la Car&aacute;tula del mismo, el cual tendr&aacute; su n&uacute;mero de Cuenta, y en caso de contratar otro producto, se le entregar&aacute; su car&aacute;tula con el n&uacute;mero de cuenta correspondiente en el entendido de que CAJA SOLIDARIA 2G KAPITAL podr&aacute; a su sola discreci&oacute;n cambiarlo&nbsp;</span><span style="font-size:9px;">con&nbsp;</span><span style="font-size:9px;">la &uacute;nica obligaci&oacute;n de hacerlo del conocimiento del Socio por cualquier medio electr&oacute;nico, automatizado, impreso o a trav&eacute;s de su personal en Sucursales u Oficinas de Servicio con 30 (treinta) d&iacute;as de anticipaci&oacute;n a la fecha en que se haga efectivo el cambio de n&uacute;mero.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style="font-size:9px;">La celebraci&oacute;n del presente Contrato no implica obligaci&oacute;n de CAJA SOLIDARIA 2G KAPITAL a otorgar al Socio todos los Productos previstos en este instrumento, lo anterior en virtud de que el Socio deber&aacute; reunir y cumplir con los requisitos que al efecto CAJA SOLIDARIA 2G KAPITAL establezca para cada Producto, los cuales podr&aacute; consultar en las Sucursales, Oficinas de Servicio, p&aacute;gina de internet de CAJA SOLIDARIA 2G KAPITAL o a trav&eacute;s de los medios&nbsp;</span><span style="font-size:9px;">que&nbsp;</span><span style="font-size:9px;">este &uacute;ltimo establezca;&nbsp;</span><span style="font-size:9px;">sin&nbsp;</span><span style="font-size:9px;">embargo, en caso&nbsp;</span><span style="font-size:9px;">que&nbsp;</span><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL otorgue al Socio alg&uacute;n Producto indicado en el&nbsp;</span><span style="font-size:9px;">presente&nbsp;</span><span style="font-size:9px;">Contrato, se obliga a mantener operando, disponible y vigente la Cuenta del Producto otorgado y el Socio a utilizar la Cuenta y Medios de Disposici&oacute;n de acuerdo a lo aqu&iacute; expresado.</span></p>
-            <h1 style='margin-top:12.0pt;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;text-align:center;font-size:9px;font-family:"Verdana",sans-serif;'>CAP&Iacute;TULO TERCERO. DE LA CUENTA EJE DE DEP&Oacute;SITO DE DINERO A LA VISTA &quot;MI AHORRO&nbsp;CAJA DE AHORRO&quot;</h1>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;text-align:center;line-height:9.1pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;font-weight:bold;'><span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.2pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">TERCERA. - DESCRIPCI&Oacute;N.&nbsp;</span></span><span style="font-size:9px;">La Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL consiste en una cuenta eje de dep&oacute;sito bancario de dinero a la vista, en la cual el Socio podr&aacute; efectuar dep&oacute;sitos y retiro de dinero durante la vigencia del presente Contrato.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:9.8pt;'><span style="font-size:9px;">Los dep&oacute;sitos realizados a la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL, ser&aacute;n constituidos y reembolsables en Moneda Nacional de los Estados Unidos Mexicanos en cualquier tiempo,&nbsp;</span><span style="font-size:9px;">durante&nbsp;</span><span style="font-size:9px;">la vigencia del presente Contrato, de acuerdo con los t&eacute;rminos y condiciones aqu&iacute; establecidas; as&iacute; mismo, los servicios incluidos en la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL son:</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>1.-</strong> Apertura y mantenimiento de la Cuenta de Mi Ahorro CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>2.-</strong> Abonos de Recursos a la Cuenta de Mi Ahorro CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><strong><span style="font-size:9px;">&nbsp; &nbsp; &nbsp; &nbsp; 3.-</span></strong><span style="font-size:9px;">Retiro de efectivo con cargo al saldo disponible de la Cuenta de Mi Ahorro CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-left:18.0pt;'><strong><span style="font-size:9px;">4.-</span></strong><span style="font-size:9px;">&nbsp;Realizar operaciones permitidas en la red de corresponsales autorizados por CAJA SOLIDARIA 2G KAPITAL para tal efecto, as&iacute; como en las Sucursales y &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Oficinas de Servicios de CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.6pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;&nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<strong>5.-</strong> Consulta de saldos.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:20.35pt;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;text-indent:-20.35pt;line-height:9.6pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>6.-</strong> Transferencia Electr&oacute;nica SPEI en Oficinas de Servicio y/o Sucursales de CAJA SOLIDARIA 2G KAPITAL a trav&eacute;s de los medios establecidos por CAJA SOLIDARIA 2G KAPITAL que para tal efecto comunique con antelaci&oacute;n al Socio.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:20.35pt;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.6pt;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>7.-</span></strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>Consulta de recepci&oacute;n de dep&oacute;sitos bancarios a trav&eacute;s del n&uacute;mero celular asociado a la Cuenta de ahorro CAJA SOLIDARIA 2G KAPITAL<br>&nbsp;conforme lo estipulado en la cl&aacute;usula Quincuag&eacute;sima Segunda del presente Contrato.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.6pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;<strong>8.-</strong>Cierre de la Cuenta de ahorro CAJA SOLIDARIA 2G KAPITAL<span style="color:yellow;">.</span></span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CUARTA. -</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;<strong>MONTO M&Iacute;NIMO POR APERTURA</strong>. El Socio requiere un monto m&iacute;nimo de apertura el cual ser&aacute; establecido por CAJA SOLIDARIA 2G KAPITAL, de acuerdo con el tipo de ahorro o inversi&oacute;n que elija el socio, mismo que deber&aacute; reunir y cumplir los requisitos de informaci&oacute;n y/o documentos que le sean solicitados por CAJA SOLIDARIA 2G KAPITAL, los cuales podr&aacute; consultar en las Sucursales y Oficinas de Servicios o p&aacute;gina de internet o a trav&eacute;s de los medios que CAJA SOLIDARIA 2G KAPITAL establezca.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>QUINTA. - DE LA APERTURA, CIERRE Y USO DE MIS APARTADOS.</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;El Socio podr&aacute; solicitar a CAJA SOLIDARIA 2G KAPITAL a trav&eacute;s de los<br>&nbsp;canales o medios que este &uacute;ltimo ponga a su disposici&oacute;n, la apertura de Mis Apartados, as&iacute; como la asignaci&oacute;n de los recursos propios<br>&nbsp;del Socio que este determine destinar para la realizaci&oacute;n de sus metas financieras personales; lo anterior se realizar&aacute; &uacute;nicamente<br>&nbsp;por la indicaci&oacute;n expl&iacute;cita del Socio a trav&eacute;s de los medios que CAJA SOLIDARIA 2G KAPITAL ponga a su disposici&oacute;n, del monto que en cada caso y<br>&nbsp;de forma directa ejecute a CAJA SOLIDARIA 2G KAPITAL, y que programe a trav&eacute;s de esos mismos medios. A partir de lo anterior, el Socio instruye<br>&nbsp;a CAJA SOLIDARIA 2G KAPITAL sin responsabilidad de parte de esta &uacute;ltima, a lo siguiente:</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.6pt;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>a)</span></strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;Generar Mis Apartados con el fin de administrarlos, asociados a la cuenta de ahorro CAJA SOLIDARIA 2G KAPITAL y cuyos movimientos peri&oacute;dicos podr&aacute;n observarse en el estado de cuenta del periodo que corresponda, bajo el entendido de que toda instrucci&oacute;n y asignaci&oacute;n de recursos requerir&aacute; de la previa autorizaci&oacute;n del Socio a CAJA SOLIDARIA 2G KAPITAL mediante los canales o medios que este &uacute;ltimo ponga a su disposici&oacute;n.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.6pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.6pt;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>b)</span></strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;En adici&oacute;n a lo convenido en la Car&aacute;tula, CAJA SOLIDARIA 2G KAPITAL podr&aacute; generar rendimientos derivados de los recursos asignados a Mis<br>&nbsp;Apartados, en los t&eacute;rminos ofrecidos por CAJA SOLIDARIA 2G KAPITAL en la Cl&aacute;usula Sexta de este Contrato.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.6pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.4pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.6pt;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>c)</span></strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;As&iacute; mismo, el Socio reconoce y acepta que la funcionalidad de Mis Apartados no constituye un producto de ahorro o inversi&oacute;n diferente a la cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL, sino &uacute;nicamente un accesorio o beneficio asociado.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:9.6pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.1pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>Por lo anterior, el Socio podr&aacute; disponer en cualquier momento de los recursos depositados en Mis Apartados previamente aperturados, concepci&oacute;n del producto de Inversi&oacute;n, de acuerdo a lo indicado en el &ldquo;<strong>REGLAMENTO DE AHORRO, PRESTAMOS E INVERSIONES&rdquo;</strong>.&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>El Socio podr&aacute; solicitar a CAJA SOLIDARIA 2G KAPITAL en cualquier momento el cierre total de uno o varios de Mis Apartados, con la finalidad de dar por terminada la instrucci&oacute;n previa y restituir los recursos del Apartado a la Cuenta de ahorro CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>El (los) Apartado (s) de los cuales CAJA SOLIDARIA 2G KAPITAL reciba la instrucci&oacute;n por parte del Socio de realizar el cierre total, ser&aacute;n cerrados en la misma fecha de la instrucci&oacute;n, cesando a partir de ese momento toda instrucci&oacute;n previa que se encontrara vigente al momento de la indicaci&oacute;n; as&iacute; mismo, cesar&aacute; a partir de esa fecha la generaci&oacute;n de los rendimientos que pudieron haberse obtenido hasta la pr&oacute;xima fecha de corte.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>Para efectos del estado de cuenta de la Cuenta Mi Ahorro CAJA DE AHORRO, el cierre total del o los Apartados aplicables se ver&aacute; reflejado<br>&nbsp;en el estado de cuenta del periodo inmediato siguiente que corresponda.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:9.8pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>SEXTA. - RENDIMIENTOS EN APARTADOS.</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;El Socio reconoce y acepta que CAJA SOLIDARIA 2G KAPITAL no asume obligaci&oacute;n alguna de<br> garantizar rendimientos ni ser&aacute; responsable de generarlos, ya que estos dependen de circunstancias que son ajenas a CAJA SOLIDARIA 2G KAPITAL<span style="color:yellow;">,</span><br>&nbsp;por lo que los rendimientos que en cada caso pudieran generarse en Mis Apartados se calcular&aacute;n de manera independiente tomando<br>&nbsp;como base el saldo promedio del periodo en cada Apartado, y los rendimientos ser&aacute;n abonados directamente en la Cuenta Mi Ahorro<br>&nbsp;CAJA SOLIDARIA 2G KAPITAL al corte del periodo que corresponda, , quedando el pago de estos rendimientos sujeto a la existencia de recursos en<br>&nbsp;Mis Apartados vigentes a lo largo del periodo siendo esto &uacute;ltimo responsabilidad del Socio.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.2pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.85pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>En adici&oacute;n a lo estipulado en el p&aacute;rrafo anterior, el Socio podr&aacute; hacer uso de Mis Apartados que son una funcionalidad accesoria de la cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL, los cuales le permitir&aacute;n apartar recursos con rendimientos equivalentes a tasas de mercado, sin que se encuentren sujetos a un plazo fijo.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.4pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>S&Eacute;PTIMA - INTERESES.</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Los dep&oacute;sitos realizados a la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL podr&aacute;n generar intereses o no, en caso de ser generados, dichos intereses ser&aacute;n calculados en t&eacute;rminos anuales y tomando la tasa de inter&eacute;s se&ntilde;alada en la Car&aacute;tula de este Contrato aplicable a la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL, siendo pagaderos a la fecha de mes aniversario que corresponda a la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL. El inter&eacute;s neto ser&aacute; el que resulte de multiplicar el saldo promedio diario de la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL, por la tasa de inter&eacute;s dividida entre 360 (trescientos sesenta), multiplicado por el n&uacute;mero de d&iacute;as del mes, menos el impuesto retenido. El inter&eacute;s neto ser&aacute;&nbsp;</span><span style='font-size:9px;font-family:"Verdana",sans-serif;'>capitalizable&nbsp;</span><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>en el mes inmediato posterior.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.1pt;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>OCTAVA. - SALDO PROMEDIO MENSUAL M&Iacute;NIMO</span></strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>. CAJA SOLIDARIA 2G KAPITAL podr&aacute; determinar libremente los montos m&iacute;nimos a partir de los cuales est&eacute; dispuesto a mantener operando la Cuenta de ahorro CAJA DE AHORRO. Dichos montos m&iacute;nimos se calcular&aacute;n por saldos<br>&nbsp;promedios mensuales y le ser&aacute;n notificados al Socio al momento de la contrataci&oacute;n, o por cualquier otro medio permitido por las<br>&nbsp;disposiciones legales aplicables. En caso de que el Socio no mantenga el saldo m&iacute;nimo mensual requerido por CAJA SOLIDARIA 2G KAPITAL durante 18 (dieciocho) meses consecutivos, se le notificar&aacute; al Socio mediante comunicaci&oacute;n que por escrito CAJA SOLIDARIA 2G KAPITAL dirija a su domicilio o a trav&eacute;s del estado de cuenta la posibilidad de dar por cancelada la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.6pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">NOVENA.&nbsp;</span></span><span style="font-size:9px;">-&nbsp;</span><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">DEP&Oacute;SITOS.&nbsp;</span></span><span style="font-size:9px;">Los dep&oacute;sitos que se efect&uacute;en, en las Sucursales bancarias y corresponsales habilitados para tal efecto, en la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL se recibir&aacute;n contra entrega del comprobante de dep&oacute;sito respectivo que al efecto se emita. Los comprobantes tendr&aacute;n plena validez, una vez que ostenten la certificaci&oacute;n de la estaci&oacute;n receptora.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.1pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-top:0cm;margin-right:0cm;margin-bottom:9.4pt;margin-left:36.0pt;'><span style="font-size:9px;">Los&nbsp;</span><span style="font-size:9px;">dep&oacute;sitos que se efect&uacute;en en la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL se sujetar&aacute;n en todo momento a lo establecido a continuaci&oacute;n:</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.2pt;'><strong><span style="font-size:9px;">a)</span></strong><span style="font-size:9px;">&nbsp;Los dep&oacute;sitos recibidos en efectivo por causar extraordinarias, se acreditar&aacute;n en el mismo d&iacute;a en&nbsp;</span><span style="font-size:9px;">que&nbsp;</span><span style="font-size:9px;">lo reciba CAJA SOLIDARIA 2G KAPITAL, siempre que se trate de D&iacute;as y Horas H&aacute;biles en caso contrario ser&aacute;n acreditados al D&iacute;a H&aacute;bil siguiente. &nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><strong><span style="font-size:9px;">b)</span></strong><span style="font-size:9px;">&nbsp;Los dep&oacute;sitos realizados a trav&eacute;s de Trasferencias Electr&oacute;nicas SPEI o mediante cargos y abonos a cuentas de CAJA SOLIDARIA 2G KAPITAL<span style="color:yellow;">,</span> se acreditar&aacute; el mismo d&iacute;a siempre que se trate de D&iacute;as y Horas H&aacute;biles.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><strong><span style="font-size:9px;">c)</span></strong><span style="font-size:9px;">&nbsp;Los&nbsp;</span><span style="font-size:9px;">dep&oacute;sitos que se hagan dentro de los horarios establecidos por CAJA SOLIDARIA 2G KAPITAL, en cheques u otros medios a&nbsp;</span><span style="font-size:9px;">cargo&nbsp;</span><span style="font-size:9px;">de instituciones distintas a CAJA SOLIDARIA 2G KAPITAL, se entender&aacute;n recibidos por este &uacute;ltimo salvo buen cobro y su importe se abonar&aacute; en la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL &uacute;nicamente al efectuarse su cobro, conforme a los acuerdos interbancarios y reglas del Banco de M&eacute;xico aplicables al caso.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><strong><span style="font-size:9px;">d)</span></strong><span style="font-size:9px;">&nbsp;Los dep&oacute;sitos recibidos con motivo de Prestamos que CAJA SOLIDARIA 2G KAPITAL otorgue al Socio, ser&aacute;n abonados en la misma fecha en&nbsp;</span><span style="font-size:9px;">que&nbsp;</span><span style="font-size:9px;">su importe quede disponible, siempre que se trate de D&iacute;as y Horas H&aacute;biles.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><strong><span style="font-size:9px;">e)</span></strong><span style="font-size:9px;">&nbsp;</span><span style="font-size:9px;">Los&nbsp;</span><span style="font-size:9px;">dep&oacute;sitos a la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL podr&aacute;n generar rendimientos o intereses que se se&ntilde;alan en la Car&aacute;tula respectiva.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:normal;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>f)</span></strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;Todos los dep&oacute;sitos de ahorros e inversiones deben se depositados a la cuenta de la caja sin excepci&oacute;n alguna, por lo que se entrega dinero al personal de la caja, esta no se hace responsable del registro y aplicaci&oacute;n correspondiente.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:36.0pt;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:normal;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">D&Eacute;CIMA. - VINCULACI&Oacute;N CON PRESTAMOS OTORGADOS POR CAJA DE AHORRO.&nbsp;</span></span><span style="font-size:9px;">Independientemente de los Medios de Disposici&oacute;n para los Recursos y de la libre adquisici&oacute;n de bienes y servicios que puede realizar el Socio por medio de su tarjeta de d&eacute;bito, el presente Contrato s&oacute;lo podr&aacute; amparar un Producto de dep&oacute;sito por lo que corresponde a la cuenta &quot;Mi Ahorro CAJA SOLIDARIA 2G KAPITAL&quot;; sin embargo, en caso de que el Socio celebre operaciones de pr&eacute;stamo con CAJA SOLIDARIA 2G KAPITAL &eacute;stas podr&aacute;n estar vinculadas a la Cuenta &quot;Mi Ahorro&quot; del Socio donde CAJA SOLIDARIA 2G KAPITAL &uacute;nicamente podr&aacute; depositar los Recursos de los pr&eacute;stamo. Para lo estipulado en el presente p&aacute;rrafo, el Socio acepta y reconoce que, si dispone de los Recursos depositados en su Cuenta de ahorro&quot; derivados de cr&eacute;ditos otorgados, se entiende la expresa disposici&oacute;n de dichos prestamos, para lo cual las Partes se sujetar&aacute;n a lo dispuesto por el contrato de cr&eacute;dito que entre ellas hayan celebrado. Si el Socio llegara a cancelar el (los) pr&eacute;stamos (s) otorgados por CAJA SOLIDARIA 2G KAPITAL en el plazo que sea se&ntilde;alado dentro de los contratos respectivos y &eacute;stos son depositados en la Cuenta, entonces el Socio no deber&aacute; disponer en ning&uacute;n momento de dichos Recursos, y deber&aacute; proceder a retornar dichos recursos a la cuenta de CAJA SOLIDARIA 2G KAPITAL, en un plazo no mayor a 48 horas de haberse depositado, para que sea considerados como prestamos(s) cancelado(s) y no como prestamos activos.&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style="font-size:9px;">Por lo anterior, el Socio se compromete a realizar la devoluci&oacute;n del pr&eacute;stamo cancelado a CAJA SOLIDARIA 2G KAPITAL en los tiempos establecidos en este documento, declarando que de no ser as&iacute; se compromete a realizar el pago correspondiente del prestamos en cuesti&oacute;n.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">D&Eacute;CIMA PRIMERA. - ACCESO A LOS APARTADOS POR ORDEN JUDICIAL.&nbsp;</span></span><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL solo podr&aacute; disponer total o parcialmente los recursos que contenga la cuenta a Mi Ahorro CAJA SOLIDARIA 2G KAPITAL, incluyendo los recursos que se encuentren en Mis Apartados sin excepci&oacute;n alguna, siempre y cuando sea para dar cumplimiento a una orden de autoridad judicial o fiscal competente, seg&uacute;n sea el caso, en la cual se le ordene a CAJA SOLIDARIA 2G KAPITAL a disponer de dichos recursos.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>CAP&Iacute;TULO CUARTO. DE LAS INVERSIONES CAJA DE AHORRO</span></strong></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">D&Eacute;CIMA SEGUNDA.&nbsp;</span></span><span style="font-size:9px;">El Socio podr&aacute; ordenar a CAJA SOLIDARIA 2G KAPITAL invertir los Recursos o parte de estos en pagar&eacute;s con rendimiento liquidable al vencimiento conforme a los montos autorizados por CAJA SOLIDARIA 2G KAPITAL y lo estipulado en el presente cap&iacute;tulo, dicha inversi&oacute;n tendr&aacute; la calidad de pr&eacute;stamo mercantil. La Inversi&oacute;n se documentar&aacute;&nbsp;</span><span style="font-size:9px;">con&nbsp;</span><span style="font-size:9px;">un pagar&eacute; o constancia de operaci&oacute;n emitido por CAJA SOLIDARIA 2G KAPITAL con un rendimiento liquidable al vencimiento, misma que ser&aacute; siempre nominativa y no se podr&aacute; pagar anticipadamente sino hasta la conclusi&oacute;n del plazo pactado.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style="font-size:9px;">La Inversi&oacute;n habr&aacute; de ser en Moneda Nacional y CAJA SOLIDARIA 2G KAPITAL restituir&aacute; las sumas de los Recursos invertidos m&aacute;s los intereses en la misma moneda en la Cuenta eje que el Socio haya designado.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">DECIMA TERCERA - ACEPTACI&Oacute;N DE PR&Eacute;STAMOS.&nbsp;</span></span><span style="font-size:9px;">El Socio podr&aacute; girar instrucciones a CAJA SOLIDARIA 2G KAPITAL con el fin de que con cargo a los Recursos depositado en la Cuenta eje contratada, se invierta la cantidad que el Socio asigne a CAJA SOLIDARIA 2G KAPITAL en calidad de pr&eacute;stamo mercantil; dicho pr&eacute;stamo se documentar&aacute; conforme lo estipulado en la cl&aacute;usula anterior a trav&eacute;s de pagar&eacute;s con rendimiento liquidable al vencimiento.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style="font-size:9px;">Los beneficiarios de la inversi&oacute;n ser&aacute;n los mismos que los designados por el Socio en la cl&aacute;usula Cuadrag&eacute;sima Quinta para los Recursos de la Cuenta eje.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">DECIMA CUARTA. - MONTOS M&Iacute;NIMOS.&nbsp;</span></span><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL podr&aacute; establecer el monto m&iacute;nimo que est&eacute; dispuesto a recibir para aperturar la Inversi&oacute;n, as&iacute; como para su mantenimiento; dichos montos CAJA SOLIDARIA 2G KAPITAL los informar&aacute; al Socio al momento de contrataci&oacute;n, a trav&eacute;s de su portal de internet, en medios impresos, o por cualquier medio que al efecto CAJA SOLIDARIA 2G KAPITAL determine y, en su caso, se especificar&aacute;n en el Anexo de Comisiones.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:9.8pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">DECIMA QUINTA. - DOCUMENTACI&Oacute;N.&nbsp;</span></span><span style="font-size:9px;">Cada Inversi&oacute;n se documentar&aacute; en un Pagar&eacute; emitido por CAJA SOLIDARIA 2G KAPITAL con rendimiento liquidable al vencimiento. Los Pagar&eacute;s o constancias de operaci&oacute;n que emita CAJA SOLIDARIA 2G KAPITAL respecto a las Inversiones ser&aacute;n siempre nominativos, no podr&aacute;n ser pagados anticipadamente y no podr&aacute;n ser transferidos excepto a Instituciones de Cr&eacute;dito, las que tampoco podr&aacute;n recibirlos en garant&iacute;a.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.2pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">DECIMA SEXTA. - DEP&Oacute;SITO.&nbsp;</span></span><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL recibir&aacute; del Socio los Pagar&eacute;s en dep&oacute;sito para su administraci&oacute;n al amparo del contrato de dep&oacute;sito bancario de t&iacute;tulos valor y de dinero en administraci&oacute;n consignado en el presente Contrato m&uacute;ltiple. La entrega de los Pagar&eacute;s en dep&oacute;sito se comprobar&aacute; con las constancias de pagar&eacute;s en administraci&oacute;n que CAJA SOLIDARIA 2G KAPITAL expida al Socio.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">DECIMA SEPTIMA. - PLAZO.&nbsp;</span></span><span style="font-size:9px;">Las Partes pactar&aacute;n, en cada caso, el plazo que corresponda al Pagar&eacute; en d&iacute;as naturales, debiendo ser no menor a un d&iacute;a y el mismo ser&aacute; forzoso para ambas partes. El plazo y la fecha de vencimiento de cada pagar&eacute; se establecer&aacute; en cada pagar&eacute; o en la constancia de operaci&oacute;n correspondiente. Transcurridos los plazos convenidos para su devoluci&oacute;n, CAJA SOLIDARIA 2G KAPITAL pagar&aacute; al Socio el d&iacute;a de vencimiento, mediante abono a la Cuenta eje los Recursos objeto de la Inversi&oacute;n m&aacute;s los rendimientos generados.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.2pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">DECIMA OCTAVA. - RENOVACI&Oacute;N AUTOM&Aacute;TICA.&nbsp;</span></span><span style="font-size:9px;">Si se hubiere convenido la renovaci&oacute;n autom&aacute;tica de la Inversi&oacute;n, la misma ser&aacute; renovada a su vencimiento en un plazo igual al originalmente contratado y ser&aacute; interrumpida cuando se actualicen indistintamente los siguientes supuestos:</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.35pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><strong><span style="font-size:9px;">a)</span></strong><span style="font-size:9px;">&nbsp;Cuando el Socio de acuerdo a la fecha de vencimiento de su Inversi&oacute;n gire instrucciones para dar por terminada la renovaci&oacute;n<br>&nbsp;autom&aacute;tica retirando los intereses y/o capital de su inversi&oacute;n.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><strong><span style="font-size:9px;">b)</span></strong><span style="font-size:9px;">&nbsp; &nbsp; Cuando la renovaci&oacute;n autom&aacute;tica de la Inversi&oacute;n, no importando el n&uacute;mero de periodos, alcance un plazo m&aacute;ximo de 2 (dos) a&ntilde;os y 6(seis) meses contados a partir de la fecha de contrataci&oacute;n.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style="font-size:9px;">En referencia a los incisos a) y b) anteriores, los intereses y/o capital ser&aacute;n transferidos a la Cuenta Eje del mismo Socio, una vez que haya vencido la &uacute;ltima de las renovaciones autom&aacute;ticas. Para tal fin ser&aacute; aplicable la tasa bruta de inter&eacute;s expresada en t&eacute;rminos anuales que CAJA SOLIDARIA 2G KAPITAL haya dado a conocer al Socio mediante cualquier medio de comunicaci&oacute;n el d&iacute;a de la renovaci&oacute;n y para Inversiones de la misma clase de la&nbsp;</span><span style="font-size:9px;">que&nbsp;</span><span style="font-size:9px;">se renueve.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">Si el vencimiento ocurre en un D&iacute;a Inh&aacute;bil la operaci&oacute;n ser&aacute; renovada al D&iacute;a H&aacute;bil siguiente. El Socio si as&iacute; lo desea, el referido D&iacute;a H&aacute;bil siguiente podr&aacute; solicitar a CAJA SOLIDARIA 2G KAPITAL la cancelaci&oacute;n de la renovaci&oacute;n de la Inversi&oacute;n y CAJA SOLIDARIA 2G KAPITAL entregar&aacute; los Recursos los intereses correspondientes, los cuales se devengar&aacute;n a la tasa pactada originalmente, considerando todos los d&iacute;as efectivamente transcurridos.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-left:14.0pt;'><span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin:0cm;text-align:left;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">Los intereses se revisar&aacute;n y determinar&aacute;n por CAJA SOLIDARIA 2G KAPITAL en cada renovaci&oacute;n autom&aacute;tica y ser&aacute;n informados al Socio a trav&eacute;s de los medios de comunicaci&oacute;n&nbsp;</span><span style="font-size:9px;">o a trav&eacute;s de su Estado de Cuenta. La tasa de inter&eacute;s pactada originalmente nunca se aplicar&aacute; a las renovaciones autom&aacute;ticas y tampoco se aplicar&aacute; la pactada en el documento anterior a la renovaci&oacute;n.</span></p>
-            <p style='margin:0cm;text-align:left;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-left:14.0pt;'><span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">Si el Socio inversionista no solicita la terminaci&oacute;n de su inversi&oacute;n con 30 d&iacute;as de anticipaci&oacute;n, se dar&aacute; por confirmada la renovaci&oacute;n autom&aacute;tica de la misma.&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.1pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.1pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:9.6pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">DECIMA NOVENA. - RENDIMIENTOS.&nbsp;</span></span><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL pagar&aacute; los intereses que correspondan a cada Inversi&oacute;n a la tasa bruta anual de inter&eacute;s se convenga con el Socio en la constancia de pagar&eacute; correspondiente, dicha tasa permanecer&aacute; sin variaci&oacute;n alguna durante el plazo fijo de la Inversi&oacute;n y no proceder&aacute; revisi&oacute;n alguna de la misma. Los intereses se causar&aacute;n a partir del d&iacute;a en&nbsp;</span><span style="font-size:9px;">que&nbsp;</span><span style="font-size:9px;">se reciba la Inversi&oacute;n y hasta el d&iacute;a anterior al del vencimiento del plazo.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.1pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:9.6pt;'><span style="font-size:9px;">Los intereses se calcular&aacute;n multiplicando el capital por el factor que resulte de dividir la tasa bruta anual convenida entre 360 (trescientos sesenta) y multiplicando el resultado as&iacute; obtenido por el n&uacute;mero de d&iacute;as efectivamente transcurridos durante el per&iacute;odo en el cual se<br>&nbsp;devenguen los rendimientos. Los c&aacute;lculos se efectuar&aacute;n cerr&aacute;ndose a cent&eacute;simas. Los intereses ser&aacute;n pagaderos al vencimiento del plazo.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:10.1pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.2pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">VIG&Eacute;SIMA. - OPERACI&Oacute;N DE LA INVERSI&Oacute;N.&nbsp;</span></span><span style="font-size:9px;">Para la operaci&oacute;n de la Inversi&oacute;n el Socio deber&aacute; contar o abrir una cuenta de dep&oacute;sito bancario y mantenerla vigente durante el Plazo de vigencia del Pagar&eacute; respectivo.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">VIG&Eacute;SIMA PRIMERA. - SUPLETORIEDAD.&nbsp;</span></span><span style="font-size:9px;">En todo lo no previsto en el presente Cap&iacute;tulo y sin menoscabo de lo aqu&iacute; dispuesto, para este tipo de Inversiones ser&aacute;n aplicables las cl&aacute;usulas contenidas en el presente Contrato m&uacute;ltiple.</span></p>
-            <p style='margin:0cm;text-align:center;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-left:14.0pt;'><strong><span style="font-size:9px;">&nbsp;</span></strong></p>
-            <p style='margin:0cm;text-align:center;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><strong><span style="font-size:9px;">CAPITULO QUINTO. LUGARES PARA EFECTUAR RETIROS MEDIOS DE DISPOSICI&Oacute;N</span></strong></p>
-            <p style='margin:0cm;text-align:center;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><strong><span style="font-size:9px;">&nbsp;</span></strong></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-left:14.0pt;'><span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'>VIG&Eacute;SIMA SEGUNDA. - LUGAR COM&Uacute;N PARA EFECTUAR RETIROS.&nbsp;</span>El Socio podr&aacute; disponer libremente de los Recursos depositados en la Cuenta que corresponda a trav&eacute;s de cualquier Sucursal de CAJA SOLIDARIA 2G KAPITAL en D&iacute;as y Horas H&aacute;biles, para lo cual, deber&aacute; identificarse plenamente mediante Identificaci&oacute;n Oficial vigente y el llenado de la &quot;Solicitud Disposici&oacute;n de recursos de la cuenta&quot;. Conforme lo dispuesto en esta cl&aacute;usula y la D&eacute;cima Cuarta.</p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'>La disposici&oacute;n de los Recursos en las Sucursales de CAJA SOLIDARIA 2G KAPITAL podr&aacute; ser hasta el saldo disponible; para la disposici&oacute;n en Comercios Afiliados el Socio podr&aacute; disponer hasta el l&iacute;mite establecido por el propio comercio.</p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'>El Socio podr&aacute; disponer de los Recursos que obran en la Cuenta a trav&eacute;s de los diversos Medios de Disposici&oacute;n que&nbsp;CAJA SOLIDARIA 2G KAPITAL pone a su alcance.</p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'>VIG&Eacute;SIMA TERCERA. - DE LA TARJETA DE D&Eacute;BITO.&nbsp;</span>&Uacute;nicamente para el Producto Mi Ahorro, CAJA SOLIDARIA 2G KAPITAL, solicitar&aacute; al Socio le presente una tarjeta pl&aacute;stica de d&eacute;bito de su propiedad, con la vigencia estipulada y un n&uacute;mero &uacute;nico impreso en el anverso de la misma, para poder recibir la devoluci&oacute;n total o parcial de ahorro, inversi&oacute;n o pr&eacute;stamo, y con ella pueda realizar las siguientes operaciones y disposiciones:</p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-left:35.45pt;'>&nbsp;<strong><span style="font-size:9px;">a)</span></strong><span style="font-size:9px;">&nbsp; &nbsp; Consulta de saldos y movimientos.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;<strong>b)</strong>&nbsp; &nbsp; Retiro de efectivo en cajeros autom&aacute;ticos.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-left:35.4pt;'><strong><span style="font-size:9px;">&nbsp;c)</span></strong><span style="font-size:9px;">&nbsp; &nbsp; Pago en Comercios Afiliados al sistema de tarjetas con el que opere el banco emisor con cargo al saldo disponible, para la adquisici&oacute;n de &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-left:35.4pt;'><span style="font-size:9px;">&nbsp; &nbsp; &nbsp; &nbsp; bienes y servicios.&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-left:35.4pt;'><strong><span style="font-size:9px;">d)</span></strong><span style="font-size:9px;">&nbsp; &nbsp; Retiro de efectivo en Comercios Afiliados.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-left:35.4pt;'><strong><span style="font-size:9px;">e)</span></strong><span style="font-size:9px;">&nbsp; &nbsp; Transferencias Electr&oacute;nicas SPEI.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'>&nbsp;</p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:9.6pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.1pt;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>VIG&Eacute;SIMA CUARTA.</span></strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;&ndash; <strong>PRESENTACI&Oacute;N DE LA TARJETA</strong>. CAJA SOLIDARIA 2G KAPITAL solicitara al socio al Socio, presente una Tarjeta de D&eacute;bito de su propiedad, en este acto o de acuerdo con el procedimiento que CAJA SOLIDARIA 2G KAPITAL, en el entendido que CAJA SOLIDARIA 2G KAPITAL estar&aacute; facultado para registrar est&aacute; en la Solicitud de apertura de la Cuenta correspondiente, o a la persona f&iacute;sica que este &uacute;ltimo autorice para tal fin. La Presentaci&oacute;n de la Tarjeta de D&eacute;bito s&oacute;lo aplica para el Producto Mi Ahorro CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CAJA SOLIDARIA 2G KAPITAL y el Socio acuerdan se podr&aacute; proporcionar otra tarjeta de d&eacute;bito para devoluci&oacute;n de ahorro, inversi&oacute;n y pr&eacute;stamo, siempre que se informe por escrito, cada que el socio lo requiera, para poder tener una transaccionalidad segura y confiable para ambas partes.&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>VIG&Eacute;SIMA QUINTA</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>. - <strong>PROPIEDAD DE LA TARJETA.</strong> La Tarjeta de D&eacute;bito vinculada al Producto Mi Ahorro CAJA SOLIDARIA 2G KAPITAL es propiedad del Banco emisor, por lo que CAJA SOLIDARIA 2G KAPITAL se deslinda de cualquier reclamo de por mal uso del socio.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>VIG&Eacute;SIMA SEPTIMA NOTIFICACIONES DE DEPOSITOS A TARJETA DE DEBITO.</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Para el Producto Mi Ahorro CAJA SOLIDARIA 2G KAPITAL, deber&aacute; entregar de manera f&iacute;sica o por medios electr&oacute;nicos, en todo momento, el comprobante de la transacci&oacute;n realizada y expedir una copia de este cuando as&iacute; lo requiera el socio.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>VIG&Eacute;SIMA OCTAVA &ndash; EMISI&Oacute;N DE COMPROBANTES ADICIONALES.</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Respecto de la emisi&oacute;n de comprobantes adicionales para aclaraciones de transacciones, CAJA SOLIDARIA 2G KAPITAL, las realizara a petici&oacute;n del Socio en periodo m&aacute;ximo de 24n Horas. De haberse solicitado, en el entendido que dichos comprobantes son emitidos de manera informativa.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:9.45pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:8.9pt;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>VIG&Eacute;SIMA NOVENA. &ndash; COSTO DE COMPROBANTES.</span></strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;CAJA SOLIDARIA 2G KAPITAL, establecer&aacute; el tarifario para determinar el costo por la emisi&oacute;n de comprobantes adicionales de transacciones (dep&oacute;sitos, estados de cuenta, etc.). el pago de este concepto debe realizarse en bancos a la cuenta de CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:9.45pt;margin-left:14.0pt;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;line-height:8.9pt;'><strong><span style='font-size:9px;font-family:"Verdana",sans-serif;'>CAP&Iacute;TULO SEXTO. DISPOSICIONES GENERALES</span></strong></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><strong><span style="font-size:9px;">TRIG&Eacute;SIMA PRIMERA - MODIFICACI&Oacute;N AL CONTRATO.</span></strong><span style="font-size:9px;">&nbsp;CAJA SOLIDARIA 2G KAPITAL dar&aacute; aviso al Socio de cualquier modificaci&oacute;n al presente Contrato con 30 (treinta) d&iacute;as naturales de anticipaci&oacute;n a su entrada en vigor, mediante publicaciones en la p&aacute;gina de internet de<br>&nbsp;CAJA SOLIDARIA 2G KAPITAL &nbsp;&nbsp;</span><a href="http://www.cajasolidaria2gkapital.com.mx"><span style="font-size:9px;">www.2gkapital.com.mx</span></a><span style="font-size:9px;">&nbsp;d</span><span style="font-size:9px;">ando aviso a trav&eacute;s del estado de cuenta de dicha publicaci&oacute;n y en caso de tener su n&uacute;mero de tel&eacute;fono celular vinculado, a trav&eacute;s de mensajes de datos (SMS). En el evento de que el Socio no est&eacute; de acuerdo con las modificaciones propuestas al contenido obligacional, podr&aacute; solicitar por escrito la terminaci&oacute;n del Contrato dentro de los 30 (treinta) d&iacute;as naturales posteriores al aviso, sin responsabilidad alguna a su cargo y bajo las condiciones anteriores a la modificaci&oacute;n, debiendo cubrir, en su caso, los adeudos que por concepto de comisiones se hubieren generado a la fecha en que solicite dar por terminado el Contrato y, en su caso, retirando de la Cuenta los Recursos restantes. El uso o la continuaci&oacute;n en el empleo del Producto y/o servicio sobre los que se haya hecho la modificaci&oacute;n o adici&oacute;n, se considerar&aacute; como un consentimiento expreso respecto del cambio generado si despu&eacute;s del t&eacute;rmino expresado en la presente cl&aacute;usula el Socio no manifiesta su inconformidad. El Socio podr&aacute; en cualquier momento acudir a cualquier Oficina de Servicios o Sucursales de CAJA SOLIDARIA 2G KAPITAL por una reimpresi&oacute;n gratuita del Contrato.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">TRIG&Eacute;SIMA SEGUNDA. - RECHAZO DEL SERVICIO.&nbsp;</span></span><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL se reserva el derecho de otorgar o negar los Productos materia de este Contrato cuando: a) el Socio no cumpla con los requisitos que al efecto solicite CAJA SOLIDARIA 2G KAPITAL, b) cuando CAJA SOLIDARIA 2G KAPITAL tenga sospecha fundada de que los Recursos del Socio son de procedencia il&iacute;cita o, c) falsedad en las declaraciones del Socio.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:9.8pt;'><span style="font-size:9px;">El Socio reconoce y acepta que la solicitud que efect&uacute;e a CAJA SOLIDARIA 2G KAPITAL para la prestaci&oacute;n del servicio mediante el Producto convenido en la Car&aacute;tula&nbsp;</span><span style="font-size:9px;">que&nbsp;</span><span style="font-size:9px;">corresponda no implica la aceptaci&oacute;n por&nbsp;</span><span style="font-size:9px;">parte&nbsp;</span><span style="font-size:9px;">de este &uacute;ltimo&nbsp;</span><span style="font-size:9px;">para&nbsp;</span><span style="font-size:9px;">su consumaci&oacute;n, dicha aceptaci&oacute;n queda en todo caso sujeto al an&aacute;lisis que lleve a cabo CAJA SOLIDARIA 2G KAPITAL para dar tr&aacute;mite a dicha solicitud reserv&aacute;ndose en todo momento la facultad de otorgar o negar la activaci&oacute;n o acceso al Producto.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.2pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">TRIG&Eacute;SIMA TERCERA - ACTUALIZACI&Oacute;N DE LA INFORMACI&Oacute;N.&nbsp;</span></span><span style="font-size:9px;">El Socio tiene la obligaci&oacute;n de actualizar los datos proporcionados a CAJA SOLIDARIA 2G KAPITAL que se contienen en la Solicitud de apertura que forma parte de este Contrato, en un plazo no mayor de 30 (treinta) d&iacute;as naturales contados a partir del d&iacute;a en que dichos datos hayan cambiado, o cuando sean requeridos por CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">TRIG&Eacute;SIMA CUARTA. - ESTADOS DE CUENTA.&nbsp;</span></span><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL generar&aacute; mensualmente un estado de cuenta correspondiente al Producto contratado, mismo que reflejar&aacute; las operaciones efectuadas durante el per&iacute;odo inmediato anterior a la Fecha de Corte, especificando los dep&oacute;sitos, retiros, transacciones y operaciones realizadas en la Cuenta y, en su caso, el impuesto retenido por disposici&oacute;n fiscal vigente y las comisiones y gastos generados durante dicho periodo. Dentro de los primeros 5 (cinco) D&iacute;as H&aacute;biles posteriores a la Fecha de Corte, las partes convienen, recabando la firma del Socio como autorizaci&oacute;n, que en sustituci&oacute;n del env&iacute;o al domicilio del Socio CAJA SOLIDARIA 2G KAPITAL pondr&aacute; a disposici&oacute;n del Socio dicho estado de cuenta en las Oficinas de Servicio y Sucursales de CAJA SOLIDARIA 2G KAPITAL, para que le(s) sea entregado gratuitamente, presentando su Identificaci&oacute;n Oficial vigente. La generaci&oacute;n del primer estado de cuenta por periodo ser&aacute; gratuita, aquellos estados de cuenta subsecuentes, solicitados por el Socio&nbsp;</span><span style="font-size:9px;">para&nbsp;</span><span style="font-size:9px;">el mismo periodo podr&aacute;n generar el cobro de comisiones de conformidad con lo establecido en la cl&aacute;usula Cuadrag&eacute;sima Octava del presente Contrato. En el estado de cuenta se especificar&aacute;n las cantidades abonadas o cargadas, fecha al corte de la Cuenta y, en su caso, el importe de las comisiones a cargo durante el periodo comprendido del &uacute;ltimo corte a la fecha. As&iacute; mismo, en dicho estado de cuenta se har&aacute;n constar e identificar&aacute;n las operaciones realizadas al amparo de los servicios convenidos, materia de este contrato.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.4pt;'><span style="font-size:9px;">As&iacute; mismo, en caso de que el Socio requiera consultar saldos, transacciones y movimientos, deber&aacute; acudir a cualquier Oficina de Servicios y/o Sucursales de CAJA SOLIDARIA 2G KAPITAL para que le sea entregada la informaci&oacute;n gratuitamente, presentando su Identificaci&oacute;n Oficial vigente o podr&aacute; llamar a la l&iacute;nea de n&uacute;mero gratuito 800 (_ _ _ _ _ _ _ _ _ _)- autenticando su identidad al realizar la llamada.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.1pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:9.6pt;'><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL informar&aacute; por escrito al Socio la fecha de corte de la Cuenta misma que no podr&aacute; variar sin previo aviso por escrito, comunicado por lo menos con 1 (un) mes de anticipaci&oacute;n. El Socio podr&aacute; objetar por escrito su estado de cuenta con las observaciones que considere procedentes dentro de los 90 (noventa) d&iacute;as naturales siguientes al corte de la Cuenta en los t&eacute;rminos dispuestos por la cl&aacute;usula Cuadrag&eacute;sima Tercera del presente Contrato. Transcurrido este plazo sin haberse hecho reparo a la Cuenta los asientos y conceptos que figuran en la contabilidad de CAJA SOLIDARIA 2G KAPITAL har&aacute;n fe en contra del Socio, salvo prueba en contrario en el juicio respectivo.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style="font-size:9px;">En caso que el Socio requiera la restauraci&oacute;n de un estado de cuenta con una antig&uuml;edad mayor a los dos meses, deber&aacute; acudir y solicitarlo a la Oficina de Servicios de CAJA SOLIDARIA 2G KAPITAL que le corresponda para que le sea entregado sin costo alguno en un periodo m&aacute;ximo de 8 (ocho) d&iacute;as h&aacute;biles contados a partir de dicha solicitud,&nbsp;</span><span style="font-size:9px;">para&nbsp;</span><span style="font-size:9px;">segundos estados de cuenta el Socio deber&aacute;&nbsp;</span><span style="font-size:9px;">absorber&nbsp;</span><span style="font-size:9px;">el costo referente a la generaci&oacute;n del mismo el cual se establece en la cl&aacute;usula Cuadrag&eacute;sima Octava del presente Contrato, solicitando por escrito en la Oficina de Servicios o Sucursal de CAJA SOLIDARIA 2G KAPITAL y recibiendo los estados de cuenta dentro de los 15 (quince) D&iacute;as H&aacute;biles posteriores a la recepci&oacute;n de la solicitud.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">TRIG&Eacute;SIMA QUINTA. - &nbsp;</span></span><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL no podr&aacute; dar informaci&oacute;n sobre las operaciones, el estado y movimientos de la Cuenta m&aacute;s que al Socio, a su representante legal o a las personas que tengan poder para disponer en la misma, salvo en los casos previstos por el art&iacute;culo 115 de la Ley de Instituciones de Cr&eacute;dito. Toda la informaci&oacute;n que el Socio proporcione para efectos de este Contrato y de los Productos y operaciones particulares que celebre con CAJA SOLIDARIA 2G KAPITAL estar&aacute;n protegidos conforme al art&iacute;culo 142 de la Ley de Instituciones de Cr&eacute;dito y dem&aacute;s normatividad aplicable.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;">TRIG&Eacute;SIMA SEXTA. - ACLARACIONES. CONSULTAS, QUEJAS O RECLAMACIONES.&nbsp;</span></span><span style="font-size:9px;">Con la finalidad de brindar un mejor servicio, CAJA SOLIDARIA 2G KAPITAL pone a disposici&oacute;n del Socio el procedimiento para la recepci&oacute;n de aclaraciones, consultas, quejas o reclamaciones, el cual se menciona a continuaci&oacute;n, la Unidad Especializada de CAJA SOLIDARIA 2G KAPITAL le indicar&aacute; al Socio el proceso a seguir dependiendo de cada caso, pudiendo realizarlo de la siguiente forma:</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:21.3pt;text-indent:-21.3pt;'><strong>I.</strong>&nbsp; &nbsp; &nbsp;Cuando el Socio no est&eacute; de acuerdo con alguno de los movimientos que aparezcan en el estado de cuenta respectivo, podr&aacute; levantar la aclaraci&oacute;n de manera inicial al n&uacute;mero gratuito 800 (_ _ _ _ _ _ _ _) dentro del plazo de 90 (noventa) d&iacute;as naturales contados a partir de la Fecha de Corte o, en su caso, de la realizaci&oacute;n de la operaci&oacute;n o del servicio. Posteriormente, la solicitud respectiva deber&aacute; presentarse con los comprobantes correspondientes ante la Oficina de Servicio o Sucursal de CAJA SOLIDARIA 2G KAPITAL en la que&nbsp;radica la Cuenta, o bien, en la Unidad Especializada de CAJA SOLIDARIA 2G KAPITAL, mediante escrito, correo electr&oacute;nico o cualquier otro medio por el que se pueda comprobar fehacientemente su recepci&oacute;n. En todos los casos, CAJA SOLIDARIA 2G KAPITAL se estar&aacute; obligado a acusar recibo de dicha solicitud y generar un folio.<span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:21.3pt;text-indent:-21.3pt;'>&nbsp; &nbsp; &nbsp; &nbsp; Trat&aacute;ndose de cantidades a cargo del Socio dispuestas mediante cualquier mecanismo determinado al efecto por la Comisi&oacute;n Nacional para la Protecci&oacute;n y Defensa de los Usuarios de los Servicios Financieros en disposiciones de car&aacute;cter general, el Socio tendr&aacute; el derecho de solicitar una aclaraci&oacute;n, as&iacute; como el de cualquier otra cantidad relacionada con dicho cargo, hasta en tanto se resuelva conforme al procedimiento a que se refiere esta cl&aacute;usula.</p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:21.3pt;text-indent:-21.3pt;'><strong><span style="font-size:9px;">II.</span></strong><span style="font-size:9px;">&nbsp; &nbsp;Una vez&nbsp;</span>recibida la solicitud de aclaraci&oacute;n, CAJA SOLIDARIA 2G KAPITAL tendr&aacute; un plazo m&aacute;ximo de 45 (cuarenta y cinco) d&iacute;as naturales para&nbsp;entregar al Socio el dictamen correspondiente, anexando copia simple del documento o evidencia considerada para&nbsp;la emisi&oacute;n de dicho dictamen, con base en la informaci&oacute;n que, conforme a las disposiciones aplicables, deba obrar en su poder, as&iacute; como un informe detallado en el que se respondan todos los hechos contenidos en la solicitud presentada por el Socio. En el caso de <span style="font-size:9px;">reclamaciones relativas a operaciones realizadas en el extranjero, el plazo previsto en este p&aacute;rrafo ser&aacute; hasta de 180 (ciento ochenta) d&iacute;as naturales.&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:18.0pt;'><span style="font-size:9px;">El dictamen e informe antes referidos deber&aacute;n formularse por escrito y suscribirse por personal de CAJA SOLIDARIA 2G KAPITAL facultado para ello. En el evento de que, conforme al dictamen que emita CAJA DE AHORRO, resulte procedente la devoluci&oacute;n del monto respectivo, CAJA SOLIDARIA 2G KAPITAL informar&aacute; por el mismo medio al Socio de tal resoluci&oacute;n y reembolsar&aacute; en la Cuenta la cantidad correspondiente, en caso de no proceder se entregar&aacute; una copia al Socio con la informaci&oacute;n pertinente.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:21.3pt;text-indent:-21.3pt;'><strong><span style="font-size:9px;">III.</span></strong><span style="font-size:9px;">&nbsp;Dentro del plazo de 45 (cuarenta y cinco) d&iacute;as naturales contados a partir de la entrega del dictamen a que se refiere la fracci&oacute;n<br>&nbsp;anterior, CAJA SOLIDARIA 2G KAPITAL estar&aacute; obligado a poner a disposici&oacute;n del Socio o bien, en la Unidad Especializada de CAJA SOLIDARIA 2G KAPITAL de que se trate, el expediente generado con motivo de la solicitud, as&iacute; como a integrar en &eacute;ste, bajo su m&aacute;s estricta responsabilidad, toda la documentaci&oacute;n e informaci&oacute;n que, conforme a las disposiciones aplicables, deba obrar en su poder y que se relacione directamente con la solicitud de aclaraci&oacute;n que corresponda y&nbsp;</span><span style="font-size:9px;">sin&nbsp;</span><span style="font-size:9px;">incluir datos correspondientes a operaciones relacionadas con terceras personas.&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:21.3pt;text-indent:-21.3pt;'><span style="font-size:9px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Lo antes dispuesto es sin perjuicio del derecho del Socio de acudir ante la Comisi&oacute;n Nacional para la Protecci&oacute;n y Defensa de los<br>&nbsp;Usuarios de Servicios Financieros o ante la autoridad jurisdiccional correspondiente conforme a las disposiciones legales aplicables.&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:21.3pt;text-indent:-21.3pt;'><span style="font-size:9px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No obstante, lo anterior, el procedimiento previsto en esta cl&aacute;usula quedar&aacute; sin efectos a partir de que el Socio presente su demanda<br>&nbsp;ante autoridad jurisdiccional o conduzca su reclamaci&oacute;n en t&eacute;rminos de los art&iacute;culos 63 y 65 de la Ley de Protecci&oacute;n y Defensa al Usuario de Servicios Financieros.&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:21.3pt;text-indent:-21.3pt;'><span style="font-size:9px;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Transcurrido el plazo de 90 (noventa) d&iacute;as naturales contados a partir de la Fecha de Corte o, en su caso, de la realizaci&oacute;n de la<br>&nbsp;operaci&oacute;n o del servicio sin que CAJA SOLIDARIA 2G KAPITAL reciba objeci&oacute;n alguna de parte del Socio conforme a la presente cl&aacute;usula, se entender&aacute; la conformidad de &eacute;ste con el estado de cuenta correspondiente, y los asientos que figuren en la contabilidad de CAJA SOLIDARIA 2G KAPITAL har&aacute;n prueba plena en favor de este &uacute;ltimo.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.1pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>El Socio podr&aacute; contactar a la Unidad Especializada de CAJA SOLIDARIA 2G KAPITAL por medio de una de las siguientes formas:</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.1pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>1.- Llamando al tel&eacute;fono sin costo: 800 (_ _ _ _ _ _ _ _).</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.35pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>2.- En las Unidades Especializadas Estatales que hayan sido habilitadas en las oficinas de CAJA SOLIDARIA 2G KAPITAL que correspondan.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.35pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>3.- Correo electr&oacute;nico:</span><a href="mailto:%20unidadespecializada@2gkapital.com"><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;</span><span style='font-size:9px;font-family:"Verdana",sans-serif;'>unidadespecializada@2gkapital.com</span></a><span style="color:#0563C1;text-decoration:underline;"><span style='font-size:9px;font-family:"Verdana",sans-serif;'>.mx</span></span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:36.0pt;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:9.35pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">Centro de Atenci&oacute;n Telef&oacute;nica de la Comisi&oacute;n Nacional para la Protecci&oacute;n y Defensa de los Usuarios de Servicios Financieros (CONDUSEF):</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">1.- Tel&eacute;fono: 55 5340 0999.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">2.- P&aacute;gina de Internet</span><a href="http://www.condusef.gob.mx/"><span style="font-size:9px;color:windowtext;text-decoration:none;">&nbsp;</span><span style="font-size:9px;color:windowtext;text-decoration:none;">www.condusef.gob.mx&nbsp;</span></a><span style="font-size:9px;">Correo electr&oacute;nico:</span><a href="mailto:asesoria@condusef.gob.mx"><span style="font-size:9px;color:windowtext;text-decoration:none;">&nbsp;asesoria@condusef.gob.mx</span></a></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-left:36.0pt;'><span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;line-height:107%;">TRIG&Eacute;SIMA SEPTIMA&nbsp;</span></span><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>- CESI&Oacute;N DE DERECHOS. El Socio no podr&aacute; ceder los derechos u obligaciones que para &eacute;l se deriven del presente Contrato y/o de los Productos que contrae mediante la firma de este Contrato. Lo dispuesto en la presente cl&aacute;usula.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;line-height:107%;">TRIG&Eacute;SIMA OCTAVA&nbsp;</span></span><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>- BENEFICIARIOS. El Socio deber&aacute; designar beneficiarios de la Cuenta que corresponda y podr&aacute;(n) en cualquier tiempo sustituirlos, as&iacute; como modificar la proporci&oacute;n correspondiente a cada uno de ellos, mediante el correcto llenado del formato que CAJA SOLIDARIA 2G KAPITAL proporcionar&aacute; para tal efecto, mismo que deber&aacute; ser entregado en la Oficina de Servicio o en la Sucursal de CAJA SOLIDARIA 2G KAPITAL en que radique la Cuenta. En caso de fallecimiento del Socio, CAJA SOLIDARIA 2G KAPITAL entregar&aacute; el importe correspondiente a quienes se hubiese designado como beneficiarios expresamente por escrito, en la proporci&oacute;n estipulada&nbsp;</span><span style='font-size:9px;font-family:"Verdana",sans-serif;'>para&nbsp;</span><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>cada uno de ellos, siendo requisito indispensable contar con la presencia conjunta en caso de ser 2 (dos) o m&aacute;s los beneficiarios&nbsp;</span><span style='font-size:9px;font-family:"Verdana",sans-serif;'>para&nbsp;</span><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>realizar el cobro la suma correspondiente estipulada.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>Si no existieren beneficiarios, el importe deber&aacute; entregarse en los t&eacute;rminos previstos en la legislaci&oacute;n com&uacute;n.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-family:"Verdana",sans-serif;color:black;background:white;font-weight:bold;'><span style="font-size:9px;line-height:107%;">TRIG&Eacute;SIMA NOVENA</span></span><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>. - CUENTA QUE NO REGISTREN MOVIMIENTOS. En caso de que la Cuenta no presente actividad o registro de movimientos, y &eacute;sta se encuentre sin saldo, durante un periodo de 3 meses o que el socio deje de ahorrar en forma consecutiva m&aacute;s de 4 veces en forma continuas, (De acuerdo a lo indicado en el Reglamento de Ahorro, Inversiones y Prestamos&rdquo;, CAJA SOLIDARIA 2G KAPITAL proceder&aacute; al realizar el cierre de dicha Cuenta. El monto contenido en la Cuenta y los intereses originados por la misma que no tengan fecha de vencimiento, o bien, que teni&eacute;ndola se renueven en forma autom&aacute;tica, as&iacute; como las transferencias o las inversiones vencidas y no reclamadas, que en el transcurso de 12 meses no hayan tenido movimiento por dep&oacute;sitos o retiros y, despu&eacute;s de que CAJA SOLIDARIA 2G KAPITAL haya dado aviso por escrito, en el domicilio del Socio que conste en el expediente respectivo, con 90 (noventa) d&iacute;as de antelaci&oacute;n deber&aacute;n ser abonados en una cuenta global que llevar&aacute; CAJA SOLIDARIA 2G KAPITAL para esos efectos. Con respecto a lo anterior, no se considerar&aacute;n movimientos a los cobros de comisiones que realice CAJA SOLIDARIA 2G KAPITAL. CAJA SOLIDARIA 2G KAPITAL no podr&aacute; cobrar comisiones a partir de su inclusi&oacute;n en la cuenta global de los instrumentos bancarios de captaci&oacute;n que se encuentren en los supuestos antes referidos. Los Recursos aportados en la cuenta global &uacute;nicamente generar&aacute;n un inter&eacute;s mensual equivalente al aumento en el &Iacute;ndice Nacional de Precios al Consumidor en el per&iacute;odo respectivo. Cuando el Socio se presente para realizar un dep&oacute;sito o retiro, o reclamar la transferencia o inversi&oacute;n, CAJA SOLIDARIA 2G KAPITAL deber&aacute; retirar de la cuenta global el importe total, a efecto de abonarlo a la cuenta respectiva o entreg&aacute;rselo.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>Los derechos derivados por los dep&oacute;sitos e inversiones y sus intereses a que se refiere esta cl&aacute;usula, sin movimiento en el transcurso de 12 meses contados a partir de que estos &uacute;ltimos se depositen en la cuenta global, cuyo importe no exceda por cuenta, al equivalente a 300 (trescientos) d&iacute;as de salario m&iacute;nimo general vigente en el Ciudad de M&eacute;xico prescribir&aacute;n en favor del patrimonio de la beneficencia p&uacute;blica. CAJA SOLIDARIA 2G KAPITAL Sestar&aacute; obligado a enterar los Recursos correspondientes a la beneficencia p&uacute;blica dentro de un plazo m&aacute;ximo de 15 (quince) d&iacute;as contados a partir del 31 de diciembre del a&ntilde;o en que se cumpla el supuesto previsto en este p&aacute;rrafo. CAJA SOLIDARIA 2G KAPITAL estar&aacute; obligado a notificar a la Comisi&oacute;n Nacional Bancaria y de Valores sobre el cumplimiento de lo establecido en esta cl&aacute;usula dentro de los 2 (dos) primeros meses de cada a&ntilde;o, lo anterior en conformidad con el art&iacute;culo 61 de la Ley de Instituciones de Cr&eacute;dito.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CUADRAG&Eacute;SIMA. - IMPUESTOS.&nbsp;</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>En el caso de que &eacute;stos se generen de conformidad con la legislaci&oacute;n fiscal vigente durante la vigencia de la Cuenta, CAJA SOLIDARIA 2G KAPITAL efectuar&aacute; la retenci&oacute;n y entero del impuesto generado a la autoridad fiscal correspondiente y depositar&aacute; al Socio el rendimiento neto en su caso.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CUADRAG&Eacute;SIMA PRIMERA. -</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;<strong>AUTORIZACI&Oacute;N DE CARGOS Y COMISIONES</strong>. CAJA SOLIDARIA 2G KAPITAL cobrar&aacute; al Socio las comisiones que se establecen en el anexo de comisiones el cual formar&aacute; parte integrante del presente Contrato. Las operaciones realizadas a trav&eacute;s de los comisionistas bancarios podr&aacute;n generar una Comisi&oacute;n, consulte antes de realizar su operaci&oacute;n.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CAJA SOLIDARIA 2G KAPITAL dar&aacute; a conocer al Socio a trav&eacute;s de su p&aacute;gina web y en medios impresos, los incrementos al importe de las comisiones, as&iacute; como las nuevas comisiones que pretenda cobrar, por lo menos con 30 (treinta) d&iacute;as naturales de anticipaci&oacute;n a la fecha prevista para que &eacute;stas surtan efectos. Sin perjuicio de lo anterior, el Socio en los t&eacute;rminos previstos en este Contrato, tendr&aacute; derecho a darlo por terminado en caso de no estar de acuerdo&nbsp;</span><span style='font-size:9px;font-family:"Verdana",sans-serif;'>con&nbsp;</span><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>los nuevos montos, sin que CAJA SOLIDARIA 2G KAPITAL pueda cobrar cantidad adicional alguna por este hecho, con excepci&oacute;n de los adeudos que ya se hubieren generado a la fecha en que se solicite dar por terminado el Producto que corresponda.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CAJA SOLIDARIA 2G KAPITAL podr&aacute; ofrecer el servicio de Domiciliaci&oacute;n y en el supuesto de que el Socio haya aceptado o contratado con terceros cargos recurrentes en su Cuenta, relativos al pago de bienes, servicios o cr&eacute;ditos (&quot;Domiciliaci&oacute;n&quot;), este podr&aacute; solicitar a CAJA SOLIDARIA 2G KAPITAL en cualquier momento la terminaci&oacute;n del servicio de Domiciliaci&oacute;n, bastando para ello, la presentaci&oacute;n del formato de solicitud de Cancelaci&oacute;n de Domiciliaci&oacute;n que CAJA SOLIDARIA 2G KAPITAL previamente haya puesto a disposici&oacute;n del Socio.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>La cancelaci&oacute;n del servicio de Domiciliaci&oacute;n solicitada por el Socio en t&eacute;rminos del p&aacute;rrafo que antecede surtir&aacute; efectos en un plazo no mayor a 3 (tres) D&iacute;as H&aacute;biles contados a partir de la fecha en que CAJA SOLIDARIA 2G KAPITAL reciba el formato que se indica en el p&aacute;rrafo inmediato anterior, por lo que a partir de dicha fecha CAJA SOLIDARIA 2G KAPITAL rechazar&aacute; cualquier cargo que se pretenda efectuar a la Cuenta, por concepto de Domiciliaci&oacute;n.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CUADRAG&Eacute;SIMA SEGUNDA - DOMICILIOS. AVISOS Y NOTIFICACIONES</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>. Los avisos, notificaciones o cualquier requerimiento que las Partes deban darse conforme al presente Contrato, se realizar&aacute;n en los domicilios se&ntilde;alados por el Socio en la Solicitud que en su caso se genere y que forma parte integrante de este Contrato o en acto posterior en formatos de CAJA SOLIDARIA 2G KAPITAL y/o a trav&eacute;s de medios electr&oacute;nicos o automatizados disponibles y aceptados por CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CUADRAG&Eacute;SIMA TERCERA. - VIGENCIA Y TERMINACI&Oacute;N.</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;La duraci&oacute;n del presente Contrato es por tiempo indeterminado, no obstante, se podr&aacute; dar por terminado a partir de la fecha en que el Socio solicite la terminaci&oacute;n o cancelaci&oacute;n del Contrato, bastando para ello la presentaci&oacute;n de una solicitud por escrito en cualquier Oficina de Servicios o Sucursal de CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL se cerciorar&aacute; de la autenticidad y veracidad de la identidad del Socio que formule la solicitud de terminaci&oacute;n respectiva, para lo cual, CAJA SOLIDARIA 2G KAPITAL confirmar&aacute; los datos personalmente y proporcionar&aacute; al Socio el saldo existente en la Cuenta correspondiente. El Contrato se dar&aacute; por terminado a partir de la fecha en que el Socio solicite por escrito su terminaci&oacute;n, siempre y cuando se cubran los adeudos y comisiones devengados a esa fecha y se retire el saldo existente en ese momento. Una vez realizado el retiro del saldo de la Cuenta, CAJA SOLIDARIA 2G KAPITAL proporcionar&aacute; al Socio el acuse de recibo y clave de confirmaci&oacute;n o n&uacute;mero de folio de cancelaci&oacute;n, renunciando tanto CAJA SOLIDARIA 2G KAPITAL como el Socio a sus derechos de cobro residuales, que pudieran subsistir despu&eacute;s del momento de la cancelaci&oacute;n, en el caso del Producto de Inversiones, cuando el Socio de por terminado el Contrato de&nbsp;</span><span style="font-size:9px;">forma&nbsp;</span><span style="font-size:9px;">anticipada, los recursos ser&aacute;n entregados en la fecha de vencimiento del pagar&eacute;. Derivado de la solicitud de terminaci&oacute;n de Contrato presentada por el Socio CAJA SOLIDARIA 2G KAPITAL proceder&aacute; de la siguiente manera: a) cancelar&aacute; los Medios de Disposici&oacute;n vinculados al Contrato en la fecha de presentaci&oacute;n de la solicitud; el Socio deber&aacute; hacer entrega de &eacute;stos o manifestar por escrito y bajo protesta de decir verdad en escrito&nbsp;</span><span style="font-size:9px;">libre,&nbsp;</span><span style="font-size:9px;">que fueron destruidos o que no cuenta con ellos, por lo que no podr&aacute;n hacer disposici&oacute;n alguna a partir de dicha fecha, b) rechazar&aacute; cualquier disposici&oacute;n que pretenda efectuarse con posterioridad a la cancelaci&oacute;n de los Medios de Disposici&oacute;n, en consecuencia, no se podr&aacute;n hacer nuevos cargos adicionales a partir del momento en que se realice la cancelaci&oacute;n, excepto los ya generados, c) cancelar&aacute;, sin su responsabilidad, los productos y/o servicios adicionales necesariamente vinculados o asociados a la Cuenta en la fecha de la solicitud de terminaci&oacute;n incluyendo aquellos indicados en la cl&aacute;usula Quincuag&eacute;sima segunda, d) se abstendr&aacute; de condicionar la terminaci&oacute;n del presente Contrato a la devoluci&oacute;n del Contrato que obre en poder del Socio, y e) se abstendr&aacute; de cobrar al Socio Comisi&oacute;n o penalizaci&oacute;n por la terminaci&oacute;n del Contrato.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style="font-size:9px;">El Socio podr&aacute; cancelar sin responsabilidad alguna de su parte el presente Contrato en un per&iacute;odo de 10 (diez) D&iacute;as H&aacute;biles posteriores a su firma. En este caso, CAJA SOLIDARIA 2G KAPITAL no podr&aacute; cobrar Comisi&oacute;n alguna, siempre y cuando el Socio no haya utilizado u operado el(los) Producto(s) contratado(s).</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:9.8pt;'><span style="font-size:9px;">CAJA SOLIDARIA 2G KAPITAL podr&aacute; dar por terminado el&nbsp;</span><span style="font-size:9px;">presente&nbsp;</span><span style="font-size:9px;">Contrato sin su responsabilidad y el Socio tendr&aacute; la obligaci&oacute;n de cubrir de inmediato todas y cada una de sus obligaciones, pago de comisiones y dem&aacute;s accesorios cuando: a) el Socio no mantenga&nbsp;</span><span style="font-size:9px;">durante&nbsp;</span><span style="font-size:9px;">3 meses consecutivos saldo en la Cuenta, b) el Socio no realice transacci&oacute;n, operaci&oacute;n o movimiento alguno en la Cuenta durante 12 meses consecutivos c) el Socio proporcione informaci&oacute;n y/o documentaci&oacute;n falsa a CAJA SOLIDARIA 2G KAPITAL d) en caso de la Cuenta Mi Grupo CAJA SOLIDARIA 2G KAPITAL, &eacute;sta no mantenga los cotitulares necesarios conforme el Cap&iacute;tulo Cuarto del presente Contrato, y e) el Socio incumpla con cualquiera de las obligaciones a su cargo con motivo del presente Contrato.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.85pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.2pt;'><span style="font-size:9px;">Al momento de la terminaci&oacute;n o cancelaci&oacute;n del&nbsp;</span><span style="font-size:9px;">presente&nbsp;</span><span style="font-size:9px;">Contrato el cobro de los servicios adicionales incluyendo el servicio de Domiciliaci&oacute;n de productos o servicios asociados a la cuenta, se cancelar&aacute;n sin responsabilidad para CAJA SOLIDARIA 2G KAPITAL con independencia de quien conserve la autorizaci&oacute;n de los cargos correspondientes.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CUADRAG&Eacute;SIMA CUARTA - LEY DE PROTECCI&Oacute;N AL AHORRO.&nbsp;</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&Uacute;nicamente est&aacute;n garantizados por el Instituto para la Protecci&oacute;n al Ahorro Bancario (IPAB), los dep&oacute;sitos bancarios de dinero a la vista, retirables en d&iacute;as preestablecidos, de ahorro, y a plazo o con previo aviso, as&iacute; como los pr&eacute;stamos y cr&eacute;ditos que acepte CAJA SOLIDARIA 2G KAPITAL, hasta por el equivalente a cuatrocientas mil UDI por persona, cualquiera que sea el n&uacute;mero, tipo y clase de dichas obligaciones a su favor y a cargo de la instituci&oacute;n de banca m&uacute;ltiple.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>Para efectos del presente Contrato, se entender&aacute; por Ganancia Anual Total (GAT), la ganancia anual total neta expresada en t&eacute;rminos porcentuales anuales que, para fines informativos y de comparaci&oacute;n, incorpora los intereses nominales capitalizables que, en su caso, genere el producto contratado por el Socio, menos los costos relacionados con el mismo, incluidos los de apertura, la GAT Nominal y la GAT Real del producto contratado podr&aacute; consultarse en la Car&aacute;tula del mismo y/o en la Constancia de pagar&eacute; respectivo (&quot;GAT REAL&quot; es el rendimiento que obtendr&iacute;a despu&eacute;s de descontar la inflaci&oacute;n estimada&quot;).</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:10.6pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CUADRAG&Eacute;SIMA QUINTA. - SERVICIOS ADICIONALES</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>. CAJA SOLIDARIA 2G KAPITAL ofrecer&aacute; al Socio el servicio de Pago M&oacute;vil, para lo cual, este &uacute;ltimo deber&aacute; acudir a cualquier Oficina de Servicio o Sucursal para otorgar su aprobaci&oacute;n y solicitar los formatos para realizar el alta, baja o modificaci&oacute;n de su n&uacute;mero de tel&eacute;fono celular vinculado a la Cuenta; el registro de la informaci&oacute;n &nbsp;se realizar&aacute; como m&aacute;ximo 24 (veinticuatro) horas despu&eacute;s de haber entregado debidamente firmados los formatos que se mencionan en la presente cl&aacute;usula sin que exista ning&uacute;n costo por la recepci&oacute;n de mensajes, registros, bajas o cambios de n&uacute;meros de tel&eacute;fono celular vinculados.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:8.9pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>Cuando el servicio de Pago M&oacute;vil se encuentre activo, el Socio recibir&aacute; notificaciones mediante mensajes de datos (SMS) en el tel&eacute;fono celular vinculado a la Cuenta, mismas que ser&aacute;n: a) cuando se efect&uacute;en transacciones en la Cuenta; b) por bienvenida a la Cuenta y; c) para promociones, aniversarios y/o campa&ntilde;as de CAJA SOLIDARIA 2G KAPITAL.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">De la misma forma, el Socio podr&aacute; solicitar la baja de este servicio acudiendo a cualquier Oficina de Servicios o Sucursal sin que obre impedimento o costo alguno para su realizaci&oacute;n.</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;'><span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:13.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CUADRAG&Eacute;SIMA SEXTA. - JURISDICCI&Oacute;N Y COMPETENCIA.</span></strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>&nbsp;Para la interpretaci&oacute;n y cumplimiento de este Contrato, las Partes que intervienen en el presente instrumento se someten a la jurisdicci&oacute;n y competencia de los Tribunales que correspondan al del lugar en que se suscribe este Contrato, o a los Tribunales Judiciales de la Ciudad de M&eacute;xico, a elecci&oacute;n de CAJA SOLIDARIA 2G KAPITAL, renunciando a cualquier otro fuero que por raz&oacute;n de su domicilio presente o futuro les pudiera corresponder.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><strong><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>CONSENTIMIENTO PARA EL TRATAMIENTO DE LOS DATOS PERSONALES:</span></strong></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;'><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>Por el presente, otorgo de manera expresa, mi consentimiento y autorizaci&oacute;n para que CAJA SOLIDARIA 2G KAPITAL, Instituci&oacute;n de Ahorro Popular (en adelante &quot;CAJA SOLIDARIA 2G KAPITAL&quot;) con domicilio <strong>S. Rafael 6, Tecamac Centro. Tecamac, Estado de M&eacute;xico C.P. 55740,&nbsp;</strong>utilice mis datos personales recabados para: Otorgar los servicios indicados en este contrato. Para mayor informaci&oacute;n acerca del tratamiento y de los derechos que puede hacer valer, usted puede acceder al Aviso de Privacidad&nbsp;</span><span style='font-size:9px;font-family:"Verdana",sans-serif;'>Integral para&nbsp;</span><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>Socios Ahorro a trav&eacute;s de la siguiente liga:&nbsp;</span><a href="http://www.cajasolidaria2gkapital.com.mx"><span style='font-size:9px;font-family:"Verdana",sans-serif;'>www.2gkapital.com.mx</span></a><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;e</span><span style='font-size:9px;line-height:107%;font-family:"Verdana",sans-serif;'>n la secci&oacute;n de Privacidad.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:11.05pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>Le&iacute;do que fue el presente Contrato por las Partes, comprendiendo su contenido incluyendo Car&aacute;tula y anexo de Disposiciones Legales las cuales forman parte integrante del mismo, el Socio manifiesta la libre expresi&oacute;n de su voluntad la cual no tiene vicios de consentimiento que pudiera invalidar el presente Contrato, en consecuencia, el Socio lo firma en el lugar y fecha&nbsp;</span><span style='font-size:9px;font-family:"Verdana",sans-serif;'>que&nbsp;</span><span style='font-size:9px;font-family:"Verdana",sans-serif;'>se se&ntilde;alan en la Solicitud de Apertura de Cuenta del presente Contrato.</span></p>
-            <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:justify;line-height:11.05pt;'><span style='font-size:9px;font-family:"Verdana",sans-serif;'>&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><br></p>
-            <table style="float: left">
-                <tbody>
-                    <tr>
-                        <td><br></td>
-                    </tr>
-                    <tr>
-                        <td><br></td>
-                        <td style="border:1.0pt solid black;vertical-align:top;">&nbsp;<table style="width: 100%">
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <div style="padding:4.6pt 8.2pt 4.6pt 8.2pt;">
-                                                <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><span style="font-size:11px;color:black;">EL SOCIO/ EL TITULAR</span></p>
-                                                <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><span style="font-size:11px;color:black;">&nbsp;</span></p>
-                                                <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><span style="font-size:11px;color:black;">{$datos['NOMBRE']}</span></p>
-                                                <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><span style="color:black;">_____________________________</span></p>
-                                                <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><span style='font-size:9px;font-family:"Verdana",sans-serif;color:black;'>Si no sabe o no puede firmar El Socio firma a su ruego y en su nombre un tercero indicando su nombre y</span></p>
-                                                <p style='margin-top:0cm;margin-right:0cm;margin-bottom:0cm;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><span style='font-size:9px;font-family:"Verdana",sans-serif;color:black;'>estampando la huella digital del Socio.</span></p>
-                                                <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;'><span style="color:black;">&nbsp;</span></p>
-                                                <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;text-align:center;'><span style="color:black;">________________________ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; ________________________ &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></p>
-                                                <p style='margin-top:0cm;margin-right:0cm;margin-bottom:8.0pt;margin-left:0cm;font-size:11.0pt;font-family:"Calibri",sans-serif;'><span style="font-size:12px;color:black;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Gerente de Sucursal &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Comit&eacute;</span></p>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>&nbsp;&nbsp;</td>
-                    </tr>
-                </tbody>
-            </table><span style="font-size:9px;">&nbsp;</span>
-            <p><br></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style="font-size:9px;">&nbsp;</span></p>
-            <p style='margin:0cm;text-align:justify;line-height:9.6pt;background:transparent;font-size:10px;font-family:"Verdana",sans-serif;margin-bottom:10.0pt;'><span style="font-size:9px;">&nbsp;</span></p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <strong
+                    ><span style="font-size: 13px; font-family: Verdana, Geneva, sans-serif"
+                        >CONTRATO MÚLTIPLE DE DEPÓSITO DE DINERO EN MONEDA NACIONAL QUE CELEBRAN, POR UNA
+                        PARTE, CAJA SOLIDARIA 2G KAPIATAL, ENTIDAD COOPERATIVA DE AHORRO Y PRESTAMO POPULAR,
+                        A LA QUE EN LO SUCESIVO SE LE DENOMINARÁ COMO "CAJA SOLIDARIA 2G KAPITAL", Y POR LA
+                        OTRA PARTE, LA(S) PERSONA(S) CUYO(S) NOMBRE(S) SE PRECISA EN LA SOLICITUD DEL
+                        PRESENTE INSTRUMENTO, EN ADELANTE LOS "SOCIOS", A QUIENES EN SU CONJUNTO SE LES
+                        DENOMINARÁ COMO LAS "PARTES", AL TENOR DE LAS SIGUIENTES:</span
+                    ></strong
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm 0cm 8pt;
+                    font-size: 11pt;
+                    font-family: Calibri, sans-serif;
+                    text-align: center;
+                "
+            >
+                <span style="font-size: 13px; font-family: Verdana, Geneva, sans-serif"
+                    ><strong><u>DECLARACIONES</u></strong></span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >I. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Declara el Socio, que:</span
+                        ></strong
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">a)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Es una persona física de nacionalidad mexicana, con pleno ejercicio y goce de sus
+                    facultades para la celebración de este Contrato.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">b)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Sus datos generales son los que han quedado asentados en la Solicitud de Apertura
+                    de ahorro, que corresponda (la "Solicitud"), la cual forma parte integrante de este
+                    Contrato, en la que precisa su deseo de contratar una cuenta de depósito, en los
+                    términos y condiciones estipuladas en este Contrato.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">c)&nbsp;</span></strong
+                    >Los Recursos depositados en la Cuenta son de su propiedad y en todo momento proceden y
+                    procederán de fuentes lícitas, manifestando que entiende plenamente las disposiciones
+                    relativas a operaciones con recursos de procedencia ilícita y sus consecuencias.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">d)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Conoce y acepta que CAJA SOLIDARIA 2G KAPITAL puede rechazar la realización de
+                    cualquier operación y/o servicio al amparo del presente Contrato en los casos en que el
+                    Solicitante y/o Socio se encuentre en la Lista de Personas Bloqueadas emitida por la
+                    Unidad de Inteligencia Financiera, o bien, en la lista "Specially Designated Nationals
+                    List (SDN)" de la "Office of Foreign Assets Control (OFAC)".</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">e)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Conoce y acepta que CAJA SOLIDARIA 2G KAPITAL podrá bloquear en cualquier momento
+                    los Recursos del Socio cuando así lo solicite la Unidad de Inteligencia Financiera de la
+                    Secretaría de Hacienda y Crédito Público por encontrarse este último en la lista de
+                    Personas Bloqueadas. Actúa en nombre y por cuenta propia manifestando que tiene
+                    conocimiento que actuar en nombre y por cuenta de un tercero o proporcionar datos y
+                    documentación falsa constituye un delito.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">d)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Su estado civil o régimen matrimonial es el que se desprende de la
+                    Solicitud.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">f)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Tiene conocimiento y otorga su consentimiento a CAJA SOLIDARIA 2G KAPITAL para
+                    que actúe como responsable de sus datos personales y de sus datos personales
+                    patrimoniales/financieros que, de acuerdo a lo estipulado en el Aviso de Privacidad
+                    Integral para Socios Ahorro publicado en&nbsp;</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><a href="http://www.cajasolidaria2gkapital.com.mx"
+                        ><span style="font-size: 9px; line-height: 107%">www.2gkapital.com.mx</span></a
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;le han sido solicitados o le sean solicitados en el futuro por CAJA SOLIDARIA 2G
+                    KAPITAL. De igual manera manifiesta que conoce las finalidades para las que CAJA
+                    SOLIDARIA 2G KAPITAL recaba sus datos personales generales y personales
+                    patrimoniales/financieros.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">g)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Tiene conocimiento de que, en caso que sea su voluntad revocar el consentimiento
+                    que ha otorgado a CAJA SOLIDARIA 2G KAPITAL para el tratamiento de sus datos personales
+                    generales y personales patrimoniales/financieros, así como ejercer los derechos que la
+                    Ley Federal de Protección de Datos Personales en Posesión de los Particulares le otorga,
+                    deberá llenar debidamente el formulario que CAJA SOLIDARIA 2G KAPITAL pone a su
+                    disposición en las siguientes modalidades: a) a través de la página de
+                    internet&nbsp;</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><a href="http://www.cajasolidaria2gkapital.com.mx"
+                        ><span style="font-size: 9px; line-height: 107%">www.2gkapital.com.mx</span></a
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;en la sección de Privacidad; b) En la Oficina de Servicio y/o Sucursales de CAJA
+                    SOLIDARIA 2G KAPITAL más cercana a su domicilio. Para aclarar dudas sobre el
+                    procedimiento y requisitos para el ejercicio de los derechos y para la revocación de su
+                    consentimiento al tratamiento de sus Datos Personales, podrá llamar al siguiente número
+                    telefónico (55) 5555555, extensión 55 así como,
+                    <u>ingresar al sitio de Internet&nbsp;</u></span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><a href="http://www.cajasolidaria2gkapital.com.mx"
+                        ><span style="font-size: 9px; line-height: 107%">www.2gkapital.com.mx</span></a
+                    ><u
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >&nbsp;en la sección de Privacidad,</span
+                        ></u
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;<u>o bien, ponerse en contacto con la Gerencia de Privacidad de Datos</u>, de la
+                    Información de CAJA SOLIDARIA 2G KAPITAL, quien dará trámite a las solicitudes para el
+                    ejercicio de estos derechos, y atenderá cualquier duda que pudiera tener respecto al
+                    tratamiento de su información. Los datos de contacto son los siguientes: Dirigido a:
+                    Oficial de Cumplimiento.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">h)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Domicilio:<strong
+                        >&nbsp;<u
+                            >S. Rafael 6, Tecamac Centro. Tecamac, Estado de México C.P. 55740 c</u
+                        ></strong
+                    ><u>orreo electrónico:&nbsp;</u></span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><a href="mailto:oficialdecumplimiento@2gkapital.com.mx"
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >oficialdecumplimiento@2gkapital.com.mx</span
+                        ></a
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">i)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Manifiesta que CAJA SOLIDARIA 2G KAPITAL ha hecho de su conocimiento que sus
+                    datos personales generales y personales patrimoniales/financieros serán manejados de
+                    forma confidencial, y serán protegidos a través de medidas de seguridad tecnológicas,
+                    físicas y administrativas.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">j)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Declara bajo protesta de decir verdad que la información y documentación
+                    proporcionada por él es verídica y carece de toda falsedad.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">k)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Manifiesta que CAJA SOLIDARIA 2G KAPITAL ha hecho de su conocimiento que podrá
+                    consultar las disposiciones legales referidas en el presente Contrato, en el Registro de
+                    Contratos de Adhesión (RECA) así como en las Oficinas de Servicio y/o Sucursales de CAJA
+                    SOLIDARIA 2G KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >II. &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Declara CAJA DE AHORRO CAJA SOLIDARIA 2G
+                            KAPITAL, que:</span
+                        ></strong
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">a)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Es una sociedad anónima debidamente constituida de acuerdo a las leyes de los
+                    Estados Unidos Mexicanos, y cuenta con las autorizaciones necesarias para operar y
+                    organizarse como Caja de ahorro, por lo que cuenta con las facultades para la
+                    celebración y cumplimiento de este Contrato.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">b)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Está inscrita en el Registro Federal de Contribuyentes con la clave _______, y su
+                    página de internet es&nbsp;</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><a href="http://www.cajasolidaria2Gkapital.com.mx"
+                        ><span style="font-size: 9px; line-height: 107%">www.2gkapital.com.mx</span></a
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >Tiene su domicilio en calle.
+                    <strong
+                        ><u>S. Rafael 6, Tecamac Centro. Tecamac, Estado de México C.P. 55740</u></strong
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >El lugar donde el Socio podrá consultar las cuentas activas de CAJA SOLIDARIA 2G
+                    KAPITAL en internet es&nbsp;</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><a href="http://www.cajasolidaria2gkapital.com.mx"
+                        ><span style="font-size: 9px; line-height: 107%">www.2gkapital.com.mx</span></a
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">c)</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Contrato se encuentra debidamente inscrito en el Registro de Contratos de
+                    Adhesión de la CONDUSEF de acuerdo al Producto (término definido en la cláusula Primera
+                    siguiente) contratado, bajo los siguientes números:&nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;</span
+                ><span
+                    style="
+                        font-size: 9px;
+                        font-family: Verdana, Geneva, sans-serif;
+                        background-image: initial;
+                        background-position: initial;
+                        background-size: initial;
+                        background-repeat: initial;
+                        background-attachment: initial;
+                        background-origin: initial;
+                        background-clip: initial;
+                    "
+                    >e.1)</span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;"mi Ahorró CAJA SOLIDARIA 2G KAPITAL" RECA No. _________</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >d) &nbsp;Declaran las Partes que:</span
+                        ></strong
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 54pt;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >Conocen el contenido del presente Contrato el cual se podrá individualizar conforme la
+                    Carátula que corresponda de cualquiera de los Productos enunciados en el
+                    siguiente:</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 54pt;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;</span
+                >
+            </p>
+            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">INDICE</span></strong></span
+                >
+            </p>
+            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 11px"
+                            >CAPÍTULO PRIMERO. DEFINICIONES &nbsp; &nbsp; &nbsp; &nbsp;</span
+                        ></strong
+                    ></span
+                >
+            </p>
+            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 11px"
+                            >CAPÍTULO SEGUNDO. DEL CONTRATO &nbsp; &nbsp; &nbsp;</span
+                        ></strong
+                    ></span
+                >
+            </p>
+            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 11px"
+                            >CAPÍTULO TERCERO. DE LA CUENTA EJE DE DEPÓSITO DE DINERO A LA VISTA "MI AHORRO
+                            CAJA DE AHORRO"</span
+                        ></strong
+                    ></span
+                >
+            </p>
+            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 11px"
+                            >CAPÍTULO CUARTO. DE LAS INVERSIONES CAJA DE AHORRO &nbsp; &nbsp; &nbsp;</span
+                        ></strong
+                    ></span
+                >
+            </p>
+            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 11px"
+                            >CAPITULO QUINTO. LUGARES PARA EFECTUAR RETITOS Y MEDIOS DE DISPOSICIÓN</span
+                        ></strong
+                    ></span
+                >
+            </p>
+            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 11px"
+                            >CAPÍTULO SEXTO. DISPOSICIONES GENERALES</span
+                        ></strong
+                    ><strong
+                        ><span style="font-size: 9px"
+                            >&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span
+                        ></strong
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;</span>
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Expuestas las anteriores Declaraciones, las Partes que suscriben el presente Contrato
+                    manifiestan su voluntad de otorgar y sujetarse al tenor de las siguientes:</span
+                >
+            </p>
+            <p style="text-align: center">
+                <span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>CLÁUSULAS</strong></span
+                >
+            </p>
+            <p style="text-align: center">
+                <span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>CAPÍTULO PRIMERO. DEFINICIONES</strong></span
+                >
+            </p>
+            <p style="text-align: justify">
+                <span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    >PRIMERA. - DEFINICIONES. Para efectos del presente Contrato, los siguientes términos
+                    escritos con mayúscula inicial tendrán los&nbsp;significados que se expresan a
+                    continuación, igualmente aplicables en singular o plural:</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Banca Electrónica:</strong> Al conjunto de servicios y operaciones bancarias
+                    que CAJA SOLIDARIA 2G KAPITAL realiza con el Socio a través de los Medios Electrónicos
+                    identificados como CAJA SOLIDARIA 2G KAPITAL Net (Banca Net), CAJA SOLIDARIA 2G KAPITAL
+                    SMS (Pago Móvil) y App CAJA SOLIDARIA 2G KAPITAL(Banca Móvil).</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Cajero Automático</strong>: Dispositivo de acceso de autoservicio que le
+                    permite al Socio realizar diversas consultas y operaciones, tales como la disposición de
+                    dinero en efectivo y al cual el Socio accede mediante la Tarjeta de Débito.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Carátula</strong>: Documento mediante el cual se individualiza el Producto
+                    elegido por el Socio y precisan las características esenciales de&nbsp;este Contrato, el
+                    cual forma parte integral del mismo.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Socio</strong>: La(s) persona(s) cuyo(s) nombre(s) se precisa en la solicitud
+                    del presente instrumento.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Comercios Afiliados</strong>: Corresponsales bancarios y no bancarios propios o
+                    terceros de CAJA SOLIDARIA 2G KAPITAL., en los cuales el Socio puede realizar
+                    transacciones con la Tarjeta de Débito como instrumento de pago o Medio de Disposición
+                    del dinero depositado en la Cuenta.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Comisión</strong>: Cantidad establecida por CAJA SOLIDARIA 2G KAPITAL por los
+                    servicios y transacciones relacionados con la Cuenta y que se estipulan en el presente
+                    Contrato.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>SERVTEL</strong>: Medio telefónico mediante el cual CAJA SOLIDARIA 2G KAPITAL y
+                    el Socio podrán convenir determinados Servicios.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Cuenta</strong>: Cuenta bancaria que CAJA SOLIDARIA 2G KAPITAL abrirá al Socio
+                    en términos de lo dispuesto en el presente Contrato, considerándose&nbsp;una Cuenta por
+                    cada Producto contratado por el Socio.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Días Hábiles</strong>: Días del año en que CAJA SOLIDARIA 2G KAPITAL abra sus
+                    Oficinas de Servicios y Sucursales para atención al público, que no sean&nbsp;domingos
+                    ni considerados inhábiles por las autoridades bancarias en que las instituciones de
+                    crédito estén autorizadas para celebrar&nbsp;operaciones con el público.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Divisas</strong>: dólares de los Estados Unidos de América (dólares
+                    americanos), así como cualquier otra moneda extranjera libremente&nbsp;transferible y
+                    convertible de inmediato a dólares americanos.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Fecha de Corte</strong>: Mes aniversario considerando la fecha de firma del
+                    presente Contrato.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Horas Hábiles</strong>: Al horario comprendido de las 08:00 a las 18:00 horas,
+                    hora centro de México en el cual CAJA SOLIDARIA 2G KAPITAL brinda atención&nbsp;en sus
+                    Oficinas de Servicio y/ Sucursales, mismo que podrá ser modificado en cualquier momento
+                    por CAJA SOLIDARIA 2G KAPITAL.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Identificación Oficial</strong>: La credencial para votar vigente con
+                    fotografía, la cédula profesional o el pasaporte mexicano, expedidos por
+                    las&nbsp;autoridades competentes, de acuerdo con la normatividad aplicable.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Inversión</strong>: Operación mediante la cual el Socio podrá ordenar a CAJA
+                    SOLIDARIA 2G KAPITAL invertir los Recursos o parte de estos en pagarés con rendimiento
+                    liquidable al vencimiento conforme a los montos autorizados por CAJA SOLIDARIA 2G
+                    KAPITAL y lo estipulado en el capítulo Cuarto del presente Contrato, dicha inversión
+                    tendrá la calidad de préstamo mercantil.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Medios de Disposición</strong>: Se entenderá como aquellos medios por los
+                    cuales el Socio podrá disponer de los Recursos que obran en la&nbsp;Cuenta, incluyendo
+                    cajeros automáticos, disposición en ventanilla, comercios afiliados, comisionistas
+                    bancarios, la Tarjeta de Débito&nbsp;presentada por el Socio y Banca Electrónica.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Mis Apartados</strong>: Funcionalidad exclusiva de la cuenta Mi Ahorro CAJA
+                    SOLIDARIA 2G KAPITAL que posibilita al Socio generar apartados de dinero a la vista con
+                    el fin de cumplir sus metas financieras personales, en los términos que él mismo
+                    establezca y bajo las condiciones&nbsp;ofertadas previamente por CAJA SOLIDARIA 2G
+                    KAPITAL previstas en el presente Contrato y en el “Reglamento de Ahorro, Prestamos e
+                    Inversiones”, Emitido por esta institución.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>NIP</strong>: Número de identificación personal asociado a una Tarjeta de
+                    Débito, confidencial, intransferible y que será medio de autentificación&nbsp;del Socio
+                    mediante una cadena de caracteres numéricos.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Oficina de Servicios</strong>: Lugar establecido de CAJA SOLIDARIA 2G KAPITAL
+                    con atención al público sin comprender operaciones bancarias de ventanilla.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Pago Móvil</strong>: Al servicio de Banca Electrónica en el cual el dispositivo
+                    de acceso consiste en un teléfono móvil del Socio, cuyo número&nbsp;de línea se
+                    encuentre asociado al servicio y mediante el cual el Socio sólo recibirá
+                    notificaciones.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Recursos</strong>: El importe en dinero depositado en la Cuenta, mismo que el
+                    Socio puede disponer mediante los Medios de Disposición&nbsp;previstos en el presente
+                    Contrato.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Remesa</strong>: Cantidad en moneda nacional o extranjera proveniente del
+                    exterior, transferida a través de empresas, originada por un&nbsp;remitente (persona
+                    física residente en el exterior que transfiere recursos económicos a sus familiares en
+                    México) para ser entregada en territorio nacional a un beneficiario (persona física
+                    residente en México que recibe los recursos que transfiere el remitente).</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Sucursal</strong>: Aquellas instalaciones de CAJA SOLIDARIA 2G KAPITAL
+                    distintas a Oficinas de Servicio destinadas a la atención al público usuario, para la
+                    celebración de operaciones y prestación de servicios.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Tarjeta de Débito</strong>: Tarjeta de plástico con banda magnética y chip que
+                    el socio proporcione a CAJA SOLIDARIA 2G KAPITAL, de conformidad con lo dispuesto en el
+                    Contrato, la cual será utilizada por el Socio como un Medio de Disposición del dinero
+                    depositado en la Cuenta.</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
+                ><span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>Trasferencia Electrónica SPEI</strong>: Servicio ofrecido por CAJA SOLIDARIA 2G
+                    KAPITAL en sus Oficinas de Servicios y/o Sucursales para que el Socio disponga de los
+                    Recursos de la Cuenta a través del Sistema de Pagos Electrónicos Interbancarios mediante
+                    su instrucción para el abono a otra cuenta del Socio o de terceros.</span
+                >
+            </p>
+            <p style="text-align: center">
+                <span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                    ><strong>CAPÍTULO SEGUNDO. DEL CONTRATO</strong></span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">SEGUNDA. - OBJETO.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Este Contrato tiene por objeto regular los términos y condiciones conforme los cuales
+                    CAJA SOLIDARIA 2G KAPITAL habrá de operar la Cuenta de depósito bancario de dinero a la
+                    vista que el Socio contrate, cuyas características se describen más adelante (en lo
+                    sucesivo, los "Productos"). Cualquiera o todos los Productos que sean contratados y
+                    firmados por primera vez mediante el presente instrumento, será con la finalidad de
+                    poner a disposición del Socio los Recursos que se depositen en la Cuenta de cada
+                    Producto contratado. Cada producto o servicio adicional que sea contratado por el Socio
+                    deberá contar con su consentimiento expreso.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >El Producto que el Socio solicite a CAJA SOLIDARIA 2G KAPITAL en conformidad con el
+                    presente Contrato será el que sea señalado en la Carátula del mismo, el cual tendrá su
+                    número de Cuenta, y en caso de contratar otro producto, se le entregará su carátula con
+                    el número de cuenta correspondiente en el entendido de que CAJA SOLIDARIA 2G KAPITAL
+                    podrá a su sola discreción cambiarlo&nbsp;con&nbsp;la única obligación de hacerlo del
+                    conocimiento del Socio por cualquier medio electrónico, automatizado, impreso o a través
+                    de su personal en Sucursales u Oficinas de Servicio con 30 (treinta) días de
+                    anticipación a la fecha en que se haga efectivo el cambio de número.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >La celebración del presente Contrato no implica obligación de CAJA SOLIDARIA 2G KAPITAL
+                    a otorgar al Socio todos los Productos previstos en este instrumento, lo anterior en
+                    virtud de que el Socio deberá reunir y cumplir con los requisitos que al efecto CAJA
+                    SOLIDARIA 2G KAPITAL establezca para cada Producto, los cuales podrá consultar en las
+                    Sucursales, Oficinas de Servicio, página de internet de CAJA SOLIDARIA 2G KAPITAL o a
+                    través de los medios que este último establezca; sin embargo, en caso que CAJA SOLIDARIA
+                    2G KAPITAL otorgue al Socio algún Producto indicado en el presente Contrato, se obliga a
+                    mantener operando, disponible y vigente la Cuenta del Producto otorgado y el Socio a
+                    utilizar la Cuenta y Medios de Disposición de acuerdo a lo aquí expresado.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm 0cm 10pt;
+                    text-align: center;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: Verdana, sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        >CAPÍTULO TERCERO. DE LA CUENTA EJE DE DEPÓSITO DE DINERO A LA VISTA "MI AHORRO CAJA
+                        DE AHORRO"</strong
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10.2pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">TERCERA. - DESCRIPCIÓN.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >La Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL consiste en una cuenta eje de depósito
+                    bancario de dinero a la vista, en la cual el Socio podrá efectuar depósitos y retiro de
+                    dinero durante la vigencia del presente Contrato.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 9.8pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Los depósitos realizados a la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL, serán
+                    constituidos y reembolsables en Moneda Nacional de los Estados Unidos Mexicanos en
+                    cualquier tiempo,&nbsp;durante&nbsp;la vigencia del presente Contrato, de acuerdo con
+                    los términos y condiciones aquí establecidas; así mismo, los servicios incluidos en la
+                    Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL son:</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">1.-</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Apertura y mantenimiento de la Cuenta de Mi Ahorro CAJA SOLIDARIA 2G
+                    KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">2.-</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Abonos de Recursos a la Cuenta de Mi Ahorro CAJA SOLIDARIA 2G KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">3.-</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Retiro de efectivo con cargo al saldo disponible de la Cuenta de Mi Ahorro CAJA
+                    SOLIDARIA 2G KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">4.-</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Realizar operaciones permitidas en la red de corresponsales autorizados por CAJA
+                    SOLIDARIA 2G KAPITAL para tal efecto, así como en las Sucursales y Oficinas de Servicios
+                    de CAJA SOLIDARIA 2G KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">5.-</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Consulta de saldos.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">6.-</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Transferencia Electrónica SPEI en Oficinas de Servicio y/o Sucursales de CAJA
+                    SOLIDARIA 2G KAPITAL a través de los medios establecidos por CAJA SOLIDARIA 2G KAPITAL
+                    que para tal efecto comunique con antelación al Socio.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">7.-</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Consulta de recepción de depósitos bancarios a través del número celular asociado a la
+                    Cuenta de ahorro CAJA SOLIDARIA 2G KAPITAL<br />&nbsp;conforme lo estipulado en la
+                    cláusula Quincuagésima Segunda del presente Contrato.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">8.-</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Cierre de la Cuenta de ahorro CAJA SOLIDARIA 2G KAPITAL<span style="color: yellow"
+                        >.</span
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px; line-height: 107%">CUARTA. -</span></strong></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;<strong>MONTO MÍNIMO POR APERTURA</strong>. El Socio requiere un monto mínimo de
+                    apertura el cual será establecido por CAJA SOLIDARIA 2G KAPITAL, de acuerdo con el tipo
+                    de ahorro o inversión que elija el socio, mismo que deberá reunir y cumplir los
+                    requisitos de información y/o documentos que le sean solicitados por CAJA SOLIDARIA 2G
+                    KAPITAL, los cuales podrá consultar en las Sucursales y Oficinas de Servicios o página
+                    de internet o a través de los medios que CAJA SOLIDARIA 2G KAPITAL establezca.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >QUINTA. - DE LA APERTURA, CIERRE Y USO DE MIS APARTADOS.</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;El Socio podrá solicitar a CAJA SOLIDARIA 2G KAPITAL a través de los<br />&nbsp;canales
+                    o medios que este último ponga a su disposición, la apertura de Mis Apartados, así como
+                    la asignación de los recursos propios<br />&nbsp;del Socio que este determine destinar
+                    para la realización de sus metas financieras personales; lo anterior se realizará
+                    únicamente<br />&nbsp;por la indicación explícita del Socio a través de los medios que
+                    CAJA SOLIDARIA 2G KAPITAL ponga a su disposición, del monto que en cada caso y<br />&nbsp;de
+                    forma directa ejecute a CAJA SOLIDARIA 2G KAPITAL, y que programe a través de esos
+                    mismos medios. A partir de lo anterior, el Socio instruye<br />&nbsp;a CAJA SOLIDARIA 2G
+                    KAPITAL sin responsabilidad de parte de esta última, a lo siguiente:</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">a)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Generar Mis Apartados con el fin de administrarlos, asociados a la cuenta de
+                    ahorro CAJA SOLIDARIA 2G KAPITAL y cuyos movimientos periódicos podrán observarse en el
+                    estado de cuenta del periodo que corresponda, bajo el entendido de que toda instrucción
+                    y asignación de recursos requerirá de la previa autorización del Socio a CAJA SOLIDARIA
+                    2G KAPITAL mediante los canales o medios que este último ponga a su disposición.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;</span>
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">b)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;En adición a lo convenido en la Carátula, CAJA SOLIDARIA 2G KAPITAL podrá generar
+                    rendimientos derivados de los recursos asignados a Mis<br />&nbsp;Apartados, en los
+                    términos ofrecidos por CAJA SOLIDARIA 2G KAPITAL en la Cláusula Sexta de este
+                    Contrato.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;</span>
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10.4pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">c)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Así mismo, el Socio reconoce y acepta que la funcionalidad de Mis Apartados no
+                    constituye un producto de ahorro o inversión diferente a la cuenta Mi Ahorro CAJA
+                    SOLIDARIA 2G KAPITAL, sino únicamente un accesorio o beneficio asociado.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 9.6pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.1pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Por lo anterior, el Socio podrá disponer en cualquier momento de los recursos
+                    depositados en Mis Apartados previamente aperturados, concepción del producto de
+                    Inversión, de acuerdo a lo indicado en el “<strong
+                        >REGLAMENTO DE AHORRO, PRESTAMOS E INVERSIONES”</strong
+                    >.&nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >El Socio podrá solicitar a CAJA SOLIDARIA 2G KAPITAL en cualquier momento el cierre
+                    total de uno o varios de Mis Apartados, con la finalidad de dar por terminada la
+                    instrucción previa y restituir los recursos del Apartado a la Cuenta de ahorro CAJA
+                    SOLIDARIA 2G KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >El (los) Apartado (s) de los cuales CAJA SOLIDARIA 2G KAPITAL reciba la instrucción por
+                    parte del Socio de realizar el cierre total, serán cerrados en la misma fecha de la
+                    instrucción, cesando a partir de ese momento toda instrucción previa que se encontrara
+                    vigente al momento de la indicación; así mismo, cesará a partir de esa fecha la
+                    generación de los rendimientos que pudieron haberse obtenido hasta la próxima fecha de
+                    corte.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >Para efectos del estado de cuenta de la Cuenta Mi Ahorro CAJA DE AHORRO, el cierre
+                    total del o los Apartados aplicables se verá reflejado<br />&nbsp;en el estado de cuenta
+                    del periodo inmediato siguiente que corresponda.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 9.8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >SEXTA. - RENDIMIENTOS EN APARTADOS.</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;El Socio reconoce y acepta que CAJA SOLIDARIA 2G KAPITAL no asume obligación
+                    alguna de<br />
+                    garantizar rendimientos ni será responsable de generarlos, ya que estos dependen de
+                    circunstancias que son ajenas a CAJA SOLIDARIA 2G KAPITAL<span style="color: yellow"
+                        >,</span
+                    ><br />&nbsp;por lo que los rendimientos que en cada caso pudieran generarse en Mis
+                    Apartados se calcularán de manera independiente tomando<br />&nbsp;como base el saldo
+                    promedio del periodo en cada Apartado, y los rendimientos serán abonados directamente en
+                    la Cuenta Mi Ahorro<br />&nbsp;CAJA SOLIDARIA 2G KAPITAL al corte del periodo que
+                    corresponda, , quedando el pago de estos rendimientos sujeto a la existencia de recursos
+                    en<br />&nbsp;Mis Apartados vigentes a lo largo del periodo siendo esto último
+                    responsabilidad del Socio.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10.2pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >En adición a lo estipulado en el párrafo anterior, el Socio podrá hacer uso de Mis
+                    Apartados que son una funcionalidad accesoria de la cuenta Mi Ahorro CAJA SOLIDARIA 2G
+                    KAPITAL, los cuales le permitirán apartar recursos con rendimientos equivalentes a tasas
+                    de mercado, sin que se encuentren sujetos a un plazo fijo.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10.4pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%">SÉPTIMA - INTERESES.</span></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Los depósitos realizados a la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL podrán
+                    generar intereses o no, en caso de ser generados, dichos intereses serán calculados en
+                    términos anuales y tomando la tasa de interés señalada en la Carátula de este Contrato
+                    aplicable a la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL, siendo pagaderos a la fecha
+                    de mes aniversario que corresponda a la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL. El
+                    interés neto será el que resulte de multiplicar el saldo promedio diario de la Cuenta Mi
+                    Ahorro CAJA SOLIDARIA 2G KAPITAL, por la tasa de interés dividida entre 360 (trescientos
+                    sesenta), multiplicado por el número de días del mes, menos el impuesto retenido. El
+                    interés neto será&nbsp;</span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >capitalizable&nbsp;</span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >en el mes inmediato posterior.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.1pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px">OCTAVA. - SALDO PROMEDIO MENSUAL MÍNIMO</span></strong
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >. CAJA SOLIDARIA 2G KAPITAL podrá determinar libremente los montos mínimos a partir de
+                    los cuales esté dispuesto a mantener operando la Cuenta de ahorro CAJA DE AHORRO. Dichos
+                    montos mínimos se calcularán por saldos<br />&nbsp;promedios mensuales y le serán
+                    notificados al Socio al momento de la contratación, o por cualquier otro medio permitido
+                    por las<br />&nbsp;disposiciones legales aplicables. En caso de que el Socio no mantenga
+                    el saldo mínimo mensual requerido por CAJA SOLIDARIA 2G KAPITAL durante 18 (dieciocho)
+                    meses consecutivos, se le notificará al Socio mediante comunicación que por escrito CAJA
+                    SOLIDARIA 2G KAPITAL dirija a su domicilio o a través del estado de cuenta la
+                    posibilidad de dar por cancelada la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10.6pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">NOVENA.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">-&nbsp;</span
+                ><span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">DEPÓSITOS.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Los depósitos que se efectúen, en las Sucursales bancarias y corresponsales habilitados
+                    para tal efecto, en la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL se recibirán contra
+                    entrega del comprobante de depósito respectivo que al efecto se emita. Los comprobantes
+                    tendrán plena validez, una vez que ostenten la certificación de la estación
+                    receptora.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: left;
+                    line-height: 9.1pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 9.4pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">Los&nbsp;</span></strong
+                    ><strong
+                        ><span style="font-size: 9px"
+                            >depósitos que se efectúen en la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL se
+                            sujetarán en todo momento a lo establecido a continuación:</span
+                        ></strong
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10.2pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">a)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Los depósitos recibidos en efectivo por causar extraordinarias, se acreditarán en
+                    el mismo día en que lo reciba CAJA SOLIDARIA 2G KAPITAL, siempre que se trate de Días y
+                    Horas Hábiles en caso contrario serán acreditados al Día Hábil siguiente. &nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">b)</span></strong></span
+                ><span style="font-size: 9px"
+                    ><span style="font-family: Verdana, Geneva, sans-serif"
+                        >&nbsp;Los depósitos realizados a través de Trasferencias Electrónicas SPEI o
+                        mediante cargos y abonos a cuentas de CAJA SOLIDARIA 2G KAPITAL</span
+                    ><span style="color: yellow; font-family: Verdana, Geneva, sans-serif">,</span
+                    ><span style="font-family: Verdana, Geneva, sans-serif"
+                        >&nbsp;se acreditará el mismo día siempre que se trate de Días y Horas
+                        Hábiles.</span
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">c)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Los depósitos que se hagan dentro de los horarios establecidos por CAJA SOLIDARIA
+                    2G KAPITAL, en cheques u otros medios a cargo de instituciones distintas a CAJA
+                    SOLIDARIA 2G KAPITAL, se entenderán recibidos por este último salvo buen cobro y su
+                    importe se abonará en la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL únicamente al
+                    efectuarse su cobro, conforme a los acuerdos interbancarios y reglas del Banco de México
+                    aplicables al caso.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">d)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Los depósitos recibidos con motivo de Prestamos que CAJA SOLIDARIA 2G KAPITAL
+                    otorgue al Socio, serán abonados en la misma fecha en que su importe quede disponible,
+                    siempre que se trate de Días y Horas Hábiles.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">e)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Los depósitos a la Cuenta Mi Ahorro CAJA SOLIDARIA 2G KAPITAL podrán generar
+                    rendimientos o intereses que se señalan en la Carátula respectiva.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: normal;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">f)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Todos los depósitos de ahorros e inversiones deben se depositados a la cuenta de
+                    la caja sin excepción alguna, por lo que se entrega dinero al personal de la caja, esta
+                    no se hace responsable del registro y aplicación correspondiente.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 36pt;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: normal;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;</span>
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px"
+                        >DÉCIMA. - VINCULACIÓN CON PRESTAMOS OTORGADOS POR CAJA DE AHORRO.&nbsp;</span
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Independientemente de los Medios de Disposición para los Recursos y de la libre
+                    adquisición de bienes y servicios que puede realizar el Socio por medio de su tarjeta de
+                    débito, el presente Contrato sólo podrá amparar un Producto de depósito por lo que
+                    corresponde a la cuenta "Mi Ahorro CAJA SOLIDARIA 2G KAPITAL"; sin embargo, en caso de
+                    que el Socio celebre operaciones de préstamo con CAJA SOLIDARIA 2G KAPITAL éstas podrán
+                    estar vinculadas a la Cuenta "Mi Ahorro" del Socio donde CAJA SOLIDARIA 2G KAPITAL
+                    únicamente podrá depositar los Recursos de los préstamo. Para lo estipulado en el
+                    presente párrafo, el Socio acepta y reconoce que, si dispone de los Recursos depositados
+                    en su Cuenta de ahorro" derivados de créditos otorgados, se entiende la expresa
+                    disposición de dichos prestamos, para lo cual las Partes se sujetarán a lo dispuesto por
+                    el contrato de crédito que entre ellas hayan celebrado. Si el Socio llegara a cancelar
+                    el (los) préstamos (s) otorgados por CAJA SOLIDARIA 2G KAPITAL en el plazo que sea
+                    señalado dentro de los contratos respectivos y éstos son depositados en la Cuenta,
+                    entonces el Socio no deberá disponer en ningún momento de dichos Recursos, y deberá
+                    proceder a retornar dichos recursos a la cuenta de CAJA SOLIDARIA 2G KAPITAL, en un
+                    plazo no mayor a 48 horas de haberse depositado, para que sea considerados como
+                    prestamos(s) cancelado(s) y no como prestamos activos.&nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Por lo anterior, el Socio se compromete a realizar la devolución del préstamo cancelado
+                    a CAJA SOLIDARIA 2G KAPITAL en los tiempos establecidos en este documento, declarando
+                    que de no ser así se compromete a realizar el pago correspondiente del prestamos en
+                    cuestión.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px"
+                        >DÉCIMA PRIMERA. - ACCESO A LOS APARTADOS POR ORDEN JUDICIAL.&nbsp;</span
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL solo podrá disponer total o parcialmente los recursos que
+                    contenga la cuenta a Mi Ahorro CAJA SOLIDARIA 2G KAPITAL, incluyendo los recursos que se
+                    encuentren en Mis Apartados sin excepción alguna, siempre y cuando sea para dar
+                    cumplimiento a una orden de autoridad judicial o fiscal competente, según sea el caso,
+                    en la cual se le ordene a CAJA SOLIDARIA 2G KAPITAL a disponer de dichos recursos.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: center;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: Verdana, sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    ><strong>CAPÍTULO CUARTO. DE LAS INVERSIONES CAJA DE AHORRO</strong></span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">DÉCIMA SEGUNDA.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >El Socio podrá ordenar a CAJA SOLIDARIA 2G KAPITAL invertir los Recursos o parte de
+                    estos en pagarés con rendimiento liquidable al vencimiento conforme a los montos
+                    autorizados por CAJA SOLIDARIA 2G KAPITAL y lo estipulado en el presente capítulo, dicha
+                    inversión tendrá la calidad de préstamo mercantil. La Inversión se
+                    documentará&nbsp;con&nbsp;un pagaré o constancia de operación emitido por CAJA SOLIDARIA
+                    2G KAPITAL con un rendimiento liquidable al vencimiento, misma que será siempre
+                    nominativa y no se podrá pagar anticipadamente sino hasta la conclusión del plazo
+                    pactado.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >La Inversión habrá de ser en Moneda Nacional y CAJA SOLIDARIA 2G KAPITAL restituirá las
+                    sumas de los Recursos invertidos más los intereses en la misma moneda en la Cuenta eje
+                    que el Socio haya designado.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px"
+                        >DECIMA TERCERA - ACEPTACIÓN DE PRÉSTAMOS.&nbsp;</span
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >El Socio podrá girar instrucciones a CAJA SOLIDARIA 2G KAPITAL con el fin de que con
+                    cargo a los Recursos depositado en la Cuenta eje contratada, se invierta la cantidad que
+                    el Socio asigne a CAJA SOLIDARIA 2G KAPITAL en calidad de préstamo mercantil; dicho
+                    préstamo se documentará conforme lo estipulado en la cláusula anterior a través de
+                    pagarés con rendimiento liquidable al vencimiento.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Los beneficiarios de la inversión serán los mismos que los designados por el Socio en
+                    la cláusula Cuadragésima Quinta para los Recursos de la Cuenta eje.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">DECIMA CUARTA. - MONTOS MÍNIMOS.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL podrá establecer el monto mínimo que esté dispuesto a recibir
+                    para aperturar la Inversión, así como para su mantenimiento; dichos montos CAJA
+                    SOLIDARIA 2G KAPITAL los informará al Socio al momento de contratación, a través de su
+                    portal de internet, en medios impresos, o por cualquier medio que al efecto CAJA
+                    SOLIDARIA 2G KAPITAL determine y, en su caso, se especificarán en el Anexo de
+                    Comisiones.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 9.8pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">DECIMA QUINTA. - DOCUMENTACIÓN.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Cada Inversión se documentará en un Pagaré emitido por CAJA SOLIDARIA 2G KAPITAL con
+                    rendimiento liquidable al vencimiento. Los Pagarés o constancias de operación que emita
+                    CAJA SOLIDARIA 2G KAPITAL respecto a las Inversiones serán siempre nominativos, no
+                    podrán ser pagados anticipadamente y no podrán ser transferidos excepto a Instituciones
+                    de Crédito, las que tampoco podrán recibirlos en garantía.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10.2pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">DECIMA SEXTA. - DEPÓSITO.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL recibirá del Socio los Pagarés en depósito para su
+                    administración al amparo del contrato de depósito bancario de títulos valor y de dinero
+                    en administración consignado en el presente Contrato múltiple. La entrega de los Pagarés
+                    en depósito se comprobará con las constancias de pagarés en administración que CAJA
+                    SOLIDARIA 2G KAPITAL expida al Socio.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">DECIMA SEPTIMA. - PLAZO.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Las Partes pactarán, en cada caso, el plazo que corresponda al Pagaré en días
+                    naturales, debiendo ser no menor a un día y el mismo será forzoso para ambas partes. El
+                    plazo y la fecha de vencimiento de cada pagaré se establecerá en cada pagaré o en la
+                    constancia de operación correspondiente. Transcurridos los plazos convenidos para su
+                    devolución, CAJA SOLIDARIA 2G KAPITAL pagará al Socio el día de vencimiento, mediante
+                    abono a la Cuenta eje los Recursos objeto de la Inversión más los rendimientos
+                    generados.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10.2pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">DECIMA OCTAVA. - RENOVACIÓN AUTOMÁTICA.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Si se hubiere convenido la renovación automática de la Inversión, la misma será
+                    renovada a su vencimiento en un plazo igual al originalmente contratado y será
+                    interrumpida cuando se actualicen indistintamente los siguientes supuestos:</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.35pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">a)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Cuando el Socio de acuerdo a la fecha de vencimiento de su Inversión gire
+                    instrucciones para dar por terminada la renovación<br />&nbsp;automática retirando los
+                    intereses y/o capital de su inversión.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">b)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp; &nbsp; Cuando la renovación automática de la Inversión, no importando el número
+                    de periodos, alcance un plazo máximo de 2 (dos) años y 6(seis) meses contados a partir
+                    de la fecha de contratación.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >En referencia a los incisos a) y b) anteriores, los intereses y/o capital serán
+                    transferidos a la Cuenta Eje del mismo Socio, una vez que haya vencido la última de las
+                    renovaciones automáticas. Para tal fin será aplicable la tasa bruta de interés expresada
+                    en términos anuales que CAJA SOLIDARIA 2G KAPITAL haya dado a conocer al Socio mediante
+                    cualquier medio de comunicación el día de la renovación y para Inversiones de la misma
+                    clase de la&nbsp;que&nbsp;se renueve.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Si el vencimiento ocurre en un Día Inhábil la operación será renovada al Día Hábil
+                    siguiente. El Socio si así lo desea, el referido Día Hábil siguiente podrá solicitar a
+                    CAJA SOLIDARIA 2G KAPITAL la cancelación de la renovación de la Inversión y CAJA
+                    SOLIDARIA 2G KAPITAL entregará los Recursos los intereses correspondientes, los cuales
+                    se devengarán a la tasa pactada originalmente, considerando todos los días efectivamente
+                    transcurridos.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-left: 14pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;</span>
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: left;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Los intereses se revisarán y determinarán por CAJA SOLIDARIA 2G KAPITAL en cada
+                    renovación automática y serán informados al Socio a través de los medios de
+                    comunicación&nbsp;o a través de su Estado de Cuenta. La tasa de interés pactada
+                    originalmente nunca se aplicará a las renovaciones automáticas y tampoco se aplicará la
+                    pactada en el documento anterior a la renovación.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: left;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-left: 14pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;</span>
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Si el Socio inversionista no solicita la terminación de su inversión con 30 días de
+                    anticipación, se dará por confirmada la renovación automática de la misma.&nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.1pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;</span>
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.1pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 9.6pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">DECIMA NOVENA. - RENDIMIENTOS.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL pagará los intereses que correspondan a cada Inversión a la
+                    tasa bruta anual de interés se convenga con el Socio en la constancia de pagaré
+                    correspondiente, dicha tasa permanecerá sin variación alguna durante el plazo fijo de la
+                    Inversión y no procederá revisión alguna de la misma. Los intereses se causarán a partir
+                    del día en&nbsp;que&nbsp;se reciba la Inversión y hasta el día anterior al del
+                    vencimiento del plazo.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.1pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 9.6pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Los intereses se calcularán multiplicando el capital por el factor que resulte de
+                    dividir la tasa bruta anual convenida entre 360 (trescientos sesenta) y multiplicando el
+                    resultado así obtenido por el número de días efectivamente transcurridos durante el
+                    período en el cual se<br />&nbsp;devenguen los rendimientos. Los cálculos se efectuarán
+                    cerrándose a centésimas. Los intereses serán pagaderos al vencimiento del plazo.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 10.1pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10.2pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">VIGÉSIMA. - OPERACIÓN DE LA INVERSIÓN.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Para la operación de la Inversión el Socio deberá contar o abrir una cuenta de depósito
+                    bancario y mantenerla vigente durante el Plazo de vigencia del Pagaré respectivo.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">VIGÉSIMA PRIMERA. - SUPLETORIEDAD.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >En todo lo no previsto en el presente Capítulo y sin menoscabo de lo aquí dispuesto,
+                    para este tipo de Inversiones serán aplicables las cláusulas contenidas en el presente
+                    Contrato múltiple.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: center;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: Verdana, sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        >CAPITULO QUINTO. LUGARES PARA EFECTUAR RETIROS MEDIOS DE DISPOSICIÓN</strong
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    >VIGÉSIMA SEGUNDA. - LUGAR COMÚN PARA EFECTUAR RETIROS.&nbsp;</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    >El Socio podrá disponer libremente de los Recursos depositados en la Cuenta que
+                    corresponda a través de cualquier Sucursal de CAJA SOLIDARIA 2G KAPITAL en Días y Horas
+                    Hábiles, para lo cual, deberá identificarse plenamente mediante Identificación Oficial
+                    vigente y el llenado de la "Solicitud Disposición de recursos de la cuenta". Conforme lo
+                    dispuesto en esta cláusula y la Décima Cuarta.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    >La disposición de los Recursos en las Sucursales de CAJA SOLIDARIA 2G KAPITAL podrá ser
+                    hasta el saldo disponible; para la disposición en Comercios Afiliados el Socio podrá
+                    disponer hasta el límite establecido por el propio comercio.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    >El Socio podrá disponer de los Recursos que obran en la Cuenta a través de los diversos
+                    Medios de Disposición que&nbsp;CAJA SOLIDARIA 2G KAPITAL pone a su alcance.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    >VIGÉSIMA TERCERA. - DE LA TARJETA DE DÉBITO.&nbsp;</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    >Únicamente para el Producto Mi Ahorro, CAJA SOLIDARIA 2G KAPITAL, solicitará al Socio
+                    le presente una tarjeta plástica de débito de su propiedad, con la vigencia estipulada y
+                    un número único impreso en el anverso de la misma, para poder recibir la devolución
+                    total o parcial de ahorro, inversión o préstamo, y con ella pueda realizar las
+                    siguientes operaciones y disposiciones:</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-left: 35.45pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">a)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp; &nbsp; Consulta de saldos y movimientos.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-left: 35.45pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    ><strong>b)</strong>&nbsp; &nbsp; Retiro de efectivo en cajeros automáticos.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-left: 35.4pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">c)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp; &nbsp; Pago en Comercios Afiliados al sistema de tarjetas con el que opere el
+                    banco emisor con cargo al saldo disponible, para la adquisición de &nbsp; &nbsp; &nbsp;
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;
+                    &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-left: 35.4pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp; &nbsp; &nbsp; &nbsp; bienes y servicios.&nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-left: 35.4pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">d)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp; &nbsp; Retiro de efectivo en Comercios Afiliados.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-left: 35.4pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">e)</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp; &nbsp; Transferencias Electrónicas SPEI.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif">&nbsp;</span>
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 9.6pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.1pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">VIGÉSIMA CUARTA.</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;– <strong>PRESENTACIÓN DE LA TARJETA</strong>. CAJA SOLIDARIA 2G KAPITAL
+                    solicitara al socio al Socio, presente una Tarjeta de Débito de su propiedad, en este
+                    acto o de acuerdo con el procedimiento que CAJA SOLIDARIA 2G KAPITAL, en el entendido
+                    que CAJA SOLIDARIA 2G KAPITAL estará facultado para registrar está en la Solicitud de
+                    apertura de la Cuenta correspondiente, o a la persona física que este último autorice
+                    para tal fin. La Presentación de la Tarjeta de Débito sólo aplica para el Producto Mi
+                    Ahorro CAJA SOLIDARIA 2G KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL y el Socio acuerdan se podrá proporcionar otra tarjeta de
+                    débito para devolución de ahorro, inversión y préstamo, siempre que se informe por
+                    escrito, cada que el socio lo requiera, para poder tener una transaccionalidad segura y
+                    confiable para ambas partes.&nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%">VIGÉSIMA QUINTA</span></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >. - <strong>PROPIEDAD DE LA TARJETA.</strong> La Tarjeta de Débito vinculada al
+                    Producto Mi Ahorro CAJA SOLIDARIA 2G KAPITAL es propiedad del Banco emisor, por lo que
+                    CAJA SOLIDARIA 2G KAPITAL se deslinda de cualquier reclamo de por mal uso del
+                    socio.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >VIGÉSIMA SEPTIMA NOTIFICACIONES DE DEPOSITOS A TARJETA DE DEBITO.</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Para el Producto Mi Ahorro CAJA SOLIDARIA 2G KAPITAL, deberá entregar de manera
+                    física o por medios electrónicos, en todo momento, el comprobante de la transacción
+                    realizada y expedir una copia de este cuando así lo requiera el socio.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >VIGÉSIMA OCTAVA – EMISIÓN DE COMPROBANTES ADICIONALES.</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Respecto de la emisión de comprobantes adicionales para aclaraciones de
+                    transacciones, CAJA SOLIDARIA 2G KAPITAL, las realizara a petición del Socio en periodo
+                    máximo de 24n Horas. De haberse solicitado, en el entendido que dichos comprobantes son
+                    emitidos de manera informativa.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 9.45pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 8.9pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px"
+                            >VIGÉSIMA NOVENA. - COSTO DE COMPROBANTES.</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;CAJA SOLIDARIA 2G KAPITAL, establecerá el tarifario para determinar el costo por
+                    la emisión de comprobantes adicionales de transacciones (depósitos, estados de cuenta,
+                    etc.). el pago de este concepto debe realizarse en bancos a la cuenta de CAJA SOLIDARIA
+                    2G KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm 0cm 9.45pt;
+                    font-size: 11pt;
+                    font-family: Calibri, sans-serif;
+                    text-align: center;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    ><strong>CAPÍTULO SEXTO. DISPOSICIONES GENERALES</strong></span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 9.45pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 8.9pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px"
+                            >TRIGÉSIMA PRIMERA - MODIFICACIÓN AL CONTRATO.</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;CAJA SOLIDARIA 2G KAPITAL dará aviso al Socio de cualquier modificación al
+                    presente Contrato con 30 (treinta) días naturales de anticipación a su entrada en vigor,
+                    mediante publicaciones en la página de internet de<br />&nbsp;CAJA SOLIDARIA 2G KAPITAL
+                    &nbsp;&nbsp;</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><a href="http://www.cajasolidaria2gkapital.com.mx"
+                        ><span style="font-size: 9px">www.2gkapital.com.mx</span></a
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;dando aviso a través del estado de cuenta de dicha publicación y en caso de tener
+                    su número de teléfono celular vinculado, a través de mensajes de datos (SMS). En el
+                    evento de que el Socio no esté de acuerdo con las modificaciones propuestas al contenido
+                    obligacional, podrá solicitar por escrito la terminación del Contrato dentro de los 30
+                    (treinta) días naturales posteriores al aviso, sin responsabilidad alguna a su cargo y
+                    bajo las condiciones anteriores a la modificación, debiendo cubrir, en su caso, los
+                    adeudos que por concepto de comisiones se hubieren generado a la fecha en que solicite
+                    dar por terminado el Contrato y, en su caso, retirando de la Cuenta los Recursos
+                    restantes. El uso o la continuación en el empleo del Producto y/o servicio sobre los que
+                    se haya hecho la modificación o adición, se considerará como un consentimiento expreso
+                    respecto del cambio generado si después del término expresado en la presente cláusula el
+                    Socio no manifiesta su inconformidad. El Socio podrá en cualquier momento acudir a
+                    cualquier Oficina de Servicios o Sucursales de CAJA SOLIDARIA 2G KAPITAL por una
+                    reimpresión gratuita del Contrato.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px"
+                        >TRIGÉSIMA SEGUNDA. - RECHAZO DEL SERVICIO.&nbsp;</span
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL se reserva el derecho de otorgar o negar los Productos
+                    materia de este Contrato cuando: a) el Socio no cumpla con los requisitos que al efecto
+                    solicite CAJA SOLIDARIA 2G KAPITAL, b) cuando CAJA SOLIDARIA 2G KAPITAL tenga sospecha
+                    fundada de que los Recursos del Socio son de procedencia ilícita o, c) falsedad en las
+                    declaraciones del Socio.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 9.8pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >El Socio reconoce y acepta que la solicitud que efectúe a CAJA SOLIDARIA 2G KAPITAL
+                    para la prestación del servicio mediante el Producto convenido en la
+                    Carátula&nbsp;que&nbsp;corresponda no implica la aceptación por&nbsp;parte&nbsp;de este
+                    último&nbsp;para&nbsp;su consumación, dicha aceptación queda en todo caso sujeto al
+                    análisis que lleve a cabo CAJA SOLIDARIA 2G KAPITAL para dar trámite a dicha solicitud
+                    reservándose en todo momento la facultad de otorgar o negar la activación o acceso al
+                    Producto.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10.2pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px"
+                        >TRIGÉSIMA TERCERA - ACTUALIZACIÓN DE LA INFORMACIÓN.&nbsp;</span
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >El Socio tiene la obligación de actualizar los datos proporcionados a CAJA SOLIDARIA 2G
+                    KAPITAL que se contienen en la Solicitud de apertura que forma parte de este Contrato,
+                    en un plazo no mayor de 30 (treinta) días naturales contados a partir del día en que
+                    dichos datos hayan cambiado, o cuando sean requeridos por CAJA SOLIDARIA 2G
+                    KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">TRIGÉSIMA CUARTA. - ESTADOS DE CUENTA.&nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL generará mensualmente un estado de cuenta correspondiente al
+                    Producto contratado, mismo que reflejará las operaciones efectuadas durante el período
+                    inmediato anterior a la Fecha de Corte, especificando los depósitos, retiros,
+                    transacciones y operaciones realizadas en la Cuenta y, en su caso, el impuesto retenido
+                    por disposición fiscal vigente y las comisiones y gastos generados durante dicho
+                    periodo. Dentro de los primeros 5 (cinco) Días Hábiles posteriores a la Fecha de Corte,
+                    las partes convienen, recabando la firma del Socio como autorización, que en sustitución
+                    del envío al domicilio del Socio CAJA SOLIDARIA 2G KAPITAL pondrá a disposición del
+                    Socio dicho estado de cuenta en las Oficinas de Servicio y Sucursales de CAJA SOLIDARIA
+                    2G KAPITAL, para que le(s) sea entregado gratuitamente, presentando su Identificación
+                    Oficial vigente. La generación del primer estado de cuenta por periodo será gratuita,
+                    aquellos estados de cuenta subsecuentes, solicitados por el Socio&nbsp;para&nbsp;el
+                    mismo periodo podrán generar el cobro de comisiones de conformidad con lo establecido en
+                    la cláusula Cuadragésima Octava del presente Contrato. En el estado de cuenta se
+                    especificarán las cantidades abonadas o cargadas, fecha al corte de la Cuenta y, en su
+                    caso, el importe de las comisiones a cargo durante el periodo comprendido del último
+                    corte a la fecha. Así mismo, en dicho estado de cuenta se harán constar e identificarán
+                    las operaciones realizadas al amparo de los servicios convenidos, materia de este
+                    contrato.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10.4pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Así mismo, en caso de que el Socio requiera consultar saldos, transacciones y
+                    movimientos, deberá acudir a cualquier Oficina de Servicios y/o Sucursales de CAJA
+                    SOLIDARIA 2G KAPITAL para que le sea entregada la información gratuitamente, presentando
+                    su Identificación Oficial vigente o podrá llamar a la línea de número gratuito 800 (_ _
+                    _ _ _ _ _ _ _ _)- autenticando su identidad al realizar la llamada.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.1pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 9.6pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL informará por escrito al Socio la fecha de corte de la Cuenta
+                    misma que no podrá variar sin previo aviso por escrito, comunicado por lo menos con 1
+                    (un) mes de anticipación. El Socio podrá objetar por escrito su estado de cuenta con las
+                    observaciones que considere procedentes dentro de los 90 (noventa) días naturales
+                    siguientes al corte de la Cuenta en los términos dispuestos por la cláusula Cuadragésima
+                    Tercera del presente Contrato. Transcurrido este plazo sin haberse hecho reparo a la
+                    Cuenta los asientos y conceptos que figuran en la contabilidad de CAJA SOLIDARIA 2G
+                    KAPITAL harán fe en contra del Socio, salvo prueba en contrario en el juicio
+                    respectivo.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >En caso que el Socio requiera la restauración de un estado de cuenta con una antigüedad
+                    mayor a los dos meses, deberá acudir y solicitarlo a la Oficina de Servicios de CAJA
+                    SOLIDARIA 2G KAPITAL que le corresponda para que le sea entregado sin costo alguno en un
+                    periodo máximo de 8 (ocho) días hábiles contados a partir de dicha
+                    solicitud,&nbsp;para&nbsp;segundos estados de cuenta el Socio
+                    deberá&nbsp;absorber&nbsp;el costo referente a la generación del mismo el cual se
+                    establece en la cláusula Cuadragésima Octava del presente Contrato, solicitando por
+                    escrito en la Oficina de Servicios o Sucursal de CAJA SOLIDARIA 2G KAPITAL y recibiendo
+                    los estados de cuenta dentro de los 15 (quince) Días Hábiles posteriores a la recepción
+                    de la solicitud.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px">TRIGÉSIMA QUINTA. - &nbsp;</span></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL no podrá dar información sobre las operaciones, el estado y
+                    movimientos de la Cuenta más que al Socio, a su representante legal o a las personas que
+                    tengan poder para disponer en la misma, salvo en los casos previstos por el artículo 115
+                    de la Ley de Instituciones de Crédito. Toda la información que el Socio proporcione para
+                    efectos de este Contrato y de los Productos y operaciones particulares que celebre con
+                    CAJA SOLIDARIA 2G KAPITAL estarán protegidos conforme al artículo 142 de la Ley de
+                    Instituciones de Crédito y demás normatividad aplicable.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px"
+                        >TRIGÉSIMA SEXTA. - ACLARACIONES. CONSULTAS, QUEJAS O RECLAMACIONES.&nbsp;</span
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Con la finalidad de brindar un mejor servicio, CAJA SOLIDARIA 2G KAPITAL pone a
+                    disposición del Socio el procedimiento para la recepción de aclaraciones, consultas,
+                    quejas o reclamaciones, el cual se menciona a continuación, la Unidad Especializada de
+                    CAJA SOLIDARIA 2G KAPITAL le indicará al Socio el proceso a seguir dependiendo de cada
+                    caso, pudiendo realizarlo de la siguiente forma:</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 21.3pt;
+                    text-indent: -21.3pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong>I.</strong>&nbsp; &nbsp; &nbsp;Cuando el Socio no esté de acuerdo con alguno de
+                    los movimientos que aparezcan en el estado de cuenta respectivo, podrá levantar la
+                    aclaración de manera inicial al número gratuito 800 (_ _ _ _ _ _ _ _) dentro del plazo
+                    de 90 (noventa) días naturales contados a partir de la Fecha de Corte o, en su caso, de
+                    la realización de la operación o del servicio. Posteriormente, la solicitud respectiva
+                    deberá presentarse con los comprobantes correspondientes ante la Oficina de Servicio o
+                    Sucursal de CAJA SOLIDARIA 2G KAPITAL en la que radica la Cuenta, o bien, en la Unidad
+                    Especializada de CAJA SOLIDARIA 2G KAPITAL, mediante escrito, correo electrónico o
+                    cualquier otro medio por el que se pueda comprobar fehacientemente su recepción. En
+                    todos los casos, CAJA SOLIDARIA 2G KAPITAL se estará obligado a acusar recibo de dicha
+                    solicitud y generar un folio.</span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;</span>
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 21.3pt;
+                    text-indent: -21.3pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp; &nbsp; &nbsp; &nbsp; Tratándose de cantidades a cargo del Socio dispuestas
+                    mediante cualquier mecanismo determinado al efecto por la Comisión Nacional para la
+                    Protección y Defensa de los Usuarios de los Servicios Financieros en disposiciones de
+                    carácter general, el Socio tendrá el derecho de solicitar una aclaración, así como el de
+                    cualquier otra cantidad relacionada con dicho cargo, hasta en tanto se resuelva conforme
+                    al procedimiento a que se refiere esta cláusula.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 21.3pt;
+                    text-indent: -21.3pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">II.</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp; &nbsp;Una vez&nbsp;</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    >recibida la solicitud de aclaración, CAJA SOLIDARIA 2G KAPITAL tendrá un plazo máximo
+                    de 45 (cuarenta y cinco) días naturales para entregar al Socio el dictamen
+                    correspondiente, anexando copia simple del documento o evidencia considerada para la
+                    emisión de dicho dictamen, con base en la información que, conforme a las disposiciones
+                    aplicables, deba obrar en su poder, así como un informe detallado en el que se respondan
+                    todos los hechos contenidos en la solicitud presentada por el Socio. En el caso
+                    de&nbsp;</span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >reclamaciones relativas a operaciones realizadas en el extranjero, el plazo previsto en
+                    este párrafo será hasta de 180 (ciento ochenta) días naturales.&nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 18pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >El dictamen e informe antes referidos deberán formularse por escrito y suscribirse por
+                    personal de CAJA SOLIDARIA 2G KAPITAL facultado para ello. En el evento de que, conforme
+                    al dictamen que emita CAJA DE AHORRO, resulte procedente la devolución del monto
+                    respectivo, CAJA SOLIDARIA 2G KAPITAL informará por el mismo medio al Socio de tal
+                    resolución y reembolsará en la Cuenta la cantidad correspondiente, en caso de no
+                    proceder se entregará una copia al Socio con la información pertinente.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 21.3pt;
+                    text-indent: -21.3pt;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong><span style="font-size: 9px">III.</span></strong></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Dentro del plazo de 45 (cuarenta y cinco) días naturales contados a partir de la
+                    entrega del dictamen a que se refiere la fracción<br />&nbsp;anterior, CAJA SOLIDARIA 2G
+                    KAPITAL estará obligado a poner a disposición del Socio o bien, en la Unidad
+                    Especializada de CAJA SOLIDARIA 2G KAPITAL de que se trate, el expediente generado con
+                    motivo de la solicitud, así como a integrar en éste, bajo su más estricta
+                    responsabilidad, toda la documentación e información que, conforme a las disposiciones
+                    aplicables, deba obrar en su poder y que se relacione directamente con la solicitud de
+                    aclaración que corresponda y sin incluir datos correspondientes a operaciones
+                    relacionadas con terceras personas.&nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 21.3pt;
+                    text-indent: -21.3pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Lo antes dispuesto es sin perjuicio del derecho del
+                    Socio de acudir ante la Comisión Nacional para la Protección y Defensa de los<br />&nbsp;Usuarios
+                    de Servicios Financieros o ante la autoridad jurisdiccional correspondiente conforme a
+                    las disposiciones legales aplicables.&nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 21.3pt;
+                    text-indent: -21.3pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;No obstante, lo anterior, el procedimiento previsto
+                    en esta cláusula quedará sin efectos a partir de que el Socio presente su demanda<br />&nbsp;ante
+                    autoridad jurisdiccional o conduzca su reclamación en términos de los artículos 63 y 65
+                    de la Ley de Protección y Defensa al Usuario de Servicios Financieros.&nbsp;</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 21.3pt;
+                    text-indent: -21.3pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp; &nbsp; &nbsp; &nbsp; &nbsp;Transcurrido el plazo de 90 (noventa) días naturales
+                    contados a partir de la Fecha de Corte o, en su caso, de la realización de la<br />&nbsp;operación
+                    o del servicio sin que CAJA SOLIDARIA 2G KAPITAL reciba objeción alguna de parte del
+                    Socio conforme a la presente cláusula, se entenderá la conformidad de éste con el estado
+                    de cuenta correspondiente, y los asientos que figuren en la contabilidad de CAJA
+                    SOLIDARIA 2G KAPITAL harán prueba plena en favor de este último.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.1pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >El Socio podrá contactar a la Unidad Especializada de CAJA SOLIDARIA 2G KAPITAL por
+                    medio de una de las siguientes formas:</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.1pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >1.- Llamando al teléfono sin costo: 800 (_ _ _ _ _ _ _ _).</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.35pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >2.- En las Unidades Especializadas Estatales que hayan sido habilitadas en las oficinas
+                    de CAJA SOLIDARIA 2G KAPITAL que correspondan.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.35pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >3.- Correo electrónico:</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><a href="mailto:%20unidadespecializada@2gkapital.com"
+                        ><span style="font-size: 9px">&nbsp;unidadespecializada@2gkapital.com</span></a
+                    ></span
+                ><span style="color: #0563c1; text-decoration: underline"
+                    ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">.mx</span></span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 36pt;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 9.35pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;</span>
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Centro de Atención Telefónica de la Comisión Nacional para la Protección y Defensa de
+                    los Usuarios de Servicios Financieros (CONDUSEF):</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >1.- Teléfono: 55 5340 0999.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >2.- Página de Internet</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><a href="http://www.condusef.gob.mx/"
+                        ><span style="font-size: 9px; color: windowtext; text-decoration: none"
+                            >&nbsp;www.condusef.gob.mx&nbsp;</span
+                        ></a
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Correo electrónico:</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><a href="mailto:asesoria@condusef.gob.mx"
+                        ><span style="font-size: 9px; color: windowtext; text-decoration: none"
+                            >&nbsp;asesoria@condusef.gob.mx</span
+                        ></a
+                    ></span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-left: 36pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;</span>
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px; line-height: 107%">TRIGÉSIMA SEPTIMA&nbsp;</span></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >- CESIÓN DE DERECHOS. El Socio no podrá ceder los derechos u obligaciones que para él
+                    se deriven del presente Contrato y/o de los Productos que contrae mediante la firma de
+                    este Contrato. Lo dispuesto en la presente cláusula.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px; line-height: 107%">TRIGÉSIMA OCTAVA&nbsp;</span></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >- BENEFICIARIOS. El Socio deberá designar beneficiarios de la Cuenta que corresponda y
+                    podrá(n) en cualquier tiempo sustituirlos, así como modificar la proporción
+                    correspondiente a cada uno de ellos, mediante el correcto llenado del formato que CAJA
+                    SOLIDARIA 2G KAPITAL proporcionará para tal efecto, mismo que deberá ser entregado en la
+                    Oficina de Servicio o en la Sucursal de CAJA SOLIDARIA 2G KAPITAL en que radique la
+                    Cuenta. En caso de fallecimiento del Socio, CAJA SOLIDARIA 2G KAPITAL entregará el
+                    importe correspondiente a quienes se hubiese designado como beneficiarios expresamente
+                    por escrito, en la proporción estipulada&nbsp;</span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">para&nbsp;</span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >cada uno de ellos, siendo requisito indispensable contar con la presencia conjunta en
+                    caso de ser 2 (dos) o más los beneficiarios&nbsp;</span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">para&nbsp;</span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >realizar el cobro la suma correspondiente estipulada.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >Si no existieren beneficiarios, el importe deberá entregarse en los términos previstos
+                    en la legislación común.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span
+                    style="
+                        font-family: Verdana, Geneva, sans-serif;
+                        color: black;
+                        background: white;
+                        font-weight: bold;
+                    "
+                    ><span style="font-size: 9px; line-height: 107%">TRIGÉSIMA NOVENA</span></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >. - CUENTA QUE NO REGISTREN MOVIMIENTOS. En caso de que la Cuenta no presente actividad
+                    o registro de movimientos, y ésta se encuentre sin saldo, durante un periodo de 3 meses
+                    o que el socio deje de ahorrar en forma consecutiva más de 4 veces en forma continuas,
+                    (De acuerdo a lo indicado en el Reglamento de Ahorro, Inversiones y Prestamos”, CAJA
+                    SOLIDARIA 2G KAPITAL procederá al realizar el cierre de dicha Cuenta. El monto contenido
+                    en la Cuenta y los intereses originados por la misma que no tengan fecha de vencimiento,
+                    o bien, que teniéndola se renueven en forma automática, así como las transferencias o
+                    las inversiones vencidas y no reclamadas, que en el transcurso de 12 meses no hayan
+                    tenido movimiento por depósitos o retiros y, después de que CAJA SOLIDARIA 2G KAPITAL
+                    haya dado aviso por escrito, en el domicilio del Socio que conste en el expediente
+                    respectivo, con 90 (noventa) días de antelación deberán ser abonados en una cuenta
+                    global que llevará CAJA SOLIDARIA 2G KAPITAL para esos efectos. Con respecto a lo
+                    anterior, no se considerarán movimientos a los cobros de comisiones que realice CAJA
+                    SOLIDARIA 2G KAPITAL. CAJA SOLIDARIA 2G KAPITAL no podrá cobrar comisiones a partir de
+                    su inclusión en la cuenta global de los instrumentos bancarios de captación que se
+                    encuentren en los supuestos antes referidos. Los Recursos aportados en la cuenta global
+                    únicamente generarán un interés mensual equivalente al aumento en el Índice Nacional de
+                    Precios al Consumidor en el período respectivo. Cuando el Socio se presente para
+                    realizar un depósito o retiro, o reclamar la transferencia o inversión, CAJA SOLIDARIA
+                    2G KAPITAL deberá retirar de la cuenta global el importe total, a efecto de abonarlo a
+                    la cuenta respectiva o entregárselo.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >Los derechos derivados por los depósitos e inversiones y sus intereses a que se refiere
+                    esta cláusula, sin movimiento en el transcurso de 12 meses contados a partir de que
+                    estos últimos se depositen en la cuenta global, cuyo importe no exceda por cuenta, al
+                    equivalente a 300 (trescientos) días de salario mínimo general vigente en el Ciudad de
+                    México prescribirán en favor del patrimonio de la beneficencia pública. CAJA SOLIDARIA
+                    2G KAPITAL Sestará obligado a enterar los Recursos correspondientes a la beneficencia
+                    pública dentro de un plazo máximo de 15 (quince) días contados a partir del 31 de
+                    diciembre del año en que se cumpla el supuesto previsto en este párrafo. CAJA SOLIDARIA
+                    2G KAPITAL estará obligado a notificar a la Comisión Nacional Bancaria y de Valores
+                    sobre el cumplimiento de lo establecido en esta cláusula dentro de los 2 (dos) primeros
+                    meses de cada año, lo anterior en conformidad con el artículo 61 de la Ley de
+                    Instituciones de Crédito.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >CUADRAGÉSIMA. - IMPUESTOS.&nbsp;</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >En el caso de que éstos se generen de conformidad con la legislación fiscal vigente
+                    durante la vigencia de la Cuenta, CAJA SOLIDARIA 2G KAPITAL efectuará la retención y
+                    entero del impuesto generado a la autoridad fiscal correspondiente y depositará al Socio
+                    el rendimiento neto en su caso.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >CUADRAGÉSIMA PRIMERA. -</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;<strong>AUTORIZACIÓN DE CARGOS Y COMISIONES</strong>. CAJA SOLIDARIA 2G KAPITAL
+                    cobrará al Socio las comisiones que se establecen en el anexo de comisiones el cual
+                    formará parte integrante del presente Contrato. Las operaciones realizadas a través de
+                    los comisionistas bancarios podrán generar una Comisión, consulte antes de realizar su
+                    operación.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL dará a conocer al Socio a través de su página web y en medios
+                    impresos, los incrementos al importe de las comisiones, así como las nuevas comisiones
+                    que pretenda cobrar, por lo menos con 30 (treinta) días naturales de anticipación a la
+                    fecha prevista para que éstas surtan efectos. Sin perjuicio de lo anterior, el Socio en
+                    los términos previstos en este Contrato, tendrá derecho a darlo por terminado en caso de
+                    no estar de acuerdo&nbsp;</span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">con&nbsp;</span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >los nuevos montos, sin que CAJA SOLIDARIA 2G KAPITAL pueda cobrar cantidad adicional
+                    alguna por este hecho, con excepción de los adeudos que ya se hubieren generado a la
+                    fecha en que se solicite dar por terminado el Producto que corresponda.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL podrá ofrecer el servicio de Domiciliación y en el supuesto
+                    de que el Socio haya aceptado o contratado con terceros cargos recurrentes en su Cuenta,
+                    relativos al pago de bienes, servicios o créditos ("Domiciliación"), este podrá
+                    solicitar a CAJA SOLIDARIA 2G KAPITAL en cualquier momento la terminación del servicio
+                    de Domiciliación, bastando para ello, la presentación del formato de solicitud de
+                    Cancelación de Domiciliación que CAJA SOLIDARIA 2G KAPITAL previamente haya puesto a
+                    disposición del Socio.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >La cancelación del servicio de Domiciliación solicitada por el Socio en términos del
+                    párrafo que antecede surtirá efectos en un plazo no mayor a 3 (tres) Días Hábiles
+                    contados a partir de la fecha en que CAJA SOLIDARIA 2G KAPITAL reciba el formato que se
+                    indica en el párrafo inmediato anterior, por lo que a partir de dicha fecha CAJA
+                    SOLIDARIA 2G KAPITAL rechazará cualquier cargo que se pretenda efectuar a la Cuenta, por
+                    concepto de Domiciliación.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >CUADRAGÉSIMA SEGUNDA - DOMICILIOS. AVISOS Y NOTIFICACIONES</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >. Los avisos, notificaciones o cualquier requerimiento que las Partes deban darse
+                    conforme al presente Contrato, se realizarán en los domicilios señalados por el Socio en
+                    la Solicitud que en su caso se genere y que forma parte integrante de este Contrato o en
+                    acto posterior en formatos de CAJA SOLIDARIA 2G KAPITAL y/o a través de medios
+                    electrónicos o automatizados disponibles y aceptados por CAJA SOLIDARIA 2G
+                    KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >CUADRAGÉSIMA TERCERA. - VIGENCIA Y TERMINACIÓN.</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;La duración del presente Contrato es por tiempo indeterminado, no obstante, se
+                    podrá dar por terminado a partir de la fecha en que el Socio solicite la terminación o
+                    cancelación del Contrato, bastando para ello la presentación de una solicitud por
+                    escrito en cualquier Oficina de Servicios o Sucursal de CAJA SOLIDARIA 2G KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL se cerciorará de la autenticidad y veracidad de la identidad
+                    del Socio que formule la solicitud de terminación respectiva, para lo cual, CAJA
+                    SOLIDARIA 2G KAPITAL confirmará los datos personalmente y proporcionará al Socio el
+                    saldo existente en la Cuenta correspondiente. El Contrato se dará por terminado a partir
+                    de la fecha en que el Socio solicite por escrito su terminación, siempre y cuando se
+                    cubran los adeudos y comisiones devengados a esa fecha y se retire el saldo existente en
+                    ese momento. Una vez realizado el retiro del saldo de la Cuenta, CAJA SOLIDARIA 2G
+                    KAPITAL proporcionará al Socio el acuse de recibo y clave de confirmación o número de
+                    folio de cancelación, renunciando tanto CAJA SOLIDARIA 2G KAPITAL como el Socio a sus
+                    derechos de cobro residuales, que pudieran subsistir después del momento de la
+                    cancelación, en el caso del Producto de Inversiones, cuando el Socio de por terminado el
+                    Contrato de&nbsp;forma&nbsp;anticipada, los recursos serán entregados en la fecha de
+                    vencimiento del pagaré. Derivado de la solicitud de terminación de Contrato presentada
+                    por el Socio CAJA SOLIDARIA 2G KAPITAL procederá de la siguiente manera: a) cancelará
+                    los Medios de Disposición vinculados al Contrato en la fecha de presentación de la
+                    solicitud; el Socio deberá hacer entrega de éstos o manifestar por escrito y bajo
+                    protesta de decir verdad en escrito&nbsp;libre,&nbsp;que fueron destruidos o que no
+                    cuenta con ellos, por lo que no podrán hacer disposición alguna a partir de dicha fecha,
+                    b) rechazará cualquier disposición que pretenda efectuarse con posterioridad a la
+                    cancelación de los Medios de Disposición, en consecuencia, no se podrán hacer nuevos
+                    cargos adicionales a partir del momento en que se realice la cancelación, excepto los ya
+                    generados, c) cancelará, sin su responsabilidad, los productos y/o servicios adicionales
+                    necesariamente vinculados o asociados a la Cuenta en la fecha de la solicitud de
+                    terminación incluyendo aquellos indicados en la cláusula Quincuagésima segunda, d) se
+                    abstendrá de condicionar la terminación del presente Contrato a la devolución del
+                    Contrato que obre en poder del Socio, y e) se abstendrá de cobrar al Socio Comisión o
+                    penalización por la terminación del Contrato.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >El Socio podrá cancelar sin responsabilidad alguna de su parte el presente Contrato en
+                    un período de 10 (diez) Días Hábiles posteriores a su firma. En este caso, CAJA
+                    SOLIDARIA 2G KAPITAL no podrá cobrar Comisión alguna, siempre y cuando el Socio no haya
+                    utilizado u operado el(los) Producto(s) contratado(s).</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 9.8pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >CAJA SOLIDARIA 2G KAPITAL podrá dar por terminado el&nbsp;presente&nbsp;Contrato sin su
+                    responsabilidad y el Socio tendrá la obligación de cubrir de inmediato todas y cada una
+                    de sus obligaciones, pago de comisiones y demás accesorios cuando: a) el Socio no
+                    mantenga&nbsp;durante&nbsp;3 meses consecutivos saldo en la Cuenta, b) el Socio no
+                    realice transacción, operación o movimiento alguno en la Cuenta durante 12 meses
+                    consecutivos c) el Socio proporcione información y/o documentación falsa a CAJA
+                    SOLIDARIA 2G KAPITAL d) en caso de la Cuenta Mi Grupo CAJA SOLIDARIA 2G KAPITAL, ésta no
+                    mantenga los cotitulares necesarios conforme el Capítulo Cuarto del presente Contrato, y
+                    e) el Socio incumpla con cualquiera de las obligaciones a su cargo con motivo del
+                    presente Contrato.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.85pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                    margin-bottom: 10.2pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Al momento de la terminación o cancelación del&nbsp;presente&nbsp;Contrato el cobro de
+                    los servicios adicionales incluyendo el servicio de Domiciliación de productos o
+                    servicios asociados a la cuenta, se cancelarán sin responsabilidad para CAJA SOLIDARIA
+                    2G KAPITAL con independencia de quien conserve la autorización de los cargos
+                    correspondientes.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >CUADRAGÉSIMA CUARTA - LEY DE PROTECCIÓN AL AHORRO.&nbsp;</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >Únicamente están garantizados por el Instituto para la Protección al Ahorro Bancario
+                    (IPAB), los depósitos bancarios de dinero a la vista, retirables en días
+                    preestablecidos, de ahorro, y a plazo o con previo aviso, así como los préstamos y
+                    créditos que acepte CAJA SOLIDARIA 2G KAPITAL, hasta por el equivalente a cuatrocientas
+                    mil UDI por persona, cualquiera que sea el número, tipo y clase de dichas obligaciones a
+                    su favor y a cargo de la institución de banca múltiple.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >Para efectos del presente Contrato, se entenderá por Ganancia Anual Total (GAT), la
+                    ganancia anual total neta expresada en términos porcentuales anuales que, para fines
+                    informativos y de comparación, incorpora los intereses nominales capitalizables que, en
+                    su caso, genere el producto contratado por el Socio, menos los costos relacionados con
+                    el mismo, incluidos los de apertura, la GAT Nominal y la GAT Real del producto
+                    contratado podrá consultarse en la Carátula del mismo y/o en la Constancia de pagaré
+                    respectivo ("GAT REAL" es el rendimiento que obtendría después de descontar la inflación
+                    estimada").</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 10.6pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >CUADRAGÉSIMA QUINTA. - SERVICIOS ADICIONALES</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >. CAJA SOLIDARIA 2G KAPITAL ofrecerá al Socio el servicio de Pago Móvil, para lo cual,
+                    este último deberá acudir a cualquier Oficina de Servicio o Sucursal para otorgar su
+                    aprobación y solicitar los formatos para realizar el alta, baja o modificación de su
+                    número de teléfono celular vinculado a la Cuenta; el registro de la información &nbsp;se
+                    realizará como máximo 24 (veinticuatro) horas después de haber entregado debidamente
+                    firmados los formatos que se mencionan en la presente cláusula sin que exista ningún
+                    costo por la recepción de mensajes, registros, bajas o cambios de números de teléfono
+                    celular vinculados.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 8.9pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Cuando el servicio de Pago Móvil se encuentre activo, el Socio recibirá notificaciones
+                    mediante mensajes de datos (SMS) en el teléfono celular vinculado a la Cuenta, mismas
+                    que serán: a) cuando se efectúen transacciones en la Cuenta; b) por bienvenida a la
+                    Cuenta y; c) para promociones, aniversarios y/o campañas de CAJA SOLIDARIA 2G
+                    KAPITAL.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >De la misma forma, el Socio podrá solicitar la baja de este servicio acudiendo a
+                    cualquier Oficina de Servicios o Sucursal sin que obre impedimento o costo alguno para
+                    su realización.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><strong
+                        ><span style="font-size: 9px; line-height: 107%"
+                            >CUADRAGÉSIMA SEXTA. - JURISDICCIÓN Y COMPETENCIA.</span
+                        ></strong
+                    ></span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >&nbsp;Para la interpretación y cumplimiento de este Contrato, las Partes que
+                    intervienen en el presente instrumento se someten a la jurisdicción y competencia de los
+                    Tribunales que correspondan al del lugar en que se suscribe este Contrato, o a los
+                    Tribunales Judiciales de la Ciudad de México, a elección de CAJA SOLIDARIA 2G KAPITAL,
+                    renunciando a cualquier otro fuero que por razón de su domicilio presente o futuro les
+                    pudiera corresponder.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <br />
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <br />
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <br />
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <br />
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <br />
+            </p>
+            <strong
+                ><span style="font-size: 9px; line-height: 107%"
+                    >CONSENTIMIENTO PARA EL TRATAMIENTO DE LOS DATOS PERSONALES:</span
+                ></strong
+            >
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 0cm;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                "
+            >
+                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >Por el presente, otorgo de manera expresa, mi consentimiento y autorización para que
+                    CAJA SOLIDARIA 2G KAPITAL, Institución de Ahorro Popular (en adelante "CAJA SOLIDARIA 2G
+                    KAPITAL") con domicilio
+                    <strong>S. Rafael 6, Tecamac Centro. Tecamac, Estado de México C.P. 55740,&nbsp;</strong
+                    >utilice mis datos personales recabados para: Otorgar los servicios indicados en este
+                    contrato. Para mayor información acerca del tratamiento y de los derechos que puede
+                    hacer valer, usted puede acceder al Aviso de Privacidad&nbsp;</span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Integral para&nbsp;</span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >Socios Ahorro a través de la siguiente liga:&nbsp;</span
+                ><span style="font-family: Verdana, Geneva, sans-serif"
+                    ><a href="http://www.cajasolidaria2gkapital.com.mx"
+                        ><span style="font-size: 9px">www.2gkapital.com.mx</span></a
+                    ></span
+                ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif">&nbsp;e</span
+                ><span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
+                    >n la sección de Privacidad.</span
+                >
+            </p>
+            <p
+                style="
+                    margin-top: 0cm;
+                    margin-right: 0cm;
+                    margin-bottom: 8pt;
+                    margin-left: 0cm;
+                    font-size: 11pt;
+                    font-family: 'Calibri', sans-serif;
+                    text-align: justify;
+                    line-height: 11.05pt;
+                "
+            >
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                    >Leído que fue el presente Contrato por las Partes, comprendiendo su contenido
+                    incluyendo Carátula y anexo de Disposiciones Legales las cuales forman parte integrante
+                    del mismo, el Socio manifiesta la libre expresión de su voluntad la cual no tiene vicios
+                    de consentimiento que pudiera invalidar el presente Contrato, en consecuencia, el Socio
+                    lo firma en el lugar y fecha&nbsp;que&nbsp;se señalan en la Solicitud de Apertura de
+                    Cuenta del presente Contrato.</span
+                >
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <br />
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <br />
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <br />
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <br />
+            </p>
+            <p
+                style="
+                    margin: 0cm;
+                    text-align: justify;
+                    line-height: 9.6pt;
+                    background: transparent;
+                    font-size: 10px;
+                    font-family: 'Verdana', sans-serif;
+                "
+            >
+                <br />
+            </p>
+            <div style="border: 1px solid black">
+                <table style="width: 100%">
+                    <tbody>
+                        <tr>
+                            <td style="text-align: center; width: 12.5%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center; height: 1cm">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="text-align: center; width: 12.5%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; width: 12.5%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                                    >EL SOCIO/ EL TITULAR</span
+                                >
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="text-align: center; width: 19.0304%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; width: 12.5%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td
+                                style="
+                                    width: 25%;
+                                    text-align: center;
+                                    height: 2cm;
+                                    vertical-align: bottom;
+                                    border-bottom: 1px solid rgb(0, 0, 0);
+                                "
+                            >
+                                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
+                                    >NOMBRE</span
+                                >
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="text-align: center; width: 19.0304%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; width: 12.5%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 60.3013%; text-align: center" colspan="3">
+                                <span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                                    >Si no sabe o no puede firmar El Socio firma a su ruego y en su nombre
+                                    un tercero indicando su nombre y estampando la huella digital del
+                                    Socio.</span
+                                >
+                            </td>
+                            <td style="text-align: center; width: 19.0304%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 12.5%; text-align: center; height: 2cm">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td
+                                style="
+                                    width: 25%;
+                                    text-align: center;
+                                    height: 2cm;
+                                    border-bottom: 1px solid rgb(0, 0, 0);
+                                "
+                            >
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td
+                                style="
+                                    width: 25%;
+                                    text-align: center;
+                                    height: 2cm;
+                                    border-bottom: 1px solid rgb(0, 0, 0);
+                                "
+                            >
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 19.0304%; text-align: center; height: 2cm">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; width: 12.5%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                                    >Gerente de Sucursal&nbsp;</span
+                                >
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
+                                    >Comité</span
+                                >
+                            </td>
+                            <td style="text-align: center; width: 19.0304%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center; width: 12.5%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center; height: 1cm">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="width: 25%; text-align: center">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                            <td style="text-align: center; width: 19.0304%">
+                                <span style="font-family: Verdana, Geneva, sans-serif"><br /></span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
         HTML;
     }
