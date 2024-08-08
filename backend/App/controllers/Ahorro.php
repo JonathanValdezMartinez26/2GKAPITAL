@@ -5681,7 +5681,7 @@ class Ahorro extends Controller
             </p>
             <p style="text-align: justify">
                 <span style="font-family: Verdana, Geneva, sans-serif; font-size: 9px"
-                    >PRIMERA. - DEFINICIONES. Para efectos del presente Contrato, los siguientes términos
+                    ><strong>PRIMERA. - DEFINICIONES.</strong> Para efectos del presente Contrato, los siguientes términos
                     escritos con mayúscula inicial tendrán los&nbsp;significados que se expresan a
                     continuación, igualmente aplicables en singular o plural:</span
                 ><span style="font-family: Verdana, Geneva, sans-serif"><br /></span
@@ -8493,22 +8493,7 @@ class Ahorro extends Controller
                     solicitar a CAJA SOLIDARIA 2G KAPITAL en cualquier momento la terminación del servicio
                     de Domiciliación, bastando para ello, la presentación del formato de solicitud de
                     Cancelación de Domiciliación que CAJA SOLIDARIA 2G KAPITAL previamente haya puesto a
-                    disposición del Socio.</span
-                >
-            </p>
-            <p
-                style="
-                    margin-top: 0cm;
-                    margin-right: 0cm;
-                    margin-bottom: 10pt;
-                    margin-left: 0cm;
-                    font-size: 11pt;
-                    font-family: 'Calibri', sans-serif;
-                    text-align: justify;
-                "
-            >
-                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
-                    >La cancelación del servicio de Domiciliación solicitada por el Socio en términos del
+                    disposición del Socio. La cancelación del servicio de Domiciliación solicitada por el Socio en términos del
                     párrafo que antecede surtirá efectos en un plazo no mayor a 3 (tres) Días Hábiles
                     contados a partir de la fecha en que CAJA SOLIDARIA 2G KAPITAL reciba el formato que se
                     indica en el párrafo inmediato anterior, por lo que a partir de dicha fecha CAJA
@@ -8805,54 +8790,6 @@ class Ahorro extends Controller
                     renunciando a cualquier otro fuero que por razón de su domicilio presente o futuro les
                     pudiera corresponder.</span
                 >
-            </p>
-            <p
-                style="
-                    margin: 0cm;
-                    text-align: justify;
-                    line-height: 9.6pt;
-                    background: transparent;
-                    font-size: 10px;
-                    font-family: 'Verdana', sans-serif;
-                "
-            >
-                <br />
-            </p>
-            <p
-                style="
-                    margin: 0cm;
-                    text-align: justify;
-                    line-height: 9.6pt;
-                    background: transparent;
-                    font-size: 10px;
-                    font-family: 'Verdana', sans-serif;
-                "
-            >
-                <br />
-            </p>
-            <p
-                style="
-                    margin: 0cm;
-                    text-align: justify;
-                    line-height: 9.6pt;
-                    background: transparent;
-                    font-size: 10px;
-                    font-family: 'Verdana', sans-serif;
-                "
-            >
-                <br />
-            </p>
-            <p
-                style="
-                    margin: 0cm;
-                    text-align: justify;
-                    line-height: 9.6pt;
-                    background: transparent;
-                    font-size: 10px;
-                    font-family: 'Verdana', sans-serif;
-                "
-            >
-                <br />
             </p>
             <p
                 style="
