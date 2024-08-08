@@ -155,17 +155,25 @@ $derecha = new TarjetaMano('derecha');
                                                     <input type="text" class="form-control" id="fecha" name="fecha" value="<?= $fecha; ?>" readonly>
                                                 </div>
                                             </div>
-                                            <div class="col-md-4">
+                                            <!-- <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="monto_min">Monto mínimo sin cuota anual</label>
                                                     <input type="text" class="form-control" id="monto_min" name="monto_min" value="50" readonly>
                                                 </div>
-                                            </div>
-                                            <div class="col-md-4">
+                                            </div> -->
+                                            <div class="col-md-8">
                                                 <div class="form-group">
-                                                    <label for="manejo_cta">Manejo de ahorro cuenta</label>
-                                                    <select class="form-control mr-sm-3" id="manejo_cta" name="manejo_cta" readonly>
-                                                        <option value="1">APLICA</option>
+                                                    <label for="sucursal">Sucursal *</label>
+                                                    <select class="form-control mr-sm-3" id="sucursal" name="sucursal" disabled>
+                                                        <?= $sucursales; ?>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-12">
+                                                <div class="form-group">
+                                                    <label for="ejecutivo_comision">Comisión ejecutivo *</label>
+                                                    <select class="form-control mr-sm-3" id="ejecutivo_comision" name="ejecutivo_comision" readonly>
+                                                        <?= $ejecutivos; ?>
                                                     </select>
                                                 </div>
                                             </div>
@@ -179,7 +187,15 @@ $derecha = new TarjetaMano('derecha');
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div class="col-md-2">
+                                            <div class="col-md-4">
+                                                <div class="form-group">
+                                                    <label for="manejo_cta">Manejo de ahorro cuenta</label>
+                                                    <select class="form-control mr-sm-3" id="manejo_cta" name="manejo_cta" disabled>
+                                                        <option value="1">APLICA</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="tipo">Tasa anual</label>
                                                     <select class="form-control mr-sm-3" autofocus="" type="select" id="tasa" name="tasa" disabled>
@@ -187,22 +203,6 @@ $derecha = new TarjetaMano('derecha');
                                                     </select>
                                                     <select id="infoProducto" disabled style="display: none;">
                                                         <?= $opcInfoAhorro; ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-6">
-                                                <div class="form-group">
-                                                    <label for="sucursal">Sucursal *</label>
-                                                    <select class="form-control mr-sm-3" id="sucursal" name="sucursal" disabled>
-                                                        <?= $sucursales; ?>
-                                                    </select>
-                                                </div>
-                                            </div>
-                                            <div class="col-md-12">
-                                                <div class="form-group">
-                                                    <label for="ejecutivo_comision">Comisión ejecutivo *</label>
-                                                    <select class="form-control mr-sm-3" id="ejecutivo_comision" name="ejecutivo_comision" readonly>
-                                                        <?= $ejecutivos; ?>
                                                     </select>
                                                 </div>
                                             </div>

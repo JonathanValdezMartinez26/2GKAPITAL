@@ -93,9 +93,13 @@ class Database
 
     public function insertaMultiple($sql, $registros, $validacion = null)
     {
+        $sqlError = '';
+        $valoresError = '';
         try {
             $this->db_activa->beginTransaction();
             foreach ($registros as $i => $valores) {
+                $sqlError = $sql[$i];
+                $valoresError = $valores;
                 $stmt = $this->db_activa->prepare($sql[$i]);
                 $result = $stmt->execute($valores);
                 if (!$result) {
@@ -120,7 +124,7 @@ class Database
             return true;
         } catch (\PDOException $e) {
             $this->db_activa->rollBack();
-            throw new \Exception("Error en insertaMultiple: " . $e->getMessage());
+            throw new \Exception("Error en insertaMultiple: " . $e->getMessage() . "\nSql : " . $sqlError . "\nDatos : " . print_r($valoresError, 1));
         }
     }
 

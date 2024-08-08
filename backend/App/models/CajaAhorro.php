@@ -459,7 +459,7 @@ class CajaAhorro
             INSERT INTO ASIGNA_PROD_AHORRO
                 (CONTRATO, CDGCL, FECHA_APERTURA, CDGPR_PRIORITARIO, ESTATUS, SALDO, TASA, CDGCO, CDGPE_COMISIONA, CDGPE_REGISTRO)
             VALUES
-                (:contrato, :cliente, :fecha_apertura, :producto, 'A', 0, :tasa, :sucursal, :ejecutivo_comisiona, :ejecutivo_registro)
+                (:contrato, :cliente, TO_TIMESTAMP(:fecha_apertura, 'DD/MM/YYYY HH24:MI:SS'), :producto, 'A', 0, :tasa, :sucursal, :ejecutivo_comisiona, :ejecutivo_registro)
             sql;
 
             $queryBen = <<<sql

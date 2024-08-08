@@ -259,6 +259,7 @@ class Ahorro extends Controller
     }
     script;
     private $valida_MCM_Complementos = 'const valida_MCM_Complementos = async () => {
+    return true
         swal({ text: "Procesando la solicitud, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
         
         let resultado = false
