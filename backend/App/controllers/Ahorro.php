@@ -5074,7 +5074,7 @@ class Ahorro extends Controller
                 "
             >
                 <strong
-                    ><span style="font-size: 13px; font-family: Verdana, Geneva, sans-serif"
+                    ><span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
                         >CONTRATO MÚLTIPLE DE DEPÓSITO DE DINERO EN MONEDA NACIONAL QUE CELEBRAN, POR UNA
                         PARTE, CAJA SOLIDARIA 2G KAPIATAL, ENTIDAD COOPERATIVA DE AHORRO Y PRESTAMO POPULAR,
                         A LA QUE EN LO SUCESIVO SE LE DENOMINARÁ COMO "CAJA SOLIDARIA 2G KAPITAL", Y POR LA
@@ -5092,7 +5092,7 @@ class Ahorro extends Controller
                     text-align: center;
                 "
             >
-                <span style="font-size: 13px; font-family: Verdana, Geneva, sans-serif"
+                <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
                     ><strong><u>DECLARACIONES</u></strong></span
                 >
             </p>
@@ -5576,75 +5576,62 @@ class Ahorro extends Controller
                     siguiente:</span
                 >
             </p>
-            <p
-                style="
-                    margin-top: 0cm;
-                    margin-right: 0cm;
-                    margin-bottom: 0cm;
-                    margin-left: 54pt;
-                    font-size: 11pt;
-                    font-family: 'Calibri', sans-serif;
-                "
-            >
-                <span style="font-size: 9px; line-height: 107%; font-family: Verdana, Geneva, sans-serif"
-                    >&nbsp;</span
-                >
-            </p>
-            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+            <p><br></p>
+            <p style="margin: 0cm; font-size: 9px; font-family: Calibri, sans-serif; text-align: center">
                 <span style="font-family: Verdana, Geneva, sans-serif"
                     ><strong><span style="font-size: 9px">INDICE</span></strong></span
                 >
             </p>
-            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+            <p style="margin: 0cm; font-size: 9px; font-family: Calibri, sans-serif;">
                 <span style="font-family: Verdana, Geneva, sans-serif"
                     ><strong
-                        ><span style="font-size: 11px"
+                        ><span style="font-size: 9px"
                             >CAPÍTULO PRIMERO. DEFINICIONES &nbsp; &nbsp; &nbsp; &nbsp;</span
                         ></strong
                     ></span
                 >
             </p>
-            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+            <p style="margin: 0cm; font-size: 9px; font-family: Calibri, sans-serif;">
                 <span style="font-family: Verdana, Geneva, sans-serif"
                     ><strong
-                        ><span style="font-size: 11px"
+                        ><span style="font-size: 9px"
                             >CAPÍTULO SEGUNDO. DEL CONTRATO &nbsp; &nbsp; &nbsp;</span
                         ></strong
                     ></span
                 >
             </p>
-            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+            <p style="margin: 0cm; font-size: 9px; font-family: Calibri, sans-serif;">
                 <span style="font-family: Verdana, Geneva, sans-serif"
                     ><strong
-                        ><span style="font-size: 11px"
+                        ><span style="font-size: 9px"
                             >CAPÍTULO TERCERO. DE LA CUENTA EJE DE DEPÓSITO DE DINERO A LA VISTA "MI AHORRO
                             CAJA DE AHORRO"</span
                         ></strong
                     ></span
                 >
             </p>
-            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+            <p style="margin: 0cm; font-size: 9px; font-family: Calibri, sans-serif;">
                 <span style="font-family: Verdana, Geneva, sans-serif"
                     ><strong
-                        ><span style="font-size: 11px"
+                        ><span style="font-size: 9px"
                             >CAPÍTULO CUARTO. DE LAS INVERSIONES CAJA DE AHORRO &nbsp; &nbsp; &nbsp;</span
                         ></strong
                     ></span
                 >
             </p>
-            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+            <p style="margin: 0cm; font-size: 9px; font-family: Calibri, sans-serif;">
                 <span style="font-family: Verdana, Geneva, sans-serif"
                     ><strong
-                        ><span style="font-size: 11px"
+                        ><span style="font-size: 9px"
                             >CAPITULO QUINTO. LUGARES PARA EFECTUAR RETITOS Y MEDIOS DE DISPOSICIÓN</span
                         ></strong
                     ></span
                 >
             </p>
-            <p style="margin: 0cm; font-size: 11pt; font-family: Calibri, sans-serif; text-align: center">
+            <p style="margin: 0cm; font-size: 9px; font-family: Calibri, sans-serif;">
                 <span style="font-family: Verdana, Geneva, sans-serif"
                     ><strong
-                        ><span style="font-size: 11px"
+                        ><span style="font-size: 9px"
                             >CAPÍTULO SEXTO. DISPOSICIONES GENERALES</span
                         ></strong
                     ><strong
@@ -5654,6 +5641,7 @@ class Ahorro extends Controller
                     ></span
                 >
             </p>
+            <p><br></p>
             <p
                 style="
                     margin: 0cm;
@@ -9052,7 +9040,7 @@ class Ahorro extends Controller
                                 "
                             >
                                 <span style="font-size: 9px; font-family: Verdana, Geneva, sans-serif"
-                                    >NOMBRE</span
+                                    >{$datos['NOMBRE']}</span
                                 >
                             </td>
                             <td style="width: 25%; text-align: center">
