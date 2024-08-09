@@ -540,7 +540,7 @@ class Ahorro extends Controller
         // $costoInscripcion = 400;
         $mensajeCaptura = "Capture las huellas del cliente haciendo clic sobre una imagen.";
 
-        $extraFooter = <<<html
+        $extraFooter = <<<HTML
         <script>
             let saldoMinimoApertura = 0
             let costoInscripcion = 0
@@ -593,9 +593,9 @@ class Ahorro extends Controller
                 costoInscripcion = info.value
                 saldoMinimoApertura = info.options[info.selectedIndex].text
 
-                document.querySelector("#inscripcion").value = parseFloat(costoInscripcion).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                document.querySelector("#tipSaldo").innerText = "El monto mínimo de apertura debe ser de $" + parseFloat(saldoMinimoApertura).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                document.querySelector("#sma").value = parseFloat(saldoMinimoApertura).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                document.querySelector("#inscripcion").value = parseaNumero(costoInscripcion).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                document.querySelector("#tipSaldo").innerText = "El monto mínimo de apertura debe ser de $" + parseaNumero(saldoMinimoApertura).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                document.querySelector("#sma").value = parseaNumero(saldoMinimoApertura).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
             }
          
             {$this->showError}
@@ -887,12 +887,13 @@ class Ahorro extends Controller
              
             const calculaSaldoFinal = (e) => {
                 const monto = parseaNumero(e.target.value)
-                document.querySelector("#deposito").value = formatoMoneda(monto)
                 const saldoInicial = (monto - parseaNumero(document.querySelector("#inscripcion").value))
+
+                document.querySelector("#deposito").value = formatoMoneda(monto)
                 document.querySelector("#saldo_inicial").value = formatoMoneda(saldoInicial > 0 ? saldoInicial : 0)
-                document.querySelector("#monto_letra").value = primeraMayuscula(numeroLetras(monto))
+                document.querySelector("#monto_letra").value = numeroLetras(monto)
                     
-                if (saldoInicial < (saldoMinimoApertura - costoInscripcion)) {
+                if (monto < saldoMinimoApertura) {
                     document.querySelector("#saldo_inicial").setAttribute("style", "color: red")
                     document.querySelector("#tipSaldo").setAttribute("style", "opacity: 100%;")
                     document.querySelector("#registraDepositoInicial").disabled = true
@@ -1169,7 +1170,7 @@ class Ahorro extends Controller
                 })
             }
         </script>
-        html;
+        HTML;
 
         $sucursales = CajaAhorroDao::GetSucursalAsignadaCajeraAhorro($this->__usuario);
         $opcSucursales = "";
@@ -2266,7 +2267,7 @@ class Ahorro extends Controller
                     + " a un plazo de " + plazo.options[plazo.selectedIndex].text + "?"
                 ).then((continuar) => {
                     if (!continuar) return
-                    if (huellas > 0) return showHuella(true, datos)
+                    //if (huellas > 0) return showHuella(true, datos)
                     enviaRegistroOperacion(datos)
                 })
             }
@@ -2416,7 +2417,9 @@ class Ahorro extends Controller
     // Apertura de contratos para cuentas de ahorro Peques
     public function ContratoCuentaPeque()
     {
-        $extraFooter = <<<html
+        $infoCuenta = CajaAhorroDao::GetInfoCuentaPeque();
+
+        $extraFooter = <<<HTML
         <script>
             window.onload = () => {
                 if(document.querySelector("#clienteBuscado").value !== "") buscaCliente()
@@ -2440,6 +2443,10 @@ class Ahorro extends Controller
             {$this->consultaServidor}
             {$this->showHuella}
             {$this->validaHuella}
+            {$this->parseaNumero}
+            {$this->formatoMoneda}
+            {$this->limpiaMontos}
+            {$this->imprimeTicket}
              
             const buscaCliente = () => {
                 const noCliente = document.querySelector("#clienteBuscado")
@@ -2523,6 +2530,19 @@ class Ahorro extends Controller
             
             const generaContrato = async (e) => {
                 e.preventDefault()
+                
+                document.querySelector("#fecha_pago").value = getHoy()
+                document.querySelector("#contrato").value = ""
+                document.querySelector("#codigo_cl").value = document.querySelector("#noCliente").value
+                document.querySelector("#nombre_cliente").value = document.querySelector("#nombre").value
+                document.querySelector("#mdlCurp").value = document.querySelector("#curp").value
+                    
+                await showInfo("Debe registrar el depósito por apertura de cuenta.")
+                $("#modal_agregar_pago").modal("show")
+            }
+
+            const pagoApertura = async (e) => {
+                e.preventDefault()
                  
                 if (document.querySelector("#curp").value.length !== 18) {
                     showError("La CURP debe tener 18 caracteres.")
@@ -2568,14 +2588,35 @@ class Ahorro extends Controller
                     consultaServidor("/Ahorro/AgregaContratoAhorroPQ/", $.param(datos), (respuesta) => {
                         if (!respuesta.success) {
                             console.error(respuesta.error)
-                            limpiaDatosCliente()
                             return showError(respuesta.mensaje)
                         }
-                    
-                        const contrato = respuesta.datos
+
+                        regPago(respuesta.datos.contrato)
+                    })
+                })
+            }
+
+            const regPago = (contrato) => {
+                const datos = $("#AddPagoApertura").serializeArray()
+                limpiaMontos(datos, ["deposito", "inscripcion", "saldo_inicial"])
+                addParametro(datos, "sucursal", "{$_SESSION['cdgco_ahorro']}")
+                addParametro(datos, "ejecutivo", "{$_SESSION['usuario']}")
+                addParametro(datos, "contrato", contrato)
+                 
+                consultaServidor("/Ahorro/PagoApertura/", $.param(datos), (respuesta) => {
+                    if (!respuesta.success) return showError(respuesta.mensaje)
+                
+                    showSuccess(respuesta.mensaje)
+                    .then(() => {
+                        document.querySelector("#registroInicialAhorro").reset()
+                        document.querySelector("#AddPagoApertura").reset()
+                        $("#modal_agregar_pago").modal("hide")
                         limpiaDatosCliente()
-                        showSuccess("Se ha generado el contrato: " + contrato.contrato).then(() => {
-                            imprimeContrato(contrato.contrato, 3)
+                        
+                        showSuccess("Se ha generado el contrato: " + contrato + ".")
+                        .then(() => {
+                            imprimeContrato(contrato, 3)
+                            imprimeTicket(respuesta.datos.ticket, "{$_SESSION['cdgco_ahorro']}")
                         })
                     })
                 })
@@ -2584,7 +2625,7 @@ class Ahorro extends Controller
             const validaDeposito = (e) => {
                 if (!valKD) return
                  
-                const monto = parseFloat(e.target.value) || 0
+                const monto = parseaNumero(e.target.value) || 0
                 if (monto <= 0) {
                     e.preventDefault()
                     e.target.value = ""
@@ -2599,21 +2640,23 @@ class Ahorro extends Controller
                 const valor = e.target.value.split(".")
                 if (valor[1] && valor[1].length > 2) {
                     e.preventDefault()
-                    e.target.value = parseFloat(valor[0] + "." + valor[1].substring(0, 2))
+                    e.target.value = parseaNumero(valor[0] + "." + valor[1].substring(0, 2))
                 }
                 
-                document.querySelector("#deposito_inicial_letra").value = numeroLetras(parseFloat(e.target.value))
+                document.querySelector("#monto_letra").value = numeroLetras(parseaNumero(e.target.value))
                 calculaSaldoFinal(e)
             }
              
             const calculaSaldoFinal = (e) => {
-                const monto = parseFloat(e.target.value)
-                document.querySelector("#deposito").value = monto.toFixed(2)
-                const saldoInicial = (monto - parseFloat(document.querySelector("#inscripcion").value)).toFixed(2)
-                document.querySelector("#saldo_inicial").value = saldoInicial > 0 ? saldoInicial : "0.00"
-                document.querySelector("#deposito_inicial_letra").value = primeraMayuscula(numeroLetras(monto))
-                    
-                if (saldoInicial < saldoMinimoApertura) {
+                const monto = parseaNumero(e.target.value)
+                const saldoInicial = (monto - parseaNumero(document.querySelector("#inscripcion").value))
+                const saldoMinimoApertura = parseFloat(document.querySelector("#sma").value)
+
+                document.querySelector("#deposito").value = formatoMoneda(monto)
+                document.querySelector("#saldo_inicial").value = formatoMoneda(saldoInicial > 0 ? saldoInicial : 0)
+                document.querySelector("#monto_letra").value = numeroLetras(monto)
+
+                if (monto < saldoMinimoApertura) {
                     document.querySelector("#saldo_inicial").setAttribute("style", "color: red")
                     document.querySelector("#tipSaldo").setAttribute("style", "opacity: 100%;")
                     document.querySelector("#registraDepositoInicial").disabled = true
@@ -2623,7 +2666,7 @@ class Ahorro extends Controller
                     document.querySelector("#registraDepositoInicial").disabled = false
                 }
             }
-             
+
             const iniveCambio = (e) => e.preventDefault()
              
             const camposLlenos = (e) => {
@@ -2702,10 +2745,9 @@ class Ahorro extends Controller
                 document.querySelector("#curp").value = CURP.join("")
             }
         </script>
-        html;
+        HTML;
 
         $ComboEntidades = CajaAhorroDao::GetEFed();
-
         $opciones_ent = "";
         foreach ($ComboEntidades as $key => $val2) {
             $opciones_ent .= <<<html
@@ -2713,10 +2755,21 @@ class Ahorro extends Controller
             html;
         }
 
+        $sucursales = CajaAhorroDao::GetSucursalAsignadaCajeraAhorro($this->__usuario);
+        $opcSucursales = "";
+        foreach ($sucursales as $sucursales) {
+            $opcSucursales .= "<option value='{$sucursales['CODIGO']}'>{$sucursales['NOMBRE']}</option>";
+        }
+
         if ($_GET['cliente']) View::set('cliente', $_GET['cliente']);
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Contrato Cuenta Peque", [$this->swal2, $this->huellas])));
         View::set('footer', $this->_contenedor->footer($extraFooter));
         View::set('fecha', date('Y-m-d'));
+        View::set('sucursales', $opcSucursales);
+        View::set('tasaView', sprintf("%.1f %%", $infoCuenta['TASA']));
+        View::set('tasa', $infoCuenta['TASA']);
+        View::set('inscripcion', number_format($infoCuenta['COSTO_INSCRIPCION'], 2, '.', ','));
+        View::set('saldoMinimo', number_format($infoCuenta['SALDO_APERTURA'], 2, '.', ','));
         View::set('opciones_ent', $opciones_ent);
         View::render("caja_menu_contrato_peque");
     }

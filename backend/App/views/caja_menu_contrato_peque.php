@@ -200,7 +200,7 @@ $buscarCliente = new BuscarCliente('Para poder dar de alta un nuevo contrato de 
                                             </div>
                                             <div class="form-group">
                                                 <textarea type="text" style="resize: none;" class="form-control" id="direccion" rows="3" cols="50" readonly>
-                                                        </textarea>
+                                                </textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -214,16 +214,15 @@ $buscarCliente = new BuscarCliente('Para poder dar de alta un nuevo contrato de 
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="tasa">Tasa Anual</label>
-                                                <select class="form-control mr-sm-3" autofocus="" type="select" id="tasa" name="tasa" disabled>
-                                                    <option value="5">5 %</option>
-                                                </select>
+                                                <input id="tasaView" name="tasaView" class="form-control" value="<?= $tasaView ?>" disabled />
+                                                <input id="tasa" name="tasa" class="form-control" value="<?= $tasa ?>" type="hidden" />
                                             </div>
                                         </div>
                                         <div class="col-md-12">
                                             <div class="form-group">
                                                 <label for="Fecha">Sucursal</label>
-                                                <select class="form-control mr-sm-3" id="sucursal" name="sucursal" disabled>
-                                                    <option value="1514">CORPORATIVO</option>
+                                                <select class="form-control mr-sm-3" id="sucursal" name="sucursal">
+                                                    <?= $sucursales; ?>
                                                 </select>
                                             </div>
                                         </div>
@@ -249,6 +248,142 @@ $buscarCliente = new BuscarCliente('Para poder dar de alta un nuevo contrato de 
         </div>
     </div>
 </div>
+
+
+<!-- <div class="modal fade in" id="modal_agregar_pago" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: block; padding-right: 15px;"> -->
+<div class="modal fade" id="modal_agregar_pago" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <center>
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Registro de pago por apertura y ahorro inicial cuenta corriente</h4>
+                </center>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form id="AddPagoApertura">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="nombre_cliente">Nombre del titular</label>
+                                    <input type="text" class="form-control" id="nombre_cliente" name="nombre_cliente" value="<?= $Cliente[0]['NOMBRE']; ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="mdlCurp">CURP del peque</label>
+                                    <input type="text" class="form-control" id="mdlCurp" name="mdlCurp" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="fecha_pago">Fecha del depósito</label>
+                                    <input type="text" class="form-control" id="fecha_pago" name="fecha_pago" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4" style="display: none!important;">
+                                <div class="form-group">
+                                    <label for="contrato">Número de contrato</label>
+                                    <input type="text" class="form-control" id="contrato" name="contrato" aria-describedby="contrato" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="codigo_cl">Código de cliente SICAFIN</label>
+                                    <input type="number" class="form-control" id="codigo_cl" name="codigo_cl" value="<?= $credito; ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-5">
+                                <div class="form-group">
+                                    <label for="nombre_ejecutivo">Nombre del ejecutivo</label>
+                                    <input type="text" class="form-control" id="nombre_ejecutivo" name="nombre_ejecutivo" value="<?= $_SESSION['nombre']; ?>" readonly>
+                                </div>
+                            </div>
+                            <hr>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" style="font-size: 18px; padding-top: 5px;">
+                                <label style="color: #000000">Movimiento:</label>
+                            </div>
+                            <div class="col-md-4" style="text-align: center; font-size: 18px; padding-top: 5px;">
+                                <input type="radio" name="esDeposito" onchange=cambioMovimiento(event) checked>
+                                <label for="deposito">Depósito</label>
+                            </div>
+                            <div class="col-md-1" style="display: flex; justify-content: flex-end;">
+                                <h3>$</h3>
+                            </div>
+                            <div class="col-md-4" style="padding-top: 5px;">
+                                <input type="number" class="form-control" id="monto" name="monto" min="1" max="100000" placeholder="0.00" style="font-size: 25px;" oninput=validaDeposito(event) onkeydown=soloNumeros(event)>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" id="monto_letra" name="monto_letra" style="border: 1px solid #000000; text-align: center; font-size: 25px;" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="text-align:center;">
+                                <hr>
+                                <h3 style="color: #000000">Resumen de movimientos</h3>
+                                <br>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <h4>+</h4>
+                            </div>
+                            <div class="col-md-7">
+                                <h4>Depósito</h4>
+                            </div>
+                            <div class="col-md-1" style="display: flex; justify-content: flex-end;">
+                                <h4>$</h4>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" id="deposito" name="deposito" value="0.00" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <h4>-</h4>
+                            </div>
+                            <div class="col-md-7">
+                                <h4>Costo Anual</h4>
+                            </div>
+                            <div class="col-md-1" style="display: flex; justify-content: flex-end;">
+                                <h4>$</h4>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" id="inscripcion" name="inscripcion" value="<?= $inscripcion ?>" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4>Saldo inicial de la cuenta ahorro corriente</h4>
+                            </div>
+                            <div class="col-md-1" style="display: flex; justify-content: flex-end;">
+                                <h4>$</h4>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" id="saldo_inicial" name="saldo_inicial" value="0.00" readonly>
+                                <input type="hidden" class="form-control" id="sma" name="sma" value="<?= $saldoMinimo ?>" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="display: flex; justify-content: center; color: red; height: 20px;">
+                                <label id="tipSaldo" style="opacity:0; font-size: 18px;">El monto mínimo de apertura debe ser de $ <?= $saldoMinimo ?></label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="registraDepositoInicial" name="agregar" class="btn btn-primary" value="enviar" onclick=pagoApertura(event) disabled><span class="glyphicon glyphicon-floppy-disk"></span> Registrar depósito</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <style>
     .imagen {

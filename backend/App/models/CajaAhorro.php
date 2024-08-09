@@ -1171,7 +1171,7 @@ class CajaAhorro
             INSERT INTO CL_PQS
                 (CDGCL,CDG_CONTRATO,NOMBRE1,NOMBRE2,APELLIDO1,APELLIDO2,FECHA_NACIMIENTO,SEXO,CURP,PAIS,ENTIDAD,FECHA_REGISTRO,FECHA_MODIFICACION,ESTATUS,CDGCO,CDGPE_REGISTRO, tasa)
             VALUES
-                (:cliente, :contrato, :nombre1, :nombre2, :apellido1, :apellido2, :fecha_nacimiento, :sexo, :curp, :pais, :entidad, SYSDATE, SYSDATE, 'A', :sucursal, :ejecutivo, :tasa)
+                (:cliente, :contrato, :nombre1, :nombre2, :apellido1, :apellido2, TO_DATE(:fecha_nacimiento, 'DD-MM-YYYY'), :sexo, :curp, :pais, :entidad, SYSDATE, SYSDATE, 'A', :sucursal, :ejecutivo, :tasa)
             sql;
 
             $fecha = DateTime::createFromFormat('Y-m-d', $datos['fecha_nac']);
@@ -3302,6 +3302,30 @@ sql;
         try {
             $mysqli = new Database();
             return $mysqli->queryAll($qry);
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
+    public static function GetInfoCuentaPeque()
+    {
+        $qry = <<<SQL
+        SELECT
+            CODIGO,
+            DESCRIPCION,
+            COSTO_INSCRIPCION,
+            SALDO_APERTURA,
+            TASA
+        FROM
+            PR_PRIORITARIO
+        WHERE
+            ESTATUS = 'A'
+            AND CODIGO = 2
+        SQL;
+
+        try {
+            $mysqli = new Database();
+            return $mysqli->queryOne($qry);
         } catch (Exception $e) {
             return [];
         }
