@@ -3900,7 +3900,7 @@ class Ahorro extends Controller
 
     public function generaTabla($denominaciones, $tipo)
     {
-        $max = $tipo === "billete" ? 5000 : 1000;
+        $max = $tipo === "billete" ? 5000 : 1;
         $filas = <<<html
         <table style="width: 100%;">
         <thead>
