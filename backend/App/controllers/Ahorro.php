@@ -3688,7 +3688,7 @@ class Ahorro extends Controller
              
             const registraArqueo = () => {
                 const totalEfectivo = parseaNumero(document.querySelector("#totalEfectivo").value)
-                if (totalEfectivo < 1000) return showError("El total de efectivo debe ser mayor o igual a $1,000.00")
+                if (totalEfectivo < 1) return showError("El total de efectivo debe ser mayor o igual a $1.00")
                 
                 confirmarMovimiento(
                     "Confirmación de arqueo de caja",
