@@ -3671,7 +3671,7 @@ class Ahorro extends Controller
                  
                 const maximo = e.target.max
                 let cantidad = parseaNumero(e.target.value)
-                if (cantidad > 1) {
+                if (cantidad > maximo) {
                     e.preventDefault()
                     e.target.value = maximo
                     cantidad = maximo
@@ -3683,7 +3683,7 @@ class Ahorro extends Controller
                 const totalEfectivo = Array.from(document.querySelectorAll(".efectivo")).reduce((total, input) => total + parseaNumero(input.value), 0)
                 
                 document.querySelector("#totalEfectivo").value = formatoMoneda(totalEfectivo)
-                document.querySelector("#btnRegistrarArqueo").disabled = !(totalEfectivo >= 1000)
+                document.querySelector("#btnRegistrarArqueo").disabled = !(totalEfectivo >= 1)
             }
              
             const registraArqueo = () => {
