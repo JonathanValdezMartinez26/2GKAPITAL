@@ -3671,7 +3671,7 @@ class Ahorro extends Controller
                  
                 const maximo = e.target.max
                 let cantidad = parseaNumero(e.target.value)
-                if (cantidad > maximo) {
+                if (cantidad > 1) {
                     e.preventDefault()
                     e.target.value = maximo
                     cantidad = maximo
@@ -3900,7 +3900,7 @@ class Ahorro extends Controller
 
     public function generaTabla($denominaciones, $tipo)
     {
-        $max = $tipo === "billete" ? 5000 : 1;
+        $max = $tipo === "billete" ? 5000 : 1000;
         $filas = <<<html
         <table style="width: 100%;">
         <thead>
