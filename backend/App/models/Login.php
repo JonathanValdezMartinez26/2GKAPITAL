@@ -81,6 +81,7 @@ sql;
     public static function getUser($usuario)
     {
         $mysqli = new Database();
+        
         $query = <<<sql
         SELECT
             CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) NOMBRE,
@@ -99,7 +100,6 @@ sql;
 sql;
 
         //var_dump($query);
-
         return $mysqli->queryAll($query);
     }
 }

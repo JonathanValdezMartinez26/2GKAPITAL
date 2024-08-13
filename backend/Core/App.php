@@ -112,7 +112,7 @@ class App
      */
     public static function getConfig()
     {
-        return parse_ini_file(APPPATH . '/config/config.ini');
+        return parse_ini_file(APPPATH . '/config/configuracion.ini');
     }
 
     /**

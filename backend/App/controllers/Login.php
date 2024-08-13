@@ -7,6 +7,7 @@ defined("APPPATH") or die("Access denied");
 use \Core\View;
 use \Core\MasterDom;
 use \App\models\Login as LoginDao;
+use Core\App;
 
 class Login
 {
@@ -121,6 +122,7 @@ html;
                 })
             </script>
 html;
+
         View::set('header', $extraHeader);
         View::set('footer', $extraFooter);
         View::render("login");
@@ -128,7 +130,8 @@ html;
 
     public function isUserValidate()
     {
-        echo (count(LoginDao::getUser($_POST['usuario'])) >= 1) ? 'true' : 'false';
+        $u = LoginDao::getUser($_POST['usuario']);
+        echo (count($u) >= 1) ? 'true' : 'false';
     }
 
     public function verificarUsuario()

@@ -2,6 +2,7 @@
 
 namespace Core;
 
+use Core\App;
 use PDO;
 
 /**
@@ -10,22 +11,24 @@ use PDO;
 
 class Database
 {
+    private $configuracion;
     private $gkapital;
     public $db_activa;
-
+    
     function __construct()
     {
+        $this->configuracion = App::getConfig();
         $this->DB_GKAPITAL();
-
+        
         // La base por defecto seria 2gkapital"
         $this->db_activa = $this->gkapital;
     }
 
     private function Conecta($s, $u = null, $p = null)
     {
-        $host = 'oci:dbname=//' . $s . ':1521/ESIACOM;charset=UTF8';
-        $usuario = $u ?? 'ESIACOM';
-        $password = $p ?? 'ESIACOM';
+        $host = 'oci:dbname=//' . $s . ':' . $this->configuracion['PUERTO'] . '/ESIACOM;charset=UTF8';
+        $usuario = $u ?? $this->configuracion['USUARIO'];
+        $password = $p ?? $this->configuracion['PASSWORD'];
         try {
             return new PDO($host, $usuario, $password);
         } catch (\PDOException $e) {
@@ -46,7 +49,7 @@ class Database
 
     private function DB_GKAPITAL()
     {
-        $servidor = '2GKAPITAL';
+        $servidor = $this->configuracion['SERVIDOR'];
         $this->gkapital = self::Conecta($servidor);
     }
 
