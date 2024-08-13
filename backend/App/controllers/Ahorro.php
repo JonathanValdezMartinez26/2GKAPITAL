@@ -7,6 +7,7 @@ defined("APPPATH") or die("Access denied");
 use \Core\View;
 use \Core\Controller;
 use \Core\MasterDom;
+use Core\App;
 use \App\models\CajaAhorro as CajaAhorroDao;
 use \App\models\Ahorro as AhorroDao;
 use \App\components\TarjetaDedo;
@@ -14,9 +15,9 @@ use DateTime;
 
 class Ahorro extends Controller
 {
+    private $configuracion;
     private $_contenedor;
     private $operacionesNulas = [2, 5]; // [Comisión, Transferencia]
-    private $urlHuellas = 'http://3.131.40.57:8008/huellas/endpoints/';
     private $XLSX = '<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>';
     private $swal2 = '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
     private $huellas = '<script src="/js/huellas/es6-shim.js"></script><script src="/js/huellas/fingerprint.sdk.min.js"></script><script src="/js/huellas/huellas.js"></script><script src="/js/huellas/websdk.client.bundle.min.js"></script>';
@@ -259,7 +260,6 @@ class Ahorro extends Controller
     }
     script;
     private $valida_MCM_Complementos = 'const valida_MCM_Complementos = async () => {
-    return true
         swal({ text: "Procesando la solicitud, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
         
         let resultado = false
@@ -522,6 +522,7 @@ class Ahorro extends Controller
     function __construct()
     {
         parent::__construct();
+        $this->configuracion = App::getConfig();
         $this->_contenedor = new Contenedor;
         $tarjetaDedo = new TarjetaDedo("derecha", 1);
         $this->showHuella = str_replace("HTML_HUELLA", $tarjetaDedo->mostrar(), $this->showHuella);
@@ -1335,7 +1336,7 @@ class Ahorro extends Controller
 
     public function EngineHuellas($endpoint, $datos)
     {
-        $ci = curl_init($this->urlHuellas . $endpoint);
+        $ci = curl_init($this->configuracion['URL_HUELLAS'] . $endpoint);
         curl_setopt($ci, CURLOPT_POST, true);
         curl_setopt($ci, CURLOPT_POSTFIELDS, http_build_query($datos));
         curl_setopt($ci, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
