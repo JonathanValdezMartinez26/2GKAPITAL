@@ -1,5 +1,7 @@
+<?= $header; ?>
+
 <?php
-echo $header;
+$anio = date('Y');
 ?>
 
 <head>
@@ -9,7 +11,7 @@ echo $header;
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="shortcut icon" href="/img/logo_ico.png">
-    <title>Login | MCM </title>
+    <title>Login | 2G Kapital </title>
 
     <!-- Bootstrap -->
     <link href="../vendors/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -57,8 +59,8 @@ echo $header;
                     <br />
 
                     <div>
-                        <h1><i class="fa fa-paw"></i> 2GKAPITAL | Tu independencia financiera</h1>
-                        <p>© 2023 Todos los derechos reservados, 2GKAPITAL, usted acepta los terminos de Privacidad y Condiciones al loguearse al sistema.</p>
+                        <h1><i class="fa fa-paw"></i>2G Kapital</h1>
+                        <p>© <?= $anio ?> - Al ingresar al sistema de 2G Kapital, los usuarios están de acuerdo con las políticas de privacidad y términos de uso establecidos por la empresa.</p>
                     </div>
                 </div>
             </form>
@@ -66,4 +68,4 @@ echo $header;
     </div>
 
 </div>
-<?php echo $footer; ?>
+<?= $footer; ?>
