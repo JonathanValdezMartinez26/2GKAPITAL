@@ -107,7 +107,7 @@ class App
      */
     public static function getConfig()
     {
-        return parse_ini_file(dirname(__DIR__) . '/config/configuracion.ini');
+        return parse_ini_file(dirname(__DIR__) . '/App/config/configuracion.ini');
     }
 
     /**
