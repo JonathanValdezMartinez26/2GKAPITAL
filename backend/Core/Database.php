@@ -159,15 +159,15 @@ class Database
         }
     }
 
-    public function actualizar($sql)
+    public function actualizar($sql, $parametros = [])
     {
         try {
-            if (!$this->db_activa->prepare($sql)->execute())
-                throw new \Exception("Error en actualizar: " . print_r($this->db_activa->errorInfo(), 1) . "\nSql : $sql");
+            if (!$this->db_activa->prepare($sql)->execute($parametros))
+                throw new \Exception("Error en actualizar: " . print_r($this->db_activa->errorInfo(), 1) . "\nSql : $sql \nDatos : " . print_r($parametros, 1));
 
             return true;
         } catch (\PDOException $e) {
-            throw new \Exception("Error en actualizar: " . $e->getMessage() . "\nSql : $sql");
+            throw new \Exception("Error en actualizar: " . $e->getMessage() . "\nSql : $sql \nDatos : " . print_r($parametros, 1));
         }
     }
 

@@ -325,25 +325,25 @@ class CajaAhorro
         $queryValidacion = <<<sql
         SELECT
             CONCATENA_NOMBRE(CL.NOMBRE1, CL.NOMBRE2, CL.PRIMAPE, CL.SEGAPE) AS NOMBRE,
+            (SELECT CDGPR_PRIORITARIO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2) AS PRODUCTO,
             CL.CURP,
             TO_CHAR(CL.REGISTRO, 'DD-MM-YYYY') AS FECHA_REGISTRO,
             TRUNC(MONTHS_BETWEEN(TO_DATE(SYSDATE, 'dd-mm-yy'), CL.NACIMIENTO)/12)AS EDAD,
             UPPER(DOMICILIO_CLIENTE(CL.CODIGO)) AS DIRECCION,
-            (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2) AS CONTRATO,
-            (SELECT TO_CHAR(FECHA_APERTURA, 'DD/MM/YYYY HH24:MI:SS') FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2) AS FECHA_CONTRATO,
-            NVL((SELECT SALDO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2), 0) AS SALDO,
-            (SELECT CDGPE_COMISIONA FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2) AS EJECUTIVO_COMISIONA,
+            (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2) AS CONTRATO,
+            (SELECT TO_CHAR(FECHA_APERTURA, 'DD/MM/YYYY HH24:MI:SS') FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2) AS FECHA_CONTRATO,
+            NVL((SELECT SALDO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2), 0) AS SALDO,
+            (SELECT CDGPE_COMISIONA FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2) AS EJECUTIVO_COMISIONA,
             (
                 SELECT
                     CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE)
                 FROM
                     PE
                 WHERE
-                    PE.CODIGO = (SELECT CDGPE_COMISIONA FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2)
+                    PE.CODIGO = (SELECT CDGPE_COMISIONA FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
                     AND PE.CDGEM = 'EMPFIN'
             ) AS NOMBRE_EJECUTIVO_COMISIONA,
             CL.CODIGO AS CDGCL,
-            (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2) AS CONTRATO,
             NVL(
                 (SELECT
                     COUNT(MA.CDG_CONTRATO)
@@ -351,7 +351,7 @@ class CajaAhorro
                     MOVIMIENTOS_AHORRO MA
                 WHERE
                     MA.CDG_TIPO_PAGO = 2
-                    AND MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2)
+                    AND MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
             ),0) AS CONTRATO_COMPLETO,
             (
                 SELECT
@@ -360,7 +360,7 @@ class CajaAhorro
                     ASIGNA_PROD_AHORRO APA
                 WHERE
                     APA.CDGCL = CL.CODIGO
-                    AND CDGPR_PRIORITARIO > 2
+                    AND CDGPR_PRIORITARIO != 2
             ) AS NO_CONTRATOS
         FROM
             CL
@@ -425,6 +425,37 @@ class CajaAhorro
             return self::Responde(true, "Consulta realizada correctamente.", $res);
         } catch (Exception $e) {
             return self::Responde(false, "Ocurrió un error al consultar los datos del cliente.", null, $e->getMessage());
+        }
+    }
+
+    public static function ActualizaContratoAhorro($datos)
+    {
+        $qry = <<<SQL
+        UPDATE
+            ASIGNA_PROD_AHORRO
+        SET
+            CDGPR_PRIORITARIO = :producto,
+            TASA = :tasa,
+            FECHA_APERTURA = SYSDATE,
+            CDGPE_ACTUALIZA = :ejecutivo
+        WHERE
+            CONTRATO = :contrato
+            AND CDGPR_PRIORITARIO = 1
+        SQL;
+
+        $parametros = [
+            'producto' => $datos['tipo_ahorro'],
+            'tasa' => $datos['tasa'],
+            'ejecutivo' => $datos['ejecutivo'],
+            'contrato' => $datos['contrato']
+        ];
+
+        try {
+            $mysqli = new Database();
+            $res = $mysqli->actualizar($qry, $parametros);
+            return self::Responde(true, "Contrato de ahorro actualizado correctamente.");
+        } catch (Exception $e) {
+            return self::Responde(false, "Ocurrió un error al actualizar el contrato de ahorro.", null, $e->getMessage());
         }
     }
 
@@ -1093,7 +1124,7 @@ class CajaAhorro
                     MOVIMIENTOS_AHORRO MA
                 WHERE
                     MA.CDG_TIPO_PAGO = 2
-                    AND MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2)
+                    AND MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
             ),0) AS CONTRATO_COMPLETO,
             (
                 SELECT
@@ -1102,7 +1133,7 @@ class CajaAhorro
                     ASIGNA_PROD_AHORRO APA
                 WHERE
                     APA.CDGCL = CL.CODIGO
-                    AND CDGPR_PRIORITARIO > 2
+                    AND CDGPR_PRIORITARIO != 2
             ) AS NO_CONTRATOS
         FROM
             CL,
@@ -1129,7 +1160,7 @@ class CajaAhorro
             $res = $mysqli->queryOne($queryValidacion);
             if (!$res) return self::Responde(false, "No se encontraron datos para el cliente {$datos['cliente']}.");
             if ($res['NO_CONTRATOS'] == 0) return self::Responde(false, "El cliente {$datos['cliente']} no cuenta con un contrato de ahorro.", $res);
-            if ($res['NO_CONTRATOS'] >= 1 && $res['CONTRATO_COMPLETO'] == 0) return self::Responde(false, "El cliente {$datos['cliente']} no ha concluido el proceso de apertura de su cuenta de ahorro.", $res);
+            //if ($res['NO_CONTRATOS'] >= 1 && $res['CONTRATO_COMPLETO'] == 0) return self::Responde(false, "El cliente {$datos['cliente']} no ha concluido el proceso de apertura de su cuenta de ahorro.", $res);
             return self::Responde(true, "Consulta realizada correctamente.", $res);
         } catch (Exception $e) {
             return self::Responde(false, "Ocurrió un error al consultar los datos del cliente.", null, $e->getMessage());
@@ -3296,7 +3327,7 @@ sql;
             PR_PRIORITARIO
         WHERE
             ESTATUS = 'A'
-            AND CODIGO > 2
+            AND CODIGO != 2
         SQL;
 
         try {

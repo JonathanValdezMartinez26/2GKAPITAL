@@ -548,6 +548,7 @@ class Ahorro extends Controller
             const montoMaximo = 1000000
             const txtGuardaContrato = "GUARDAR DATOS Y PROCEDER AL COBRO"
             const txtGuardaPago = "REGISTRAR DEPÓSITO DE APERTURA"
+            const txtActualizarCuenta = "ACTUALIZAR TIPO DE CUENTA"
             let valKD = false
             let manoIzquierda
             let manoDerecha
@@ -582,6 +583,15 @@ class Ahorro extends Controller
                 document.querySelector("#tipo_ahorro").addEventListener("change", () => {
                     document.querySelector("#tasa").selectedIndex = document.querySelector("#tipo_ahorro").selectedIndex
                     document.querySelector("#infoProducto").selectedIndex = document.querySelector("#tipo_ahorro").selectedIndex
+                    if (document.querySelector("#tipo_ahorro").selectedIndex === 0) {
+                        document.querySelector("#manejo_cta").selectedIndex = 1
+                        if (document.querySelector("#mostrarHuellas").value)
+                            document.querySelector("#btnGeneraContrato").style.display = "none"
+                    } else {
+                        document.querySelector("#manejo_cta").selectedIndex = 0
+                        if (document.querySelector("#mostrarHuellas").value)
+                            document.querySelector("#btnGeneraContrato").style.display = "block"
+                    }
 
                     document.querySelector("#monto").value = ""
                     document.querySelector("#monto").dispatchEvent(new Event("input"))
@@ -649,24 +659,43 @@ class Ahorro extends Controller
                         }
                          
                         if (datosCliente['NO_CONTRATOS'] >= 0 && datosCliente.CONTRATO_COMPLETO == 0) {
-                            await showInfo("La apertura del contrato no ha concluido, realice el depósito de apertura.")
                             document.querySelector("#fecha_pago").value = getHoy()
                             document.querySelector("#contrato").value = datosCliente.CONTRATO
                             document.querySelector("#codigo_cl").value = datosCliente.CDGCL
                             document.querySelector("#nombre_cliente").value = datosCliente.NOMBRE
                             document.querySelector("#mdlCurp").value = datosCliente.CURP
-                            $("#modal_agregar_pago").modal("show")
-                            document.querySelector("#chkCreacionContrato").classList.add("green")
-                            document.querySelector("#chkCreacionContrato").classList.add("fa-check")
-                            document.querySelector("#chkCreacionContrato").classList.remove("red")
-                            document.querySelector("#chkCreacionContrato").classList.remove("fa-times")
-                            document.querySelector("#lnkContrato").style.cursor = "pointer"
-                            document.querySelector("#chkPagoApertura").classList.remove("green")
-                            document.querySelector("#chkPagoApertura").classList.remove("fa-check")
-                            document.querySelector("#chkPagoApertura").classList.add("fa-times")
-                            document.querySelector("#chkPagoApertura").classList.add("red")
-                            document.querySelector("#btnGuardar").innerText = txtGuardaPago
-                            document.querySelector("#btnGeneraContrato").style.display = "block"
+                            document.querySelector("#tipo_ahorro").value = datosCliente.PRODUCTO
+                            document.querySelector("#tipo_ahorro").dispatchEvent(new Event("change"))
+
+                            if (datosCliente['PRODUCTO'] == 1) {
+                                document.querySelector("#contratoOK").value = ""
+                                document.querySelector("#chkCreacionContrato").classList.add("red")
+                                document.querySelector("#chkCreacionContrato").classList.add("fa-times")
+                                document.querySelector("#chkCreacionContrato").classList.remove("green")
+                                document.querySelector("#chkCreacionContrato").classList.remove("fa-check")
+                                document.querySelector("#lnkContrato").style.cursor = "default"
+                                document.querySelector("#chkPagoApertura").classList.add("red")
+                                document.querySelector("#chkPagoApertura").classList.add("fa-times")
+                                document.querySelector("#chkPagoApertura").classList.remove("green")
+                                document.querySelector("#chkPagoApertura").classList.remove("fa-check")
+                                document.querySelector("#btnGuardar").innerText = txtActualizarCuenta
+                                document.querySelector("#mostrarHuellas").value = 1
+                            } else {
+                                await showInfo("La apertura del contrato no ha concluido, realice el depósito de apertura.")
+                                $("#modal_agregar_pago").modal("show")
+                                document.querySelector("#chkCreacionContrato").classList.add("green")
+                                document.querySelector("#chkCreacionContrato").classList.add("fa-check")
+                                document.querySelector("#chkCreacionContrato").classList.remove("red")
+                                document.querySelector("#chkCreacionContrato").classList.remove("fa-times")
+                                document.querySelector("#lnkContrato").style.cursor = "pointer"
+                                document.querySelector("#chkPagoApertura").classList.remove("green")
+                                document.querySelector("#chkPagoApertura").classList.remove("fa-check")
+                                document.querySelector("#chkPagoApertura").classList.add("fa-times")
+                                document.querySelector("#chkPagoApertura").classList.add("red")
+                                document.querySelector("#btnGuardar").innerText = txtGuardaPago
+                                document.querySelector("#btnGeneraContrato").style.display = "block"
+                                document.querySelector("#tipo_ahorro").disabled = true
+                            }
                         }
                          
                         if (datosCliente['NO_CONTRATOS'] >= 0 && datosCliente.CONTRATO_COMPLETO == 1) {
@@ -680,6 +709,7 @@ class Ahorro extends Controller
                             document.querySelector("#chkPagoApertura").classList.remove("fa-times")
                             document.querySelector("#chkPagoApertura").classList.add("green")
                             document.querySelector("#chkPagoApertura").classList.add("fa-check")
+                            document.querySelector("#tipo_ahorro").disabled = true
                         }
                          
                         consultaServidor("/Ahorro/GetBeneficiarios/", { contrato: datosCliente.CONTRATO }, (respuesta) => {
@@ -780,13 +810,15 @@ class Ahorro extends Controller
                 document.querySelector("#ejecutivo_comision").childNodes.forEach((option) => {
                     if (option.value === "tmp") option.remove()
                 })
+                document.querySelector("#mostrarHuellas").value = ""
+                document.querySelector("#tipo_ahorro").disabled = false
                 actualizaInscripcion()
             }
             
             const generaContrato = async (e) => {
                 e.preventDefault()
                 const btnGuardar = document.querySelector("#btnGuardar")
-                if (btnGuardar.innerText === txtGuardaPago) return $("#modal_agregar_pago").modal("show")
+                if (btnGuardar.innerText === txtGuardaPago || btnGuardar.innerText === txtActualizarCuenta) return $("#modal_agregar_pago").modal("show")
                  
                 document.querySelector("#fecha_pago").value = getHoy()
                 document.querySelector("#contrato").value = ""
@@ -794,13 +826,18 @@ class Ahorro extends Controller
                 document.querySelector("#nombre_cliente").value = document.querySelector("#nombre").value
                 document.querySelector("#mdlCurp").value = document.querySelector("#curp").value
                     
+                if (document.querySelector("#tipo_ahorro").selectedIndex === 0) {
+                    const continuar = await confirmarMovimiento("Cuenta Puente", "Esta apunto de activar una cuenta limitada y sin beneficios, ¿Desea continuar?")
+                    if (continuar) return cuentaPuente()
+                    return
+                }
+            
                 await showInfo("Debe registrar el depósito por apertura de cuenta.")
-                btnGuardar.innerText = txtGuardaPago
                 $("#modal_agregar_pago").modal("show")
             }
                         
             const pagoApertura = async (e) => {
-                if (!await valida_MCM_Complementos()) return
+                //if (!await valida_MCM_Complementos()) return
                  
                 e.preventDefault()
                 if (parseaNumero(document.querySelector("#deposito").value) < saldoMinimoApertura) return showError("El saldo inicial no puede ser menor a " + saldoMinimoApertura.toLocaleString("es-MX", {style:"currency", currency:"MXN"}) + ".")
@@ -812,25 +849,62 @@ class Ahorro extends Controller
                         "?"
                 ).then((continuar) => {
                     if (!continuar) return
-                
+
                     const noCredito = document.querySelector("#noCliente").value
                     const datosContrato = $("#registroInicialAhorro").serializeArray()
-                    addParametro(datosContrato, "credito", noCredito)
-                    addParametro(datosContrato, "ejecutivo", "{$_SESSION['usuario']}")
-
                     const tasa = document.querySelector("#tasa")
-                    addParametro(datosContrato, "tasa", tasa.options[tasa.selectedIndex].text)
-                     
-                    if (document.querySelector("#contrato").value !== "") return regPago(document.querySelector("#contrato").value)
 
+                    addParametro(datosContrato, "ejecutivo", "{$_SESSION['usuario']}")
+                    addParametro(datosContrato, "credito", noCredito)
+                    addParametro(datosContrato, "tasa", tasa.options[tasa.selectedIndex].text)
+
+                    if (document.querySelector("#contrato").value !== "") {
+                        if (document.querySelector("#btnGuardar").innerText === txtActualizarCuenta) {
+                            addParametro(datosContrato, "contrato", document.querySelector("#contrato").value)
+                            return consultaServidor("/Ahorro/ActualizaContratoAhorro/", $.param(datosContrato), (respuesta) => {
+                                if (!respuesta.success) {
+                                    console.error(respuesta.error)
+                                    return showError(respuesta.mensaje)
+                                }
+
+                                regPago(document.querySelector("#contrato").value)
+                            })
+                        }
+                        return regPago(document.querySelector("#contrato").value)
+                    }
+                    
                     consultaServidor("/Ahorro/AgregaContratoAhorro/", $.param(datosContrato), (respuesta) => {
                         if (!respuesta.success) {
                             console.error(respuesta.error)
                             return showError(respuesta.mensaje)
                         }
-                         
+                        
+                        document.querySelector("#btnGuardar").innerText = txtGuardaPago
                         regPago(respuesta.datos.contrato)
                     })
+                })
+            }
+
+            const cuentaPuente = () => {
+                const noCredito = document.querySelector("#noCliente").value
+                const datosContrato = $("#registroInicialAhorro").serializeArray()
+                addParametro(datosContrato, "credito", noCredito)
+                addParametro(datosContrato, "ejecutivo", "{$_SESSION['usuario']}")
+
+                const tasa = document.querySelector("#tasa")
+                addParametro(datosContrato, "tasa", tasa.options[tasa.selectedIndex].text)
+
+                consultaServidor("/Ahorro/AgregaContratoAhorro/", $.param(datosContrato), (respuesta) => {
+                    if (!respuesta.success) {
+                        console.error(respuesta.error)
+                        return showError(respuesta.mensaje)
+                    }
+
+                    showSuccess("La cuenta se registro correctamente con el numero: " + respuesta.datos.contrato + ".")
+
+                    document.querySelector("#registroInicialAhorro").reset()
+                    document.querySelector("#AddPagoApertura").reset()
+                    limpiaDatosCliente()
                 })
             }
              
@@ -843,16 +917,18 @@ class Ahorro extends Controller
                  
                 consultaServidor("/Ahorro/PagoApertura/", $.param(datos), (respuesta) => {
                     if (!respuesta.success) return showError(respuesta.mensaje)
-                
+
                     showSuccess(respuesta.mensaje)
                     .then(() => {
-                        document.querySelector("#registroInicialAhorro").reset()
-                        document.querySelector("#AddPagoApertura").reset()
-                        $("#modal_agregar_pago").modal("hide")
-                        limpiaDatosCliente()
-                        
-                        showSuccess("Se ha generado el contrato: " + contrato + ".")
+                        let estado = "generado"
+                        if (document.querySelector("#btnGuardar").innerText === txtActualizarCuenta) estado = "actualizado"
+                 
+                        showSuccess("Se ha " + estado + " el contrato: " + contrato + ".")
                         .then(() => {
+                            document.querySelector("#registroInicialAhorro").reset()
+                            document.querySelector("#AddPagoApertura").reset()
+                            $("#modal_agregar_pago").modal("hide")
+                            limpiaDatosCliente()
                             imprimeContrato(contrato, 1)
                             imprimeTicket(respuesta.datos.ticket, "{$_SESSION['cdgco_ahorro']}")
                         })
@@ -1058,14 +1134,17 @@ class Ahorro extends Controller
             }
 
             const mostrarModalHuellas = () => {
+                const valHuellas = document.querySelector("#chkRegistroHuellas").classList.contains("green")
+                if (valHuellas) return
+                
+                const forzar = document.querySelector("#mostrarHuellas").value
+                if (forzar) return $("#modal_registra_huellas").modal("show")
+
                 const valContrato = document.querySelector("#chkCreacionContrato").classList.contains("red")
                 const valPago = document.querySelector("#chkPagoApertura").classList.contains("red")
-                const valHuellas = document.querySelector("#chkRegistroHuellas").classList.contains("green")
-
-                if (valHuellas) return
+ 
                 if (valContrato) return showError("Debe completar el proceso de creación del contrato.")
                 if (valPago) return showError("Debe completar el proceso de pago de apertura.")
-
                 $("#modal_registra_huellas").modal("show")
             }
          
@@ -1198,9 +1277,11 @@ class Ahorro extends Controller
         $opcTasaAhorro = "";
         $opcInfoAhorro = "";
         foreach ($tipoAhorro as $tipo) {
-            $opcTipoAhorro .= "<option value='{$tipo['CODIGO']}'>{$tipo['DESCRIPCION']}</option>";
-            $opcTasaAhorro .= "<option value='{$tipo['TASA']}'>{$tipo['TASA']}</option>";
-            $opcInfoAhorro .= "<option value='{$tipo['COSTO_INSCRIPCION']}'>{$tipo['SALDO_APERTURA']}</option>";
+            if ($tipo['CODIGO'] == 3) $seleccionado = "selected";
+            else $seleccionado = "";
+            $opcTipoAhorro .= "<option value='{$tipo['CODIGO']}' $seleccionado>{$tipo['DESCRIPCION']}</option>";
+            $opcTasaAhorro .= "<option value='{$tipo['TASA']}' $seleccionado>{$tipo['TASA']}</option>";
+            $opcInfoAhorro .= "<option value='{$tipo['COSTO_INSCRIPCION']}' $seleccionado>{$tipo['SALDO_APERTURA']}</option>";
         }
 
         if ($_GET['cliente']) View::set('cliente', $_GET['cliente']);
@@ -1236,6 +1317,11 @@ class Ahorro extends Controller
     public function AgregaContratoAhorro()
     {
         echo CajaAhorroDao::AgregaContratoAhorro($_POST);
+    }
+
+    public function ActualizaContratoAhorro()
+    {
+        echo CajaAhorroDao::ActualizaContratoAhorro($_POST);
     }
 
     public function PagoApertura()
@@ -2473,18 +2559,18 @@ class Ahorro extends Controller
                                 })
                                 return
                             }
-                            if (datosCliente["NO_CONTRATOS"] == 1 && datosCliente["CONTRATO_COMPLETO"] == 0) {
-                                swal({
-                                    title: "Cuenta de ahorro Peques™",
-                                    text: "El cliente " + noCliente.value + " no ha completado el proceso de apertura de la cuenta de ahorro.\\nDesea completar el proceso en este momento?",
-                                    icon: "info",
-                                    buttons: ["No", "Sí"],
-                                    dangerMode: true
-                                }).then((abreCta) => {
-                                    if (abreCta) return window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + noCliente.value
-                                })
-                                return
-                            }
+                            // if (datosCliente["NO_CONTRATOS"] == 1 && datosCliente["CONTRATO_COMPLETO"] == 0) {
+                            //     swal({
+                            //         title: "Cuenta de ahorro Peques™",
+                            //         text: "El cliente " + noCliente.value + " no ha completado el proceso de apertura de la cuenta de ahorro.\\nDesea completar el proceso en este momento?",
+                            //         icon: "info",
+                            //         buttons: ["No", "Sí"],
+                            //         dangerMode: true
+                            //     }).then((abreCta) => {
+                            //         if (abreCta) return window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + noCliente.value
+                            //     })
+                            //     return
+                            // }
                         }
                             
                         limpiaDatosCliente()

@@ -155,12 +155,6 @@ $derecha = new TarjetaMano('derecha');
                                                     <input type="text" class="form-control" id="fecha" name="fecha" value="<?= $fecha; ?>" readonly>
                                                 </div>
                                             </div>
-                                            <!-- <div class="col-md-4">
-                                                <div class="form-group">
-                                                    <label for="monto_min">Monto mínimo sin cuota anual</label>
-                                                    <input type="text" class="form-control" id="monto_min" name="monto_min" value="50" readonly>
-                                                </div>
-                                            </div> -->
                                             <div class="col-md-8">
                                                 <div class="form-group">
                                                     <label for="sucursal">Sucursal *</label>
@@ -192,6 +186,7 @@ $derecha = new TarjetaMano('derecha');
                                                     <label for="manejo_cta">Manejo de ahorro cuenta</label>
                                                     <select class="form-control mr-sm-3" id="manejo_cta" name="manejo_cta" disabled>
                                                         <option value="1">APLICA</option>
+                                                        <option value="2">NO APLICA</option>
                                                     </select>
                                                 </div>
                                             </div>
@@ -281,6 +276,7 @@ $derecha = new TarjetaMano('derecha');
                                                 <i class="fa fa-times red" id="chkPagoApertura"></i><span style="color: #000; user-select: none;">Deposito de apertura</span>
                                             </div>
                                             <div class="col-md-4" style="display: flex; justify-content: center; align-items: center;">
+                                                <input id="mostrarHuellas" type="hidden" />
                                                 <i class="fa fa-times red" id="chkRegistroHuellas"></i><a href="javascript:void(0);" onclick=mostrarModalHuellas() style="color: #000; cursor: default;" id="lnkHuellas">Registro de Huellas</a>
                                             </div>
                                         </div>
@@ -304,11 +300,11 @@ $derecha = new TarjetaMano('derecha');
 </div>
 
 <!-- <div class="modal fade in" id="modal_registra_huellas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: block; padding-right: 15px;"> -->
-<div class="modal fade" id="modal_registra_huellas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" data-keyboard="false" data-backdrop="static">
+<div class="modal fade" id="modal_registra_huellas" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
-                <button id="cerrar_modal" type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <button id="cerrar_modal" type="button" class="close" data-dismiss="modal">&times;</button>
                 <h4 class="modal-title" id="myModalLabel">Registro de huellas dactilares</h4>
             </div>
             <div class="modal-body">
@@ -347,12 +343,12 @@ $derecha = new TarjetaMano('derecha');
 </div>
 
 <!-- <div class="modal fade in" id="modal_agregar_pago" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: block; padding-right: 15px;"> -->
-<div class="modal fade" id="modal_agregar_pago" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+<div class="modal fade" id="modal_agregar_pago" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
     <div class="modal-dialog modal-lg">
         <div class="modal-content">
             <div class="modal-header">
                 <center>
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
                     <h4 class="modal-title" id="myModalLabel">Registro de pago por apertura y ahorro inicial cuenta corriente</h4>
                 </center>
             </div>
