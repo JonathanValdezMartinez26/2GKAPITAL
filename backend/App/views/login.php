@@ -50,14 +50,10 @@ $anio = date('Y');
                         <button type="button" id="btnEntrar" class="btn btn-warning col-md-4 col-sm-4 col-xs-4 pull-right" style="background: #C43136; border-color: #C43136">Entrar <i class="glyphicon glyphicon-log-in"></i></button>
                     </div>
                 </div>
-
                 <div class="clearfix"></div>
-
                 <div class="separator">
-
                     <div class="clearfix"></div>
                     <br />
-
                     <div>
                         <h1><i class="fa fa-paw"></i>2G Kapital</h1>
                         <p>© <?= $anio ?> - Al ingresar al sistema de 2G Kapital, los usuarios están de acuerdo con las políticas de privacidad y términos de uso establecidos por la empresa.</p>

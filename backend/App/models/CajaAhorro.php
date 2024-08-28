@@ -1052,10 +1052,15 @@ class CajaAhorro
                 SELECT
                     CASE MA.CDG_TIPO_PAGO
                         WHEN '5' THEN 'APERTURA CUENTA DE INVERSIÓN'
-                        ELSE CASE APA.CDGPR_PRIORITARIO
-                            WHEN '1' THEN 'CUENTA DE AHORRO CORRIENTE'
-                            WHEN '2' THEN 'CUENTA DE AHORRO PEQUE'
-                            ELSE 'NO DEFINIDO'
+                        ELSE 
+                            (
+                                SELECT
+                                    DESCRIPCION
+                                FROM
+                                    PR_PRIORITARIO
+                                WHERE
+                                    CODIGO = APA.CDGPR_PRIORITARIO
+                            )
                         END
                     END
                 FROM
