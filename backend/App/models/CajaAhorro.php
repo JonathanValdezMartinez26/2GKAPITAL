@@ -344,15 +344,36 @@ class CajaAhorro
                     AND PE.CDGEM = 'EMPFIN'
             ) AS NOMBRE_EJECUTIVO_COMISIONA,
             CL.CODIGO AS CDGCL,
-            NVL(
-                (SELECT
-                    COUNT(MA.CDG_CONTRATO)
+            (
+                SELECT
+                    MA.MONTO
+                FROM
+                    MOVIMIENTOS_AHORRO MA
+                WHERE
+                    MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
+                    AND CDG_TIPO_PAGO = 2
+                    AND MA.FECHA_MOV = (
+                        SELECT
+                            MAX(MA.FECHA_MOV)
+                        FROM
+                            MOVIMIENTOS_AHORRO MA
+                        WHERE
+                            MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
+                            AND CDG_TIPO_PAGO = 2
+                    )
+            ) AS INSCRIPCION,
+            (
+                SELECT
+                    CASE 
+                        WHEN COUNT(MA.CDG_CONTRATO) > 0 THEN 1
+                        ELSE 0
+                    END 
                 FROM
                     MOVIMIENTOS_AHORRO MA
                 WHERE
                     MA.CDG_TIPO_PAGO = 2
                     AND MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
-            ),0) AS CONTRATO_COMPLETO,
+            ) AS CONTRATO_COMPLETO,
             (
                 SELECT
                     COUNT(APA.CONTRATO)
@@ -392,15 +413,18 @@ class CajaAhorro
             (SELECT CDGCO FROM ASIGNA_PROD_AHORRO WHERE CDGEM = 'EMPFIN' AND CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2) AS SUCURSAL,
             (SELECT NOMBRE FROM CO WHERE CODIGO = (SELECT CDGCO FROM ASIGNA_PROD_AHORRO WHERE CDGEM = 'EMPFIN' AND CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2)) AS NOMBRE_SUCURSAL,
             (SELECT COUNT(*) FROM HUELLAS WHERE CLIENTE = CL.CODIGO) AS HUELLAS,
-            NVL(
-                (SELECT
-                    MA.MONTO
+            (
+                SELECT
+                    CASE 
+                        WHEN COUNT(MA.CDG_CONTRATO) > 0 THEN 1
+                        ELSE 0
+                    END 
                 FROM
                     MOVIMIENTOS_AHORRO MA
                 WHERE
                     MA.CDG_TIPO_PAGO = 2
-                    AND MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2)
-            ),0) AS CONTRATO_COMPLETO,
+                    AND MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
+            ) AS CONTRATO_COMPLETO,
             (
                 SELECT
                     COUNT(APA.CONTRATO)
@@ -440,7 +464,7 @@ class CajaAhorro
             CDGPE_ACTUALIZA = :ejecutivo
         WHERE
             CONTRATO = :contrato
-            AND CDGPR_PRIORITARIO = 1
+            AND CDGPR_PRIORITARIO != 2
         SQL;
 
         $parametros = [
@@ -452,7 +476,7 @@ class CajaAhorro
 
         try {
             $mysqli = new Database();
-            $res = $mysqli->actualizar($qry, $parametros);
+            $mysqli->actualizar($qry, $parametros);
             return self::Responde(true, "Contrato de ahorro actualizado correctamente.");
         } catch (Exception $e) {
             return self::Responde(false, "Ocurrió un error al actualizar el contrato de ahorro.", null, $e->getMessage());
@@ -1122,15 +1146,18 @@ class CajaAhorro
                     CDGCL = CL.CODIGO
                     AND CDGPR_PRIORITARIO = 2
             ) AS HIJAS,
-            NVL(
-                (SELECT
-                    COUNT(MA.CDG_CONTRATO)
+            (
+                SELECT
+                    CASE 
+                        WHEN COUNT(MA.CDG_CONTRATO) > 0 THEN 1
+                        ELSE 0
+                    END 
                 FROM
                     MOVIMIENTOS_AHORRO MA
                 WHERE
                     MA.CDG_TIPO_PAGO = 2
                     AND MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
-            ),0) AS CONTRATO_COMPLETO,
+            ) AS CONTRATO_COMPLETO,
             (
                 SELECT
                     COUNT(APA.CONTRATO)
@@ -1291,15 +1318,18 @@ class CajaAhorro
                 $qryVal = <<<sql
                 SELECT
                     CL.CODIGO,
-                    NVL(
-                        (SELECT
-                            COUNT(MA.CDG_CONTRATO)
+                    (
+                        SELECT
+                            CASE 
+                                WHEN COUNT(MA.CDG_CONTRATO) > 0 THEN 1
+                                ELSE 0
+                            END 
                         FROM
                             MOVIMIENTOS_AHORRO MA
                         WHERE
                             MA.CDG_TIPO_PAGO = 2
                             AND MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2)
-                    ),0) AS CONTRATO_COMPLETO,
+                    ) AS CONTRATO_COMPLETO,
                     (
                         SELECT
                             COUNT(APA.CONTRATO)
@@ -1450,6 +1480,15 @@ class CajaAhorro
                 WHERE
                     CDG_CONTRATO = APA.CONTRATO
                     AND CDG_TIPO_PAGO = 1
+                    AND FECHA_MOV = (
+                        SELECT
+                            MAX(MA.FECHA_MOV)
+                        FROM
+                            MOVIMIENTOS_AHORRO MA
+                        WHERE
+                            MA.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
+                            AND CDG_TIPO_PAGO = 2
+                    )
             ) AS MONTO_APERTURA
         FROM
             ASIGNA_PROD_AHORRO APA,

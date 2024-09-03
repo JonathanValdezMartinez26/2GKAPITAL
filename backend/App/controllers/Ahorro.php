@@ -536,15 +536,13 @@ class Ahorro extends Controller
     // Apertura de contratos para cuentas de ahorro corriente
     public function ContratoCuentaCorriente()
     {
-        // $saldosMM = CajaAhorroDao::GetSaldoMinimoApertura($_SESSION['cdgco_ahorro']);
-        // $saldoMinimoApertura = 650; //$saldosMM['MONTO_MINIMO'];
-        // $costoInscripcion = 400;
         $mensajeCaptura = "Capture las huellas del cliente haciendo clic sobre una imagen.";
 
         $extraFooter = <<<HTML
         <script>
             let saldoMinimoApertura = 0
             let costoInscripcion = 0
+            let saldoActual = 0
             const montoMaximo = 1000000
             const txtGuardaContrato = "GUARDAR DATOS Y PROCEDER AL COBRO"
             const txtGuardaPago = "REGISTRAR DEPÓSITO DE APERTURA"
@@ -581,16 +579,22 @@ class Ahorro extends Controller
                 actualizaInscripcion()
 
                 document.querySelector("#tipo_ahorro").addEventListener("change", () => {
-                    document.querySelector("#tasa").selectedIndex = document.querySelector("#tipo_ahorro").selectedIndex
-                    document.querySelector("#infoProducto").selectedIndex = document.querySelector("#tipo_ahorro").selectedIndex
-                    if (document.querySelector("#tipo_ahorro").selectedIndex === 0) {
+                    const tipoAhorro = document.querySelector("#tipo_ahorro")
+                    document.querySelector("#tasa").selectedIndex = tipoAhorro.selectedIndex
+                    document.querySelector("#infoProducto").selectedIndex = tipoAhorro.selectedIndex
+                    if (tipoAhorro.selectedIndex === 0) {
                         document.querySelector("#manejo_cta").selectedIndex = 1
-                        if (document.querySelector("#mostrarHuellas").value)
-                            document.querySelector("#btnGeneraContrato").style.display = "none"
                     } else {
                         document.querySelector("#manejo_cta").selectedIndex = 0
-                        if (document.querySelector("#mostrarHuellas").value)
-                            document.querySelector("#btnGeneraContrato").style.display = "block"
+                    }
+                    
+
+                    if (tipoAhorro.value != document.querySelector("#productoOriginal").value) {
+                        document.querySelector("#btnGuardar").innerText = txtActualizarCuenta
+                        document.querySelector("#btnGeneraContrato").style.display = "block"
+                    } else {
+                        document.querySelector("#btnGuardar").innerText = txtGuardaContrato
+                        document.querySelector("#btnGeneraContrato").style.display = "none"
                     }
 
                     document.querySelector("#monto").value = ""
@@ -601,12 +605,13 @@ class Ahorro extends Controller
 
             const actualizaInscripcion = () => {
                 const info = document.querySelector("#infoProducto")
-                costoInscripcion = info.value
-                saldoMinimoApertura = info.options[info.selectedIndex].text
+                costoInscripcion = parseaNumero(info.value) - parseaNumero(document.querySelector("#inscripcionPagada").value)
+                saldoMinimoApertura = document.querySelector("#inscripcionPagada").value > 0 ? costoInscripcion : parseaNumero(info.options[info.selectedIndex].text)
+                saldoActual = parseaNumero(document.querySelector("#saldoActual").value)
 
-                document.querySelector("#inscripcion").value = parseaNumero(costoInscripcion).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                document.querySelector("#tipSaldo").innerText = "El monto mínimo de apertura debe ser de $" + parseaNumero(saldoMinimoApertura).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
-                document.querySelector("#sma").value = parseaNumero(saldoMinimoApertura).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                document.querySelector("#inscripcion").value = formatoMoneda(costoInscripcion)
+                document.querySelector("#tipSaldo").innerText = "El monto mínimo de apertura debe ser de $" + formatoMoneda(saldoMinimoApertura)
+                document.querySelector("#sma").value = formatoMoneda(saldoMinimoApertura)
             }
          
             {$this->showError}
@@ -646,11 +651,16 @@ class Ahorro extends Controller
                             limpiaDatosCliente()
                             return showError(respuesta.mensaje)
                         }
-                         
+
                         const datosCliente = respuesta.datos
                         document.querySelector("#btnGeneraContrato").style.display = "none"
                         document.querySelector("#contratoOK").value = datosCliente.CONTRATO
+                        document.querySelector("#saldoActual").value = datosCliente.SALDO
                         document.querySelector("#fecha").value = datosCliente.FECHA_CONTRATO
+                        document.querySelector("#inscripcionPagada").value = datosCliente.INSCRIPCION
+                        document.querySelector("#tipo_ahorro").value = datosCliente.PRODUCTO
+                        document.querySelector("#productoOriginal").value = datosCliente.PRODUCTO
+                        document.querySelector("#tipo_ahorro").dispatchEvent(new Event("change"))
                         document.querySelector("#lnkContrato").innerText = "Creación del contrato (" + datosCliente.FECHA_CONTRATO.split(" ")[0] + ")"
                         if (Array.from(document.querySelector("#ejecutivo_comision").options).some(option => option.value === datosCliente.EJECUTIVO_COMISIONA)) {
                             document.querySelector("#ejecutivo_comision").value = datosCliente.EJECUTIVO_COMISIONA
@@ -664,8 +674,6 @@ class Ahorro extends Controller
                             document.querySelector("#codigo_cl").value = datosCliente.CDGCL
                             document.querySelector("#nombre_cliente").value = datosCliente.NOMBRE
                             document.querySelector("#mdlCurp").value = datosCliente.CURP
-                            document.querySelector("#tipo_ahorro").value = datosCliente.PRODUCTO
-                            document.querySelector("#tipo_ahorro").dispatchEvent(new Event("change"))
 
                             if (datosCliente['PRODUCTO'] == 1) {
                                 document.querySelector("#contratoOK").value = ""
@@ -678,7 +686,6 @@ class Ahorro extends Controller
                                 document.querySelector("#chkPagoApertura").classList.add("fa-times")
                                 document.querySelector("#chkPagoApertura").classList.remove("green")
                                 document.querySelector("#chkPagoApertura").classList.remove("fa-check")
-                                document.querySelector("#btnGuardar").innerText = txtActualizarCuenta
                                 document.querySelector("#mostrarHuellas").value = 1
                             } else {
                                 await showInfo("La apertura del contrato no ha concluido, realice el depósito de apertura.")
@@ -694,7 +701,6 @@ class Ahorro extends Controller
                                 document.querySelector("#chkPagoApertura").classList.add("red")
                                 document.querySelector("#btnGuardar").innerText = txtGuardaPago
                                 document.querySelector("#btnGeneraContrato").style.display = "block"
-                                document.querySelector("#tipo_ahorro").disabled = true
                             }
                         }
                          
@@ -709,7 +715,6 @@ class Ahorro extends Controller
                             document.querySelector("#chkPagoApertura").classList.remove("fa-times")
                             document.querySelector("#chkPagoApertura").classList.add("green")
                             document.querySelector("#chkPagoApertura").classList.add("fa-check")
-                            document.querySelector("#tipo_ahorro").disabled = true
                         }
                          
                         consultaServidor("/Ahorro/GetBeneficiarios/", { contrato: datosCliente.CONTRATO }, (respuesta) => {
@@ -752,7 +757,8 @@ class Ahorro extends Controller
                     }
                      
                     const datosCL = respuesta.datos
-                     
+
+                    document.querySelector("#tipo_ahorro").disabled = false
                     document.querySelector("#fechaRegistro").value = datosCL.FECHA_REGISTRO
                     document.querySelector("#noCliente").value = noCliente
                     document.querySelector("#nombre").value = datosCL.NOMBRE
@@ -768,15 +774,16 @@ class Ahorro extends Controller
                     if (respuesta.success) habilitaBeneficiario(1, true)
                 })
             }
-             
+
             const habilitaBeneficiario = (numBeneficiario, habilitar) => {
                 document.querySelector("#beneficiario_" + numBeneficiario).disabled = !habilitar
                 document.querySelector("#sucursal").disabled = false
             }
-             
+
             const limpiaDatosCliente = () => {
                 manoIzquierda.modoCaptura()
                 manoDerecha.modoCaptura()
+                document.querySelector("#tipo_ahorro").disabled = true
                 document.querySelector("#AddPagoApertura").reset()
                 document.querySelector("#registroInicialAhorro").reset()
                 document.querySelector("#chkCreacionContrato").classList.remove("green")
@@ -811,20 +818,24 @@ class Ahorro extends Controller
                     if (option.value === "tmp") option.remove()
                 })
                 document.querySelector("#mostrarHuellas").value = ""
-                document.querySelector("#tipo_ahorro").disabled = false
+                document.querySelector("#inscripcionPagada").value = 0
+                document.querySelector("#saldoActual").value = 0
+                document.querySelector("#productoOriginal").value = ""
                 actualizaInscripcion()
             }
-            
+
             const generaContrato = async (e) => {
                 e.preventDefault()
-                const btnGuardar = document.querySelector("#btnGuardar")
-                if (btnGuardar.innerText === txtGuardaPago || btnGuardar.innerText === txtActualizarCuenta) return $("#modal_agregar_pago").modal("show")
                  
                 document.querySelector("#fecha_pago").value = getHoy()
-                document.querySelector("#contrato").value = ""
+                document.querySelector("#contrato").value = document.querySelector("#contratoOK").value
                 document.querySelector("#codigo_cl").value = document.querySelector("#noCliente").value
                 document.querySelector("#nombre_cliente").value = document.querySelector("#nombre").value
                 document.querySelector("#mdlCurp").value = document.querySelector("#curp").value
+                document.querySelector("#saldo_inicial").value = formatoMoneda(saldoActual)
+
+                const btnGuardar = document.querySelector("#btnGuardar")
+                if (btnGuardar.innerText === txtGuardaPago || btnGuardar.innerText === txtActualizarCuenta) return $("#modal_agregar_pago").modal("show")
                     
                 if (document.querySelector("#tipo_ahorro").selectedIndex === 0) {
                     const continuar = await confirmarMovimiento("Cuenta Puente", "Esta apunto de activar una cuenta limitada y sin beneficios, ¿Desea continuar?")
@@ -835,13 +846,13 @@ class Ahorro extends Controller
                 await showInfo("Debe registrar el depósito por apertura de cuenta.")
                 $("#modal_agregar_pago").modal("show")
             }
-                        
+
             const pagoApertura = async (e) => {
                 //if (!await valida_MCM_Complementos()) return
-                 
+
                 e.preventDefault()
                 if (parseaNumero(document.querySelector("#deposito").value) < saldoMinimoApertura) return showError("El saldo inicial no puede ser menor a " + saldoMinimoApertura.toLocaleString("es-MX", {style:"currency", currency:"MXN"}) + ".")
-                 
+
                 confirmarMovimiento(
                     "Cuenta de ahorro corriente",
                     "¿Está segura de continuar con la apertura de la cuenta de ahorro del cliente: " +
@@ -872,13 +883,13 @@ class Ahorro extends Controller
                         }
                         return regPago(document.querySelector("#contrato").value)
                     }
-                    
+
                     consultaServidor("/Ahorro/AgregaContratoAhorro/", $.param(datosContrato), (respuesta) => {
                         if (!respuesta.success) {
                             console.error(respuesta.error)
                             return showError(respuesta.mensaje)
                         }
-                        
+
                         document.querySelector("#btnGuardar").innerText = txtGuardaPago
                         regPago(respuesta.datos.contrato)
                     })
@@ -964,10 +975,10 @@ class Ahorro extends Controller
              
             const calculaSaldoFinal = (e) => {
                 const monto = parseaNumero(e.target.value)
-                const saldoInicial = (monto - parseaNumero(document.querySelector("#inscripcion").value))
+                const saldoInicial = (monto - parseaNumero(document.querySelector("#inscripcion").value) + saldoActual)
 
                 document.querySelector("#deposito").value = formatoMoneda(monto)
-                document.querySelector("#saldo_inicial").value = formatoMoneda(saldoInicial > 0 ? saldoInicial : 0)
+                document.querySelector("#saldo_inicial").value = formatoMoneda(saldoInicial > saldoActual ? saldoInicial : saldoActual)
                 document.querySelector("#monto_letra").value = numeroLetras(monto)
                     
                 if (monto < saldoMinimoApertura) {

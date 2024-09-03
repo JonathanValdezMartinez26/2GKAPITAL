@@ -176,7 +176,7 @@ $derecha = new TarjetaMano('derecha');
                                             <div class="col-md-4">
                                                 <div class="form-group">
                                                     <label for="tipo_ahorro">Producto</label>
-                                                    <select class="form-control mr-sm-3" id="tipo_ahorro" name="tipo_ahorro">
+                                                    <select class="form-control mr-sm-3" id="tipo_ahorro" name="tipo_ahorro" disabled>
                                                         <?= $opcTipoAhorro; ?>
                                                     </select>
                                                 </div>
@@ -270,6 +270,9 @@ $derecha = new TarjetaMano('derecha');
                                         <div class="row" id="marcadores" style="height: 20px; opacity: 0">
                                             <div class="col-md-4" style="display: flex; justify-content: center; align-items: center;">
                                                 <input id="contratoOK" type="hidden" />
+                                                <input id="inscripcionPagada" type="hidden" value="0" />
+                                                <input id="saldoActual" type="hidden" value="0" />
+                                                <input id="productoOriginal" type="hidden" />
                                                 <i class="fa fa-times red" id="chkCreacionContrato"></i><a href="javascript:void(0);" onclick=reImprimeContrato(event) style="color: #000; cursor: default;" id="lnkContrato">Creación del contrato</a>
                                             </div>
                                             <div class="col-md-4" style="display: flex; justify-content: center; align-items: center;">
