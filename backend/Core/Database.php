@@ -200,7 +200,6 @@ class Database
     {
         if ($params == '') {
             try {
-                return $this->configuracion;
                 $stmt = $this->db_activa->query($sql);
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch (\PDOException $e) {
