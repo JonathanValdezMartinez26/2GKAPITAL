@@ -11,9 +11,7 @@ use Core\App;
 
 class Login
 {
-    function __construct()
-    {
-    }
+    function __construct() {}
 
     public function index()
     {
@@ -131,6 +129,8 @@ html;
     public function isUserValidate()
     {
         $u = LoginDao::getUser($_POST['usuario']);
+        echo json_encode($u);
+        return;
         echo (count($u) >= 1) ? 'true' : 'false';
     }
 

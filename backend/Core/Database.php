@@ -14,12 +14,12 @@ class Database
     private $configuracion;
     private $gkapital;
     public $db_activa;
-    
+
     function __construct()
     {
         $this->configuracion = App::getConfig();
         $this->DB_GKAPITAL();
-        
+
         // La base por defecto seria 2gkapital"
         $this->db_activa = $this->gkapital;
     }
@@ -200,6 +200,7 @@ class Database
     {
         if ($params == '') {
             try {
+                return $this->configuracion;
                 $stmt = $this->db_activa->query($sql);
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch (\PDOException $e) {
