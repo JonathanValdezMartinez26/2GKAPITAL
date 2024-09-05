@@ -13,7 +13,7 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
 
 <div class="right_col">
     <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
-    <div class="col-md-3 panel panel-body" style="margin-bottom: 0px;">
+        <div class="col-md-3 panel panel-body" style="margin-bottom: 0px;">
             <a id="link" href="/Ahorro/CuentaCorriente/">
                 <div class="col-md-5" style="margin-top: 5px; margin-left: 10px; margin-right: 30px; border: 1px solid #dfdfdf; border-radius: 10px;">
                     <img src="https://cdn-icons-png.flaticon.com/512/5575/5575939.png" style="border-radius: 3px; padding-top: 5px;" width="110" height="110">
@@ -129,16 +129,33 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
                                 </div>
                             </div>
                             <div class="row">
-                                <div class="col-md-4">
+                                <div class="col-md-3">
                                     <div class="form-group">
                                         <label for="contrato">Número de contrato</label>
                                         <input type="text" class="form-control" id="contrato" name="contrato" aria-describedby="contrato" readonly>
                                     </div>
                                 </div>
-                                <div class="col-md-3">
+                                <div class="col-md-2">
                                     <div class="form-group">
                                         <label for="cliente">Código de cliente SICAFIN</label>
                                         <input type="number" class="form-control" id="cliente" name="cliente" readonly>
+                                    </div>
+                                </div>
+                                <div class="col-md-7" id="contenedor_apoderado" style="opacity: 0;">
+                                    <div class="col-md-2">
+                                        <div class="form-group">
+                                            <label for="esTitular">Es el titular?</label>
+                                            <input type="checkbox" class="form-control" id="esTitular" name="esTitular" checked onchange=validaApoderado() />
+                                        </div>
+                                    </div>
+                                    <div class="col-md-10">
+                                        <div class="form-group">
+                                            <label for="apoderado">Apoderado</label>
+                                            <select name="apoderado" id="apoderado" class="form-control" onchange=cambioApoderado() disabled>
+                                            </select>
+                                            <select name="tipoApoderado" id="tipoApoderado" hidden>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="col-md-5" style="display: none;">

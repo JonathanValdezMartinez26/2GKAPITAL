@@ -335,6 +335,9 @@ class CajaAhorro
             NVL((SELECT SALDO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2), 0) AS SALDO,
             (SELECT CDGPE_COMISIONA FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2) AS EJECUTIVO_COMISIONA,
             (
+                SELECT COUNT(*) FROM APODERADO_AHORRO WHERE CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
+            ) AS APODERADO,
+            (
                 SELECT
                     CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE)
                 FROM
@@ -413,6 +416,9 @@ class CajaAhorro
             (SELECT CDGCO FROM ASIGNA_PROD_AHORRO WHERE CDGEM = 'EMPFIN' AND CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2) AS SUCURSAL,
             (SELECT NOMBRE FROM CO WHERE CODIGO = (SELECT CDGCO FROM ASIGNA_PROD_AHORRO WHERE CDGEM = 'EMPFIN' AND CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO > 2)) AS NOMBRE_SUCURSAL,
             (SELECT COUNT(*) FROM HUELLAS WHERE CLIENTE = CL.CODIGO) AS HUELLAS,
+            (
+                SELECT COUNT(*) FROM APODERADO_AHORRO WHERE CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
+            ) AS APODERADO,
             (
                 SELECT
                     CASE 
@@ -3403,6 +3409,69 @@ sql;
             return $mysqli->queryOne($qry);
         } catch (Exception $e) {
             return [];
+        }
+    }
+
+    public static function RegistraApoderado($datos)
+    {
+        $qry = <<<SQL
+        INSERT INTO APODERADO_AHORRO
+            (CONTRATO, NOMBRE_1, NOMBRE_2, APELLIDO_1, APELLIDO_2, CURP, PARENTESCO, TIPO_ACCESO, MONTO, FECHA_REGISTRO, FECHA_ACTUALIZACION, ESTATUS)
+        VALUES
+            (:contrato, :nombre1, :nombre2, :apellido1, :apellido2, :curp, :parentesco, :tipoAcceso, :monto, SYSDATE, SYSDATE, 'A')
+        SQL;
+
+        $parametros = [
+            "contrato" => $datos["contrato"],
+            "nombre1" => $datos["nombre1"],
+            "nombre2" => $datos["nombre2"],
+            "apellido1" => $datos["apellido1"],
+            "apellido2" => $datos["apellido2"],
+            "curp" => $datos["curp"],
+            "parentesco" => $datos["parentesco"],
+            "tipoAcceso" => $datos["tipoAcceso"],
+            "monto" => $datos["monto"]
+        ];
+
+        try {
+            $mysqli = new Database();
+            $res = $mysqli->insertar($qry, $parametros);
+            return self::Responde(true, "Apoderado registrado correctamente.", $res);
+        } catch (Exception $e) {
+            return self::Responde(false, "Error al registrar apoderado.", null, $e->getMessage());
+        }
+    }
+
+    public static function GetApoderados($datos)
+    {
+        $qry = <<<SQL
+        SELECT
+            CONCATENA_NOMBRE(AA.NOMBRE_1, AA.NOMBRE_2, AA.APELLIDO_1, AA.APELLIDO_2) AS NOMBRE,
+            AA.TIPO_ACCESO,
+            CASE
+                WHEN AA.TIPO_ACCESO = '1' THEN (
+                    SELECT
+                        ROUND(APA.SALDO_REAL * (AA.MONTO / 100))
+                    FROM
+                        ASIGNA_PROD_AHORRO APA
+                    WHERE
+                        APA.CONTRATO = AA.CONTRATO
+                )
+                WHEN AA.TIPO_ACCESO = '2' THEN AA.MONTO
+            END AS MONTO
+        FROM
+            APODERADO_AHORRO AA
+        WHERE
+            AA.ESTATUS = 'A'
+            AND AA.CONTRATO = '{$datos["contrato"]}'
+        SQL;
+
+        try {
+            $mysqli = new Database();
+            $res = $mysqli->queryAll($qry);
+            return self::Responde(true, "Consulta realizada correctamente.", $res);
+        } catch (Exception $e) {
+            return self::Responde(false, "Error al consultar apoderados.", null, $e->getMessage());
         }
     }
 }

@@ -653,6 +653,7 @@ class Ahorro extends Controller
                         }
 
                         const datosCliente = respuesta.datos
+
                         document.querySelector("#btnGeneraContrato").style.display = "none"
                         document.querySelector("#contratoOK").value = datosCliente.CONTRATO
                         document.querySelector("#saldoActual").value = datosCliente.SALDO
@@ -716,7 +717,14 @@ class Ahorro extends Controller
                             document.querySelector("#chkPagoApertura").classList.add("green")
                             document.querySelector("#chkPagoApertura").classList.add("fa-check")
                         }
-                         
+
+                        if (datosCliente.APODERADO > 0) {
+                            document.querySelector("#chkApoderado").classList.remove("red")
+                            document.querySelector("#chkApoderado").classList.remove("fa-times")
+                            document.querySelector("#chkApoderado").classList.add("green")
+                            document.querySelector("#chkApoderado").classList.add("fa-check")
+                        }
+
                         consultaServidor("/Ahorro/GetBeneficiarios/", { contrato: datosCliente.CONTRATO }, (respuesta) => {
                             if (!respuesta.success) return showError(respuesta.mensaje)
                              
@@ -767,7 +775,9 @@ class Ahorro extends Controller
                     document.querySelector("#direccion").value = datosCL.DIRECCION
                     document.querySelector("#marcadores").style.opacity = "1"
                     document.querySelector("#codigo_cl_huellas").value = noCliente
+                    document.querySelector("#codigo_cl_apoderado").value = noCliente
                     document.querySelector("#nombre_cliente_huellas").value = datosCL.NOMBRE
+                    document.querySelector("#nombre_cliente_apoderado").value = datosCL.NOMBRE
                     noCliente.value = ""
                     manoIzquierda.limpiarMano()
                     manoDerecha.limpiarMano()
@@ -786,6 +796,7 @@ class Ahorro extends Controller
                 document.querySelector("#tipo_ahorro").disabled = true
                 document.querySelector("#AddPagoApertura").reset()
                 document.querySelector("#registroInicialAhorro").reset()
+                document.querySelector("#codigo_cl_huellas").value = ""
                 document.querySelector("#chkCreacionContrato").classList.remove("green")
                 document.querySelector("#chkCreacionContrato").classList.remove("fa-check")
                 document.querySelector("#chkCreacionContrato").classList.add("red")
@@ -800,6 +811,11 @@ class Ahorro extends Controller
                 document.querySelector("#chkRegistroHuellas").classList.add("red")
                 document.querySelector("#chkRegistroHuellas").classList.add("fa-times")
                 document.querySelector("#lnkHuellas").style.cursor = "pointer"
+                document.querySelector("#chkApoderado").classList.remove("green")
+                document.querySelector("#chkApoderado").classList.remove("fa-check")
+                document.querySelector("#chkApoderado").classList.add("red")
+                document.querySelector("#chkApoderado").classList.add("fa-times")
+                document.querySelector("#lnkApoderado").style.cursor = "pointer"
                 document.querySelector("#fechaRegistro").value = ""
                 document.querySelector("#noCliente").value = ""
                 document.querySelector("#nombre").value = ""
@@ -822,6 +838,16 @@ class Ahorro extends Controller
                 document.querySelector("#saldoActual").value = 0
                 document.querySelector("#productoOriginal").value = ""
                 actualizaInscripcion()
+                document.querySelector("#nombre_cliente_apoderado").value = ""
+                document.querySelector("#codigo_cl_apoderado").value = ""
+                document.querySelector("#nombre_1_apoderado").value = ""
+                document.querySelector("#nombre_2_apoderado").value = ""
+                document.querySelector("#apellido_1_apoderado").value = ""
+                document.querySelector("#apellido_2_apoderado").value = ""
+                document.querySelector("#curp_apoderado").value = ""
+                document.querySelector("#parentesco_apoderado").selectedIndex = 0
+                document.querySelector("#tipo_acceso").selectedIndex = 0
+                document.querySelector("#monto_acceso").value = ""
             }
 
             const generaContrato = async (e) => {
@@ -1260,6 +1286,76 @@ class Ahorro extends Controller
                     e.detail.valida()
                 })
             }
+
+            const mostrarModalApoderado = (e) => {
+                const valApoderado = document.querySelector("#chkApoderado").classList.contains("green")
+                if (valApoderado) return
+
+                const valContrato = document.querySelector("#chkCreacionContrato").classList.contains("red")
+                const valPago = document.querySelector("#chkPagoApertura").classList.contains("red")
+ 
+                if (valContrato) return showError("Debe completar el proceso de creación del contrato.")
+                if (valPago) return showError("Debe completar el proceso de pago de apertura.")
+                $("#modal_registra_apoderado").modal("show")
+            }
+
+            const validaCamposApoderado = (e) => {
+                const campos = [
+                    document.querySelector("#nombre_1_apoderado"),
+                    document.querySelector("#apellido_2_apoderado"),
+                    document.querySelector("#curp_apoderado"),
+                    document.querySelector("#parentesco_apoderado"),
+                    document.querySelector("#tipo_acceso"),
+                    document.querySelector("#monto_acceso")
+                ]
+
+                if (e.target.id === "monto_acceso" || e.target.id === "tipo_acceso") {
+                    if (document.querySelector("#tipo_acceso").selectedIndex === 1 &&
+                        parseaNumero(document.querySelector("#monto_acceso").value) > 100) {
+                        e.preventDefault()
+                        document.querySelector("#monto_acceso").value = ""
+                        showError("El porcentaje de acceso no puede ser mayor a 100%.")
+                        return false
+                    }
+                }
+
+                const val = campos.every(campo => {
+                    if (campo.tagName === "SELECT") return campo.selectedIndex !== 0
+                    if (campo.id === "curp_apoderado") return campo.value.length === 18
+                    return campo.value
+                })
+
+                document.querySelector("#registraApoderado").disabled = !val
+            }
+
+            const guardarApoderado = () => {
+                const parentesco = document.querySelector("#parentesco_apoderado").selectedOptions[0].text
+
+                const datos = {
+                    contrato: document.querySelector("#contratoOK").value,
+                    nombre1: document.querySelector("#nombre_1_apoderado").value,
+                    nombre2: document.querySelector("#nombre_2_apoderado").value,
+                    apellido1: document.querySelector("#apellido_1_apoderado").value,
+                    apellido2: document.querySelector("#apellido_2_apoderado").value,
+                    curp: document.querySelector("#curp_apoderado").value,
+                    parentesco,
+                    tipoAcceso: document.querySelector("#tipo_acceso").value,
+                    monto: document.querySelector("#monto_acceso").value
+                }
+
+                consultaServidor("/Ahorro/RegistraApoderado/", datos, (respuesta) => {
+                    if (!respuesta.success) return showError(respuesta.mensaje)
+                    showSuccess(respuesta.mensaje)
+                    .then(() => {
+                        document.querySelector("#chkApoderado").classList.remove("red")
+                        document.querySelector("#chkApoderado").classList.remove("fa-times")
+                        document.querySelector("#chkApoderado").classList.add("green")
+                        document.querySelector("#chkApoderado").classList.add("fa-check")
+                        document.querySelector("#lnkApoderado").style.cursor = "default"
+                        $("#modal_registra_apoderado").modal("hide")
+                    })
+                })
+            }
         </script>
         HTML;
 
@@ -1453,6 +1549,11 @@ class Ahorro extends Controller
         echo CajaAhorroDao::EliminaHuellas($_POST);
     }
 
+    public function RegistraApoderado()
+    {
+        echo CajaAhorroDao::RegistraApoderado($_POST);
+    }
+
     // Movimientos sobre cuentas de ahorro corriente //
     public function CuentaCorriente()
     {
@@ -1461,7 +1562,7 @@ class Ahorro extends Controller
         $montoMaximoDeposito = 1000000;
         $maximoRetiroDia = 50000;
 
-        $extraFooter = <<<script
+        $extraFooter = <<<HTML
         <script>
             const saldoMinimoApertura = $saldoMinimoApertura
             const montoMaximoRetiro = $montoMaximoRetiro
@@ -1512,6 +1613,18 @@ class Ahorro extends Controller
                         blkRetiro = true
                         retiroDispobible = maximoRetiroDia - respuesta.datos.RETIROS
                     }
+
+                    consultaServidor("/ahorro/GetApoderados/", { contrato: datosCliente.CONTRATO }, (respuesta) => {
+                        document.querySelector("#apoderado").innerHTML = ""
+                        if (respuesta.success) {
+                            const apoderados = respuesta.datos
+                            apoderados.forEach((apoderado) => {
+                                document.querySelector("#apoderado").appendChild(new Option(apoderado.NOMBRE, apoderado.TIPO_ACCESO))
+                                document.querySelector("#tipoApoderado").appendChild(new Option(apoderado.MONTO, apoderado.TIPO_ACCESO))
+                            })
+                        }
+                    })
+
                     huellas = datosCliente.HUELLAS
                     document.querySelector("#nombre").value = datosCliente.NOMBRE
                     document.querySelector("#curp").value = datosCliente.CURP
@@ -1530,6 +1643,11 @@ class Ahorro extends Controller
                 document.querySelector("#btnRegistraOperacion").disabled = true
                 document.querySelector("#retiro").disabled = true
                 document.querySelector("#deposito").disabled = true
+                document.querySelector("#contenedor_apoderado").style.opacity = 0
+                document.querySelector("#apoderado").disabled = true
+                document.querySelector("#apoderado").innerHTML = ""
+                document.querySelector("#tipoApoderado").innerHTML = ""
+                document.querySelector("#esTitular").checked = true
             }
              
             const validaMonto = () => {
@@ -1537,6 +1655,16 @@ class Ahorro extends Controller
                 const montoIngresado = document.querySelector("#monto")
                  
                 let monto = parseaNumero(montoIngresado.value)
+
+                if (!document.querySelector("#esTitular").checked) {
+                    const montoApoderado = parseaNumero(document.querySelector("#tipoApoderado").selectedOptions[0].text)
+                    if (monto > montoApoderado) {
+                        showWarning("El monto a retirar no puede ser mayor al monto autorizado por el titular.")
+                        monto = montoApoderado
+                        montoIngresado.value = monto
+                        return
+                    }
+                }
                  
                 if (!document.querySelector("#deposito").checked && monto > montoMaximoRetiro) {
                     monto = montoMaximoRetiro
@@ -1552,6 +1680,7 @@ class Ahorro extends Controller
                             return
                         }
                     })
+
                     montoIngresado.value = monto
                 }
                  
@@ -1601,6 +1730,7 @@ class Ahorro extends Controller
             const cambioMovimiento = (e) => {
                 document.querySelector("#monto").disabled = false
                 const esDeposito = document.querySelector("#deposito").checked
+                document.querySelector("#contenedor_apoderado").style.opacity = esDeposito ? 0 : 1
                 document.querySelector("#simboloOperacion").innerText = esDeposito ? "+" : "-"
                 document.querySelector("#descOperacion").innerText = (esDeposito ? "Depósito" : "Retiro") + " a cuenta ahorro corriente"
                 document.querySelector("#monto").max = esDeposito ? montoMaximoDeposito : montoMaximoRetiro
@@ -1674,8 +1804,19 @@ class Ahorro extends Controller
                     })
                 })
             }
+
+            const validaApoderado = () => {
+                const apoderado = document.querySelector("#esTitular").checked
+                document.querySelector("#apoderado").disabled = apoderado
+                validaMonto()
+            }
+
+            const cambioApoderado = () => {
+                document.querySelector("#tipoApoderado").selectedIndex = document.querySelector("#apoderado").selectedIndex
+                validaMonto()
+            }
         </script>
-        script;
+        HTML;
 
         if ($_GET['cliente']) View::set('cliente', $_GET['cliente']);
 
@@ -1705,6 +1846,11 @@ class Ahorro extends Controller
     public function ValidaRetirosDia()
     {
         echo CajaAhorroDao::ValidaRetirosDia($_POST);
+    }
+
+    public function GetApoderados()
+    {
+        echo CajaAhorroDao::GetApoderados($_POST);
     }
 
     // Registro de solicitudes de retiros mayores de cuentas de ahorro //

@@ -275,12 +275,15 @@ $derecha = new TarjetaMano('derecha');
                                                 <input id="productoOriginal" type="hidden" />
                                                 <i class="fa fa-times red" id="chkCreacionContrato"></i><a href="javascript:void(0);" onclick=reImprimeContrato(event) style="color: #000; cursor: default;" id="lnkContrato">Creación del contrato</a>
                                             </div>
-                                            <div class="col-md-4" style="display: flex; justify-content: center; align-items: center;">
+                                            <div class="col-md-3" style="display: flex; justify-content: center; align-items: center;">
                                                 <i class="fa fa-times red" id="chkPagoApertura"></i><span style="color: #000; user-select: none;">Deposito de apertura</span>
                                             </div>
-                                            <div class="col-md-4" style="display: flex; justify-content: center; align-items: center;">
+                                            <div class="col-md-3" style="display: flex; justify-content: center; align-items: center;">
                                                 <input id="mostrarHuellas" type="hidden" />
                                                 <i class="fa fa-times red" id="chkRegistroHuellas"></i><a href="javascript:void(0);" onclick=mostrarModalHuellas() style="color: #000; cursor: default;" id="lnkHuellas">Registro de Huellas</a>
+                                            </div>
+                                            <div class="col-md-2" style="display: flex; justify-content: center; align-items: center;">
+                                                <i class="fa fa-times red" id="chkApoderado"></i><a href="javascript:void(0);" onclick=mostrarModalApoderado() style="color: #000; cursor: default;" id="lnkApoderado">Apoderado</a>
                                             </div>
                                         </div>
                                         <div class="modal-footer" style="height: 20px;">
@@ -473,6 +476,103 @@ $derecha = new TarjetaMano('derecha');
                             <button type="button" id="registraDepositoInicial" name="agregar" class="btn btn-primary" value="enviar" onclick=pagoApertura(event) disabled><span class="glyphicon glyphicon-floppy-disk"></span> Registrar depósito</button>
                         </div>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- <div class="modal fade in" id="modal_registra_apoderado" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: block; padding-right: 15px;"> -->
+<div class="modal fade" id="modal_registra_apoderado" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" data-keyboard="false" data-backdrop="static">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button id="cerrar_modal" type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Registro de Apoderado</h4>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-9">
+                            <div class="form-group">
+                                <label for="nombre_cliente_apoderado">Nombre del cliente</label>
+                                <input type="text" class="form-control" id="nombre_cliente_apoderado" name="nombre_cliente_apoderado" value="<?= $Cliente[0]['NOMBRE']; ?>" readonly>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="codigo_cl_apoderado">Código de cliente SICAFIN</label>
+                                <input type="number" class="form-control" id="codigo_cl_apoderado" name="codigo_cl_apoderado" value="<?= $credito; ?>" readonly>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="nombre_1_apoderado">Primer nombre del apoderado</label>
+                                <input type="text" class="form-control" id="nombre_1_apoderado" name="nombre_1_apoderado" maxlength="30" oninput=validaCamposApoderado(event) />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="nombre_2_apoderado">Segundo nombre del apoderado</label>
+                                <input type="text" class="form-control" id="nombre_2_apoderado" name="nombre_2_apoderado" maxlength="30" oninput=validaCamposApoderado(event) />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="apellido_1_apoderado">Primer apellido del apoderado</label>
+                                <input type="text" class="form-control" id="apellido_1_apoderado" name="apellido_1_apoderado" maxlength="30" oninput=validaCamposApoderado(event) />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="apellido_2_apoderado">Segundo apellido del apoderado</label>
+                                <input type="text" class="form-control" id="apellido_2_apoderado" name="apellido_2_apoderado" maxlength="30" oninput=validaCamposApoderado(event) />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="curp_apoderado">CURP del apoderado</label>
+                                <input type="text" class="form-control" id="curp_apoderado" name="curp_apoderado" maxlength="18" oninput=validaCamposApoderado(event) />
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="parentesco_apoderado">Parentesco con el cliente</label>
+                                <select class="form-control mr-sm-3" id="parentesco_apoderado" name="parentesco_apoderado" onchange=validaCamposApoderado(event)>
+                                    <option value="0">Seleccione una opción</option>
+                                    <option value="1">Familiar</option>
+                                    <option value="2">Amigo</option>
+                                    <option value="3">Conocido</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="tipo_acceso">Tipo de acceso a recursos</label>
+                                <select class="form-control mr-sm-3" id="tipo_acceso" name="tipo_acceso" onchange=validaCamposApoderado(event)>
+                                    <option value="0">Seleccione una opción</option>
+                                    <option value="1">Porcentaje</option>
+                                    <option value="2">Monto diario</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="form-group">
+                                <label for="monto_acceso">Cantidad</label>
+                                <input type="number" min=1 class="form-control" id="monto_acceso" name="monto_acceso" oninput=validaCamposApoderado(event) />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="modal-footer">
+                            <button id="registraApoderado" class="btn btn-primary" onclick=guardarApoderado() disabled><span class="glyphicon glyphicon-floppy-disk"></span>Registrar apoderado</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
