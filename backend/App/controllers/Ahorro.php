@@ -291,6 +291,19 @@ class Ahorro extends Controller
         muestraPDF(titulo, ruta)
     }
     script;
+    private $imprimeResponsivaApoderado = <<<script
+    const imprimeResponsivaApoderado = (numero_contrato, curp) => {
+        if (!numero_contrato) return
+        const host = window.location.origin
+        const titulo = 'Responsiva Apoderado'
+        const ruta = host
+            + '/Ahorro/ImprimeResponsivaApoderado/?'
+            + 'contrato=' + numero_contrato
+            + '&curp=' + curp
+         
+        muestraPDF(titulo, ruta)
+    }
+    script;
     private $sinContrato = <<<script
     const sinContrato = (datosCliente) => {
         if (datosCliente["NO_CONTRATOS"] == 0) {
@@ -632,6 +645,7 @@ class Ahorro extends Controller
             {$this->formatoMoneda}
             {$this->limpiaMontos}
             {$this->valida_MCM_Complementos}
+            {$this->imprimeResponsivaApoderado}
              
             const buscaCliente = () => {
                 if (document.querySelector("#sucursal").value === "") {
@@ -1352,6 +1366,7 @@ class Ahorro extends Controller
                         document.querySelector("#chkApoderado").classList.add("green")
                         document.querySelector("#chkApoderado").classList.add("fa-check")
                         document.querySelector("#lnkApoderado").style.cursor = "default"
+                        imprimeResponsivaApoderado(document.querySelector("#contratoOK").value, document.querySelector("#curp_apoderado").value)
                         $("#modal_registra_apoderado").modal("hide")
                     })
                 })
@@ -1762,22 +1777,24 @@ class Ahorro extends Controller
             }
              
             const registraOperacion = async (e) => {
-                if (!await valida_MCM_Complementos()) return
-                 
+                //if (!await valida_MCM_Complementos()) return
+
                 e.preventDefault()
                 const datos = $("#registroOperacion").serializeArray()
-                
+                const apoderado = document.querySelector("#esTitular").checked ? null : document.querySelector("#apoderado").selectedOptions[0].text
+
                 limpiaMontos(datos, ["saldoActual", "montoOperacion", "saldoFinal"])
                 addParametro(datos, "sucursal", "{$_SESSION['cdgco_ahorro']}")
                 addParametro(datos, "ejecutivo", "{$_SESSION['usuario']}")
                 addParametro(datos, "producto", "cuenta de ahorro corriente")
-                 
+                addParametro(datos, "apoderado", apoderado)
+
                 if (!document.querySelector("#deposito").checked && !document.querySelector("#retiro").checked) return showError("Seleccione el tipo de operación a realizar.")
-                
+
                 datos.forEach((dato) => {
                     if (dato.name === "esDeposito") dato.value = document.querySelector("#deposito").checked
                 })
-                 
+
                 confirmarMovimiento(
                     "Confirmación de movimiento de ahorro corriente",
                     "¿Está segur(a) de continuar con el registro de un "
@@ -9778,13 +9795,13 @@ class Ahorro extends Controller
         $extraHeader = <<<html
         <title>Caja Cobrar</title>
         <link rel="shortcut icon" href="/img/logo.png">
-html;
+        html;
 
         $extraFooter = <<<html
         <script>
            
         </script>
-html;
+        html;
 
         View::set('header', $this->_contenedor->header($extraHeader));
         View::set('footer', $this->_contenedor->footer($extraFooter));
@@ -9907,7 +9924,7 @@ html;
         $extraHeader = <<<html
         <title>Reimprime Tickets</title>
         <link rel="shortcut icon" href="/img/logo.png">
-html;
+        html;
 
         $extraFooter = <<<html
         <script>
@@ -10004,7 +10021,7 @@ html;
                         });
         }
         </script>
-html;
+        html;
 
         $Consulta = AhorroDao::ConsultaTickets($this->__usuario);
         $tabla = "";
@@ -10025,7 +10042,7 @@ html;
                          <button type="button" class="btn btn-success btn-circle" onclick="Reimprime_ticket('{$value['CODIGO']}');"><i class="fa fa-print"></i></button>
                     </td>
                 </td>
-html;
+        html;
         }
 
         $fecha_y_hora = date("Y-m-d H:i:s");
@@ -10037,6 +10054,41 @@ html;
         View::set('tabla', $tabla);
         View::set('fecha_actual', $fecha_y_hora);
         View::render("caja_menu_reimprime_ticket");
+    }
+
+    public function ImprimeResponsivaApoderado()
+    {
+        $nombreArchivo = "Responasiva de registro de apoderado";
+        $noContrato = $_GET['contrato'];
+        $curp = $_GET['curp'];
+        $datos = CajaAhorroDao::DatosResponsivaApoderado($noContrato, $curp);
+        $responsiva = self::ResponsivaApoderado($datos);
+        $fi = date('d/m/Y H:i:s');
+        $pie = <<< HTML
+        <table style="width: 100%; font-size: 10px">
+            <tr>
+            <td style="text-align: left; width: 50%;">
+                Fecha de impresión  {$fi}
+            </td>
+            <td style="text-align: right; width: 50%;">
+                Página {PAGENO} de {nb}
+            </td>
+            </tr>
+        </table>
+        HTML;
+
+        $mpdf = new \mPDF([
+            'mode' => 'utf-8',
+            'format' => 'Letter',
+            'default_font_size' => 11,
+            'default_font' => 'Arial',
+        ]);
+        $mpdf->SetDefaultBodyCSS('text-align', 'justify');
+        $mpdf->SetTitle($nombreArchivo);
+        $mpdf->WriteHTML($responsiva, 2);
+        $mpdf->SetHTMLFooter($pie);
+
+        $mpdf->Output($nombreArchivo . '.pdf', 'I');
     }
 
     public function AddSolicitudReimpresion()
@@ -10054,27 +10106,72 @@ html;
         return $id;
     }
 
-    //////////////////////////////////////////////////
-    public function Calculadora()
+    public function ResponsivaApoderado($datos)
     {
-        $extraHeader = <<<html
-        <title>Caja Cobrar</title>
-        <link rel="shortcut icon" href="/img/logo.png">
-html;
+        $meses = [
+            "Enero",
+            "Febrero",
+            "Marzo",
+            "Abril",
+            "Mayo",
+            "Junio",
+            "Julio",
+            "Agosto",
+            "Septiembre",
+            "Octubre",
+            "Noviembre",
+            "Diciembre"
+        ];
+        $nombreEmpresa = "<b>2G KAPITAL</b>";
+        $nombreCliente = "<b>" . $datos['NOMBRE_CLIENTE'] . "</b>";
+        $nombreApoderado = "<b>" . $datos['NOMBRE_APODERADO'] . "</b>";
+        $contrato = "<b>" . $datos['CONTRATO'] . "</b>";
+        $parentezco = "<b>" . $datos['PARENTESCO'] . "</b>";
 
-        $extraFooter = <<<html
-        <script>
-           
-        </script>
-html;
+        $fecha = "<b>" . date("d") . " de " . $meses[date("n") - 1] . " de " . date("Y") . "</b>";
 
-        View::set('header', $this->_contenedor->header($extraHeader));
-        View::set('footer', $this->_contenedor->footer($extraFooter));
-        View::render("caja_menu_calculadora");
-    }
+        return <<<HTML
+        <div style="text-align: center">
+            <h2>RESPONSIVA DE REGISTRO DE APODERADO</h2>
+        </div>
+        <div>
+            <p>
+                Yo, $nombreCliente, autorizo a mi $parentezco, $nombreApoderado, a realizar retiros de mi cuenta de ahorro registrada en $nombreEmpresa, identificada con el número de contrato $contrato.
+            </p>
+            <p>
+                Reconozco y acepto que cualquier retiro efectuado en mi cuenta de ahorro realizado por $nombreApoderado será considerado como si lo hubiera realizado yo personalmente, asumiendo plena responsabilidad por las acciones de $nombreApoderado en relación con dichos retiros.
+            </p>
+            <p>
+                Asimismo, exonero a $nombreEmpresa de toda responsabilidad por cualquier pérdida o daño en mi cuenta de ahorro que pudiera derivarse de los retiros realizados por $nombreApoderado.
+            </p>
+            <p>
+                Esta autorización entra en vigor a partir del $fecha y podrá ser revocada por mí en cualquier momento mediante previa notificación por escrito dirigida a $nombreEmpresa.
+            </p>
+        </div>
+        <div class="firmas" style="margin-top: 50px">
+            <table style="width: 100%; text-align: center">
+                <tr>
+                    <td style="width: 30%"></td>
+                    <td style="width: 40%">
+                        <b>Firma y huella de concentimiento</b>
+                    </td>
+                    <td style="width: 30%"></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="height: 100px">
 
-    public function CalculadoraView()
-    {
-        View::render("calculadora_view");
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td style="border-top: 1px solid">
+                        $nombreCliente
+                    </td>
+                    <td></td>
+                </tr>
+            </table>
+        HTML;
     }
 }

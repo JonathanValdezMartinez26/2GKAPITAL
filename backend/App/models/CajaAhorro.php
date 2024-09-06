@@ -685,7 +685,8 @@ class CajaAhorro
                 'movimiento' => $esDeposito ? '1' : '0',
                 'cliente' => $datos['cliente'],
                 'ejecutivo' => $datos['ejecutivo'],
-                'sucursal' => $datos['sucursal']
+                'sucursal' => $datos['sucursal'],
+                'apoderado' => $datos['apoderado']
             ],
             [
                 'monto' => $datos['montoOperacion'],
@@ -741,7 +742,7 @@ class CajaAhorro
 
     public static function GetQueryMovimientoAhorro()
     {
-        return <<<sql
+        return <<<SQL
         INSERT INTO
             MOVIMIENTOS_AHORRO (
                 CODIGO,
@@ -756,7 +757,8 @@ class CajaAhorro
                 CDG_RETIRO,
                 CDGCO,
                 CDGCL,
-                CDGPE
+                CDGPE,
+                APODERADO
             )
         VALUES
             (
@@ -796,9 +798,10 @@ class CajaAhorro
                 ),
                 :sucursal,
                 :cliente,
-                :ejecutivo
+                :ejecutivo,
+                :apoderado
             )
-        sql;
+        SQL;
     }
 
     public static function GetQueryValidaAhorro()
@@ -3472,6 +3475,45 @@ sql;
             return self::Responde(true, "Consulta realizada correctamente.", $res);
         } catch (Exception $e) {
             return self::Responde(false, "Error al consultar apoderados.", null, $e->getMessage());
+        }
+    }
+
+    public static function DatosResponsivaApoderado($contrato, $curp)
+    {
+        $qry = <<<SQL
+        SELECT
+            CURP,
+            UPPER(CONCATENA_NOMBRE(NOMBRE_1, NOMBRE_2, APELLIDO_1, APELLIDO_2)) AS NOMBRE_APODERADO,
+            UPPER(PARENTESCO) AS PARENTESCO,
+            CONTRATO,
+            (
+                SELECT 
+                    UPPER(CONCATENA_NOMBRE(NOMBRE1, NOMBRE2, PRIMAPE, SEGAPE))
+                FROM
+                    CL
+                WHERE
+                    CODIGO = (
+                        SELECT
+                            CDGCL
+                        FROM
+                            ASIGNA_PROD_AHORRO
+                        WHERE
+                            CONTRATO = '{$contrato}'
+                    )
+            ) AS NOMBRE_CLIENTE
+        FROM
+            APODERADO_AHORRO
+        WHERE
+            CONTRATO = '{$contrato}'
+            AND CURP = '{$curp}'
+            AND ESTATUS = 'A'
+        SQL;
+
+        try {
+            $mysqli = new Database();
+            return $mysqli->queryOne($qry);
+        } catch (Exception $e) {
+            return [];
         }
     }
 }

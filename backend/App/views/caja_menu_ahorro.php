@@ -144,7 +144,7 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
                                 <div class="col-md-7" id="contenedor_apoderado" style="opacity: 0;">
                                     <div class="col-md-2">
                                         <div class="form-group">
-                                            <label for="esTitular">Es el titular?</label>
+                                            <label for="esTitular">¿Es el titular?</label>
                                             <input type="checkbox" class="form-control" id="esTitular" name="esTitular" checked onchange=validaApoderado() />
                                         </div>
                                     </div>
