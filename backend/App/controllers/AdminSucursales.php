@@ -3067,7 +3067,18 @@ script;
         $columna = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L');
         $nombreColumna = array('ID_SOL_RETIRO_AHORRO', 'CONTRATO', 'CLIENTE', 'FECHA_SOLICITUD', 'DAYS_SINCE_ORDER', 'SOLICITUD_VENCIDA', 'CANTIDAD_SOLICITADA', 'CDGPE', 'CDGPE_NOMBRE', 'TIPO_RETIRO', 'FECHA_ENTREGA', 'TIPO_PRODUCTO');
         $nombreCampo = array(
-            'ID_SOL_RETIRO_AHORRO', 'CONTRATO', 'CLIENTE', 'FECHA_SOLICITUD', 'DAYS_SINCE_ORDER', 'SOLICITUD_VENCIDA', 'CANTIDAD_SOLICITADA', 'CDGPE', 'CDGPE_NOMBRE', 'TIPO_RETIRO', 'FECHA_ENTREGA', 'TIPO_PRODUCTO'
+            'ID_SOL_RETIRO_AHORRO',
+            'CONTRATO',
+            'CLIENTE',
+            'FECHA_SOLICITUD',
+            'DAYS_SINCE_ORDER',
+            'SOLICITUD_VENCIDA',
+            'CANTIDAD_SOLICITADA',
+            'CDGPE',
+            'CDGPE_NOMBRE',
+            'TIPO_RETIRO',
+            'FECHA_ENTREGA',
+            'TIPO_PRODUCTO'
         );
 
 
@@ -3311,9 +3322,9 @@ script;
         $adaptarTexto = true;
 
         $controlador = "AdminSucursales";
-        $columna = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N');
-        $nombreColumna = array('FECHA_MOV', 'CDGCO', 'SUCURSAL', 'FECHA_MOV_APLICA', 'USUARIO_CAJA', 'NOMBRE_CAJERA', 'CLIENTE', 'TITULAR_CUENTA_EJE', 'MONTO', 'CONCEPTO', 'PRODUCTO', 'TIPO_MOVIMIENTO', 'INGRESO', 'EGRESO');
-        $nombreCampo = array('FECHA_MOV', 'CDGCO', 'SUCURSAL', 'FECHA_MOV_APLICA', 'USUARIO_CAJA', 'NOMBRE_CAJERA', 'CLIENTE', 'TITULAR_CUENTA_EJE', 'MONTO', 'CONCEPTO', 'PRODUCTO', 'TIPO_MOVIMIENTO', 'INGRESO', 'EGRESO');
+        $columna = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S');
+        $nombreColumna = array('FECHA_MOV', 'CDGCO', 'SUCURSAL', 'FECHA_MOV_APLICA', 'USUARIO_CAJA', 'NOMBRE_CAJERA', 'NOMBRE_PROMOTOR', 'CLIENTE', 'TITULAR_CUENTA_EJE', 'ID_MENOR', 'NOMBRE_MENOR', 'MONTO', 'CONCEPTO', 'PLAZO_INVERSION', 'FECHA_FIN_INVERSION', 'PRODUCTO', 'TIPO_MOVIMIENTO', 'INGRESO', 'EGRESO');
+        $nombreCampo = array('FECHA_MOV', 'CDGCO', 'SUCURSAL', 'FECHA_MOV_APLICA', 'USUARIO_CAJA', 'NOMBRE_CAJERA', 'NOMBRE_PROMOTOR', 'CLIENTE', 'TITULAR_CUENTA_EJE', 'ID_MENOR', 'NOMBRE_MENOR', 'MONTO', 'CONCEPTO', 'PLAZO_INVERSION', 'FECHA_FIN_INVERSION', 'PRODUCTO', 'TIPO_MOVIMIENTO', 'INGRESO', 'EGRESO');
 
 
         $objPHPExcel->getActiveSheet()->SetCellValue('A' . $fila, 'Consulta de Movimientos de Ahorro a Detalle (incluye transacciones virtuales)');
