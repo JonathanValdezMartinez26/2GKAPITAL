@@ -3280,6 +3280,18 @@ script;
         $objWriter->save('php://output');
     }
 
+    public function ColumnaExcel($letra, $campo, $titulo = '', $estilo = [])
+    {
+        $titulo = $titulo == '' ? $campo : $titulo;
+
+        return [
+            'letra' => $letra,
+            'campo' => $campo,
+            'estilo' => $estilo,
+            'titulo' => $titulo
+        ];
+    }
+
     public function generarExcelPagosTransaccionesDetalleAll()
     {
         $fecha_inicio = $_GET['Inicial'];
@@ -3288,99 +3300,89 @@ script;
         $producto = $_GET['Producto'];
         $sucursal = $_GET['Sucursal'];
 
-        $objPHPExcel = new \PHPExcel();
-        $objPHPExcel->getProperties()->setCreator("jma");
-        $objPHPExcel->getProperties()->setLastModifiedBy("jma");
-        $objPHPExcel->getProperties()->setTitle("Reporte");
-        $objPHPExcel->getProperties()->setSubject("Reorte");
-        $objPHPExcel->getProperties()->setDescription("Descripcion");
-        $objPHPExcel->setActiveSheetIndex(0);
-
-
-
         $estilo_titulo = array(
-            'font' => array('bold' => true, 'name' => 'Calibri', 'size' => 11, 'color' => array('rgb' => '060606')),
+            'font' => array('bold' => true),
             'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
             'type' => \PHPExcel_Style_Fill::FILL_SOLID
         );
 
         $estilo_encabezado = array(
-            'font' => array('bold' => true, 'name' => 'Calibri', 'size' => 11, 'color' => array('rgb' => '060606')),
+            'font' => array('bold' => true),
             'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
             'type' => \PHPExcel_Style_Fill::FILL_SOLID
         );
 
-        $estilo_celda = array(
-            'font' => array('bold' => false, 'name' => 'Calibri', 'size' => 11, 'color' => array('rgb' => '060606')),
+        $estilo_centrado = array(
             'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
-            'type' => \PHPExcel_Style_Fill::FILL_SOLID
-
         );
 
+        $estilo_moneda = array(
+            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_RIGHT),
+            'numberformat' => array('code' => \PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_USD_SIMPLE)
+        );
 
-        $fila = 1;
-        $adaptarTexto = true;
+        $estilo_fecha = array(
+            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
+            'numberformat' => array('code' => \PHPExcel_Style_NumberFormat::FORMAT_DATE_DDMMYYYY)
+        );
+
+        $estilo_fecha_hora = array(
+            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
+            'numberformat' => array('code' => \PHPExcel_Style_NumberFormat::FORMAT_DATE_TIME4)
+        );
 
         $controlador = "AdminSucursales";
-        $columna = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S');
-        $nombreColumna = array('FECHA_MOV', 'CDGCO', 'SUCURSAL', 'FECHA_MOV_APLICA', 'USUARIO_CAJA', 'NOMBRE_CAJERA', 'NOMBRE_PROMOTOR', 'CLIENTE', 'TITULAR_CUENTA_EJE', 'ID_MENOR', 'NOMBRE_MENOR', 'MONTO', 'CONCEPTO', 'PLAZO_INVERSION', 'FECHA_FIN_INVERSION', 'PRODUCTO', 'TIPO_MOVIMIENTO', 'INGRESO', 'EGRESO');
-        $nombreCampo = array('FECHA_MOV', 'CDGCO', 'SUCURSAL', 'FECHA_MOV_APLICA', 'USUARIO_CAJA', 'NOMBRE_CAJERA', 'NOMBRE_PROMOTOR', 'CLIENTE', 'TITULAR_CUENTA_EJE', 'ID_MENOR', 'NOMBRE_MENOR', 'MONTO', 'CONCEPTO', 'PLAZO_INVERSION', 'FECHA_FIN_INVERSION', 'PRODUCTO', 'TIPO_MOVIMIENTO', 'INGRESO', 'EGRESO');
+        $columnas = [
+            self::ColumnaExcel('A', 'FECHA_MOV', 'FECHA MOVIMIENTO', $estilo_fecha_hora),
+            self::ColumnaExcel('B', 'CDGCO', 'COD SUCURSAL', $estilo_centrado),
+            self::ColumnaExcel('C', 'SUCURSAL', 'NOM SUCURSAL', $estilo_centrado),
+            self::ColumnaExcel('D', 'FECHA_MOV_APLICA', 'FECHA', $estilo_fecha),
+            self::ColumnaExcel('E', 'USUARIO_CAJA', 'USUARIO', $estilo_centrado),
+            self::ColumnaExcel('F', 'NOMBRE_CAJERA', 'NOMBRE CAJERA'),
+            self::ColumnaExcel('G', 'NOMBRE_PROMOTOR', 'PROMOTOR'),
+            self::ColumnaExcel('H', 'CLIENTE', 'CLIENTE', $estilo_centrado),
+            self::ColumnaExcel('I', 'TITULAR_CUENTA_EJE', 'TITULAR CUENTA'),
+            self::ColumnaExcel('J', 'ID_MENOR', 'ID MENOR', $estilo_centrado),
+            self::ColumnaExcel('K', 'NOMBRE_MENOR', 'NOMBRE MENOR'),
+            self::ColumnaExcel('L', 'MONTO', 'MONTO', $estilo_moneda),
+            self::ColumnaExcel('M', 'CONCEPTO'),
+            self::ColumnaExcel('N', 'PLAZO_INVERSION', 'PLAZO INVERSION', $estilo_centrado),
+            self::ColumnaExcel('O', 'FECHA_FIN_INVERSION', 'FECHA FIN INVERSION', $estilo_fecha),
+            self::ColumnaExcel('P', 'PRODUCTO'),
+            self::ColumnaExcel('Q', 'TIPO_MOVIMIENTO', 'MOVIMIENTO', $estilo_centrado),
+            self::ColumnaExcel('R', 'INGRESO', 'INGRESO', $estilo_moneda),
+            self::ColumnaExcel('S', 'EGRESO', 'EGRESO', $estilo_moneda)
+        ];
 
+        $objPHPExcel = new \PHPExcel();
+        $objPHPExcel->getProperties()->setCreator("jma");
+        $objPHPExcel->getProperties()->setLastModifiedBy("jma");
+        $objPHPExcel->setActiveSheetIndex(0);
 
-        $objPHPExcel->getActiveSheet()->SetCellValue('A' . $fila, 'Consulta de Movimientos de Ahorro a Detalle (incluye transacciones virtuales)');
-        $objPHPExcel->getActiveSheet()->mergeCells('A' . $fila . ':' . $columna[count($nombreColumna) - 1] . $fila);
-        $objPHPExcel->getActiveSheet()->getStyle('A' . $fila)->applyFromArray($estilo_titulo);
-        $objPHPExcel->getActiveSheet()->getStyle('A' . $fila)->getAlignment()->setWrapText($adaptarTexto);
-
-        $fila += 1;
+        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Consulta de Movimientos de Ahorro a Detalle (incluye transacciones virtuales)');
+        $objPHPExcel->getActiveSheet()->mergeCells('A1:' . $columnas[count($columnas) - 1]['letra'] . '1');
+        $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($estilo_titulo);
 
         /*COLUMNAS DE LOS DATOS DEL ARCHIVO EXCEL*/
-        foreach ($nombreColumna as $key => $value) {
-            $objPHPExcel->getActiveSheet()->SetCellValue($columna[$key] . $fila, $value);
-            $objPHPExcel->getActiveSheet()->getStyle($columna[$key] . $fila)->applyFromArray($estilo_encabezado);
-            $objPHPExcel->getActiveSheet()->getStyle($columna[$key] . $fila)->getAlignment()->setWrapText($adaptarTexto);
+        foreach ($columnas as $key => $value) {
+            $objPHPExcel->getActiveSheet()->SetCellValue($value['letra'] . '2', $value['titulo']);
+            $objPHPExcel->getActiveSheet()->getStyle($value['letra'] . '2')->applyFromArray($estilo_encabezado);
             $objPHPExcel->getActiveSheet()->getColumnDimensionByColumn($key)->setAutoSize(true);
         }
-        $fila += 1; //fila donde comenzaran a escribirse los datos
 
         /* FILAS DEL ARCHIVO EXCEL */
+        $datos = CajaAhorroDao::GetAllTransaccionesDetalle($fecha_inicio, $fecha_fin, $operacion, $producto, $sucursal);
 
-        $Layoutt = CajaAhorroDao::GetAllTransaccionesDetalle($fecha_inicio, $fecha_fin, $operacion, $producto, $sucursal);
-
-
-        foreach ($Layoutt as $key => $value) {
-            foreach ($nombreCampo as $key => $campo) {
-                $objPHPExcel->getActiveSheet()->SetCellValue($columna[$key] . $fila, html_entity_decode($value[$campo], ENT_QUOTES, "UTF-8"));
-                $objPHPExcel->getActiveSheet()->getStyle($columna[$key] . $fila)->applyFromArray($estilo_celda);
-                $objPHPExcel->getActiveSheet()->getStyle($columna[$key] . $fila)->getAlignment()->setWrapText($adaptarTexto);
+        $fila = 3;
+        foreach ($datos as $key => $value) {
+            foreach ($columnas as $key => $campo) {
+                $objPHPExcel->getActiveSheet()->SetCellValue($campo['letra'] . $fila, html_entity_decode($value[$campo['campo']], ENT_QUOTES, "UTF-8"));
+                $objPHPExcel->getActiveSheet()->getStyle($campo['letra'] . $fila)->applyFromArray($campo['estilo']);
             }
             $fila += 1;
         }
 
         $fila += 1;
-
-
-        $objPHPExcel->getActiveSheet()->getStyle($columna[7] . $fila)->applyFromArray($estilo_encabezado);
-        $objPHPExcel->getActiveSheet()->getStyle($columna[7] . $fila)->getAlignment()->setWrapText($adaptarTexto);
-
-        $objPHPExcel->getActiveSheet()->SetCellValue($columna[8] . $fila, 0);
-        $objPHPExcel->getActiveSheet()->getStyle($columna[8] . $fila)->applyFromArray($estilo_celda);
-        $objPHPExcel->getActiveSheet()->getStyle($columna[8] . $fila)->getAlignment()->setWrapText($adaptarTexto);
-
-        $objPHPExcel->getActiveSheet()->SetCellValue($columna[9] . $fila, 0);
-        $objPHPExcel->getActiveSheet()->getStyle($columna[9] . $fila)->applyFromArray($estilo_celda);
-        $objPHPExcel->getActiveSheet()->getStyle($columna[9] . $fila)->getAlignment()->setWrapText($adaptarTexto);
-
-        $objPHPExcel->getActiveSheet()->SetCellValue($columna[10] . $fila, 0);
-        $objPHPExcel->getActiveSheet()->getStyle($columna[10] . $fila)->applyFromArray($estilo_celda);
-        $objPHPExcel->getActiveSheet()->getStyle($columna[10] . $fila)->getAlignment()->setWrapText($adaptarTexto);
-
-        $objPHPExcel->getActiveSheet()->getStyle('A1:' . $columna[count($columna) - 1] . $fila)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        for ($i = 0; $i < $fila; $i++) {
-            $objPHPExcel->getActiveSheet()->getRowDimension($i)->setRowHeight(20);
-        }
-
-        $objPHPExcel->getActiveSheet()->setTitle('Reporte');
 
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
         header('Content-Disposition: attachment;filename="Reporte Movimientos Caja ' . $controlador . '.xlsx"');
