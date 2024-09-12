@@ -3280,17 +3280,6 @@ script;
         $objWriter->save('php://output');
     }
 
-    public function ColumnaExcel($letra, $campo, $titulo = '', $estilo = [])
-    {
-        $titulo = $titulo == '' ? $campo : $titulo;
-
-        return [
-            'letra' => $letra,
-            'campo' => $campo,
-            'estilo' => $estilo,
-            'titulo' => $titulo
-        ];
-    }
 
     public function generarExcelPagosTransaccionesDetalleAll()
     {
@@ -3300,58 +3289,28 @@ script;
         $producto = $_GET['Producto'];
         $sucursal = $_GET['Sucursal'];
 
-        $estilo_titulo = array(
-            'font' => array('bold' => true),
-            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
-            'type' => \PHPExcel_Style_Fill::FILL_SOLID
-        );
+        $estilos = self::GetEstilosExcel();
 
-        $estilo_encabezado = array(
-            'font' => array('bold' => true),
-            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
-            'type' => \PHPExcel_Style_Fill::FILL_SOLID
-        );
-
-        $estilo_centrado = array(
-            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
-        );
-
-        $estilo_moneda = array(
-            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_RIGHT),
-            'numberformat' => array('code' => \PHPExcel_Style_NumberFormat::FORMAT_CURRENCY_USD_SIMPLE)
-        );
-
-        $estilo_fecha = array(
-            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
-            'numberformat' => array('code' => \PHPExcel_Style_NumberFormat::FORMAT_DATE_DDMMYYYY)
-        );
-
-        $estilo_fecha_hora = array(
-            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
-            'numberformat' => array('code' => \PHPExcel_Style_NumberFormat::FORMAT_DATE_TIME4)
-        );
-
-        $controlador = "AdminSucursales";
         $columnas = [
-            self::ColumnaExcel('A', 'FECHA_MOV', 'FECHA MOVIMIENTO', $estilo_fecha_hora),
-            self::ColumnaExcel('B', 'CDGCO', 'COD SUCURSAL', $estilo_centrado),
-            self::ColumnaExcel('C', 'SUCURSAL', 'NOM SUCURSAL', $estilo_centrado),
-            self::ColumnaExcel('D', 'FECHA_MOV_APLICA', 'FECHA', $estilo_fecha),
-            self::ColumnaExcel('E', 'USUARIO_CAJA', 'USUARIO', $estilo_centrado),
+            self::ColumnaExcel('A', 'FECHA_MOV', 'FECHA MOVIMIENTO', $estilos['fecha_hora']),
+            self::ColumnaExcel('B', 'CDGCO', 'COD SUCURSAL', $estilos['centrado']),
+            self::ColumnaExcel('C', 'SUCURSAL', 'NOM SUCURSAL', $estilos['centrado']),
+            self::ColumnaExcel('D', 'FECHA_MOV_APLICA', 'FECHA', $estilos['fecha']),
+            self::ColumnaExcel('E', 'USUARIO_CAJA', 'USUARIO', $estilos['centrado']),
             self::ColumnaExcel('F', 'NOMBRE_CAJERA', 'NOMBRE CAJERA'),
             self::ColumnaExcel('G', 'NOMBRE_PROMOTOR', 'PROMOTOR'),
-            self::ColumnaExcel('H', 'CLIENTE', 'CLIENTE', $estilo_centrado),
+            self::ColumnaExcel('H', 'CLIENTE', 'CLIENTE', $estilos['centrado']),
             self::ColumnaExcel('I', 'TITULAR_CUENTA_EJE', 'TITULAR CUENTA'),
-            self::ColumnaExcel('J', 'ID_MENOR', 'ID MENOR', $estilo_centrado),
+            self::ColumnaExcel('J', 'ID_MENOR', 'ID MENOR', $estilos['centrado']),
             self::ColumnaExcel('K', 'NOMBRE_MENOR', 'NOMBRE MENOR'),
-            self::ColumnaExcel('L', 'MONTO', 'MONTO', $estilo_moneda),
+            self::ColumnaExcel('L', 'MONTO', 'MONTO', $estilos['moneda']),
             self::ColumnaExcel('M', 'CONCEPTO'),
-            self::ColumnaExcel('N', 'PLAZO_INVERSION', 'PLAZO INVERSION', $estilo_centrado),
-            self::ColumnaExcel('O', 'FECHA_FIN_INVERSION', 'FECHA FIN INVERSION', $estilo_fecha),
+            self::ColumnaExcel('N', 'PLAZO_INVERSION', 'PLAZO INVERSION', $estilos['centrado']),
+            self::ColumnaExcel('O', 'FECHA_FIN_INVERSION', 'FECHA FIN INVERSION', $estilos['fecha']),
             self::ColumnaExcel('P', 'PRODUCTO'),
-            self::ColumnaExcel('Q', 'TIPO_MOVIMIENTO', 'MOVIMIENTO', $estilo_centrado),
-            self::ColumnaExcel('R', 'INGRESO', 'INGRESO', $estilo_moneda),
-            self::ColumnaExcel('S', 'EGRESO', 'EGRESO', $estilo_moneda)
+            self::ColumnaExcel('Q', 'TIPO_MOVIMIENTO', 'MOVIMIENTO', $estilos['centrado']),
+            self::ColumnaExcel('R', 'INGRESO', 'INGRESO', $estilos['moneda']),
+            self::ColumnaExcel('S', 'EGRESO', 'EGRESO', $estilos['moneda'])
         ];
 
         $objPHPExcel = new \PHPExcel();
@@ -3361,12 +3320,12 @@ script;
 
         $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Consulta de Movimientos de Ahorro a Detalle (incluye transacciones virtuales)');
         $objPHPExcel->getActiveSheet()->mergeCells('A1:' . $columnas[count($columnas) - 1]['letra'] . '1');
-        $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($estilo_titulo);
+        $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($estilos['titulo']);
 
         /*COLUMNAS DE LOS DATOS DEL ARCHIVO EXCEL*/
         foreach ($columnas as $key => $value) {
             $objPHPExcel->getActiveSheet()->SetCellValue($value['letra'] . '2', $value['titulo']);
-            $objPHPExcel->getActiveSheet()->getStyle($value['letra'] . '2')->applyFromArray($estilo_encabezado);
+            $objPHPExcel->getActiveSheet()->getStyle($value['letra'] . '2')->applyFromArray($estilos['titulo']);
             $objPHPExcel->getActiveSheet()->getColumnDimensionByColumn($key)->setAutoSize(true);
         }
 
@@ -3382,10 +3341,8 @@ script;
             $fila += 1;
         }
 
-        $fila += 1;
-
         header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="Reporte Movimientos Caja ' . $controlador . '.xlsx"');
+        header('Content-Disposition: attachment;filename="Reporte Movimientos Caja AdminSucursales.xlsx"');
         header('Cache-Control: max-age=0');
         header('Cache-Control: max-age=1');
         header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');

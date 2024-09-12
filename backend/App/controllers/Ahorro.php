@@ -603,12 +603,15 @@ class Ahorro extends Controller
                     }
                     
 
-                    if (tipoAhorro.value != document.querySelector("#productoOriginal").value) {
-                        document.querySelector("#btnGuardar").innerText = txtActualizarCuenta
-                        document.querySelector("#btnGeneraContrato").style.display = "block"
-                    } else {
-                        document.querySelector("#btnGuardar").innerText = txtGuardaContrato
-                        document.querySelector("#btnGeneraContrato").style.display = "none"
+                    if (document.querySelector("#productoOriginal").value !== "") {
+                        if (tipoAhorro.value != document.querySelector("#productoOriginal").value) {
+                            document.querySelector("#btnGuardar").innerText = txtActualizarCuenta
+                            document.querySelector("#btnGeneraContrato").style.display = "block"
+                        }
+                        if (tipoAhorro.value == document.querySelector("#productoOriginal").value) {
+                            document.querySelector("#btnGuardar").innerText = txtGuardaContrato
+                            document.querySelector("#btnGeneraContrato").style.display = "none"
+                        }
                     }
 
                     document.querySelector("#monto").value = ""
@@ -620,6 +623,7 @@ class Ahorro extends Controller
             const actualizaInscripcion = () => {
                 const info = document.querySelector("#infoProducto")
                 costoInscripcion = parseaNumero(info.value) - parseaNumero(document.querySelector("#inscripcionPagada").value)
+                costoInscripcion = costoInscripcion < 0 ? 0 : costoInscripcion
                 saldoMinimoApertura = document.querySelector("#inscripcionPagada").value > 0 ? costoInscripcion : parseaNumero(info.options[info.selectedIndex].text)
                 saldoActual = parseaNumero(document.querySelector("#saldoActual").value)
 

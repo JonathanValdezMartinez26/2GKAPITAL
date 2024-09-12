@@ -629,7 +629,8 @@ class CajaAhorro
                 'movimiento' => '1',
                 'cliente' => $datos['codigo_cl'],
                 'ejecutivo' => $datos['ejecutivo'],
-                'sucursal' => $datos['sucursal']
+                'sucursal' => $datos['sucursal'],
+                'apoderado' => null
             ],
             [
                 'tipo_pago' => '2',
@@ -638,7 +639,8 @@ class CajaAhorro
                 'movimiento' => '0',
                 'cliente' => $datos['codigo_cl'],
                 'ejecutivo' => $datos['ejecutivo'],
-                'sucursal' => $datos['sucursal']
+                'sucursal' => $datos['sucursal'],
+                'apoderado' => null
             ],
             [
                 'monto' => $datos['monto'],
@@ -1402,7 +1404,8 @@ class CajaAhorro
                 'movimiento' => '0',
                 'cliente' => $datos['cliente'],
                 'ejecutivo' => $datos['ejecutivo'],
-                'sucursal' => $datos['sucursal']
+                'sucursal' => $datos['sucursal'],
+                'apoderado' => null
             ]
         ];
 
@@ -1642,7 +1645,8 @@ class CajaAhorro
             'movimiento' => '0',
             'cliente' => $datos['cliente'],
             'ejecutivo' => $datos['ejecutivo'],
-            'sucursal' => $datos['sucursal']
+            'sucursal' => $datos['sucursal'],
+            'apoderado' => null
         ];
 
         $query = [
@@ -1809,7 +1813,8 @@ class CajaAhorro
             'movimiento' => '0',
             'cliente' => $datos['cliente'],
             'ejecutivo' => $datos['ejecutivo'],
-            'sucursal' => $datos['sucursal']
+            'sucursal' => $datos['sucursal'],
+            'apoderado' => null
         ];
 
         $datosInsert = [
@@ -1883,7 +1888,8 @@ class CajaAhorro
                 'movimiento' => '1',
                 'cliente' => $datos['cliente'],
                 'ejecutivo' => $datos['ejecutivo'],
-                'sucursal' => $datos['sucursal']
+                'sucursal' => $datos['sucursal'],
+                'apoderado' => null
             ]
         ];
 
