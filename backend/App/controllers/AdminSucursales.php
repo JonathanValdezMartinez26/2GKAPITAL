@@ -327,6 +327,18 @@ class AdminSucursales extends Controller
         const f = new Date(fecha + "T06:00:00Z")
         return f.toLocaleString("es-MX", { year: "numeric", month:"2-digit", day:"2-digit" })
     }';
+    private $descargaExcel = 'const descargaExcel = (url) => {
+        swal({ text: "Generando archivo, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
+        
+        const ventana = window.open(url, "_blank")
+
+        const intervalo = setInterval(() => {
+            if (ventana.closed) {
+                clearInterval(intervalo)
+                swal.close()
+            }
+        }, 1000)
+    }';
 
     function __construct()
     {
@@ -1568,8 +1580,6 @@ script;
 
         $opcOperaciones = <<<html
             <option value="0" $sel_op0>TODAS LAS OPERACIONES CON EFECTIVO</option>
-            
-            
             <option value="1" $sel_op1>APERTURA DE CUENTA - INSCRIPCIÓN</option>
             <option value="2" $sel_op2>CAPITAL INICIAL - CUENTA CORRIENTE</option>
             <option value="3" $sel_op3>DEPOSITO</option>
@@ -2916,6 +2926,128 @@ script;
         View::set('filas', $filas);
         View::set('opcSucursales', self::GetSucursalesReporteria());
         View::render("caja_admin_historial_retiro_sucursal");
+    }
+
+    
+
+    public function SituacionAhorro()
+    {
+        $extraFooter = <<<HTML
+        <script>
+            {$this->showError}
+            {$this->showSuccess}
+            {$this->showInfo}
+            {$this->confirmarMovimiento}
+            {$this->consultaServidor}
+            {$this->configuraTabla}
+            {$this->noSubmit}
+            {$this->crearFilas}
+            {$this->descargaExcel}
+         
+            $(document).ready(() => {
+                configuraTabla("situacion")
+            })
+             
+            const validaFechas = (e) => {
+                if (e.target.id === "fechaF") {
+                    const fechaF = $("#fechaF").val()
+                    const fi = document.querySelector("#fechaI")
+                    const nFF = new Date(fechaF)
+                    const nFI = new Date(nFF.setMonth(nFF.getMonth() - 1)).toISOString().split('T')[0]
+                    
+                    fi.min = nFI
+                    fi.max = fechaF
+
+                    if (fi.value > fechaF) fi.value = nFI
+                    if (fi.value < nFI) fi.value = nFI
+                }
+            }
+             
+            const buscarSituacion = () => {
+                const datos = {
+                    fechaI: $("#fechaI").val(),
+                    fechaF: $("#fechaF").val()
+                }
+                 
+                if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+                
+                consultaServidor(
+                    "/AdminSucursales/GetSituacionAhorro/",
+                    $.param(datos),
+                    (resultado) => {
+                        $("#situacion").DataTable().destroy()
+                        $("#situacion tbody").html("")
+                        
+                        if (!resultado.success) showError(resultado.mensaje)
+                        else $("#situacion tbody").html(creaFilas(resultado.datos))
+                        
+                        configuraTabla("situacion")
+                    })
+            }
+
+            const GetExcel = () => {
+                const datos = {
+                    fechaI: $("#fechaI").val(),
+                    fechaF: $("#fechaF").val()
+                }
+                 
+                if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+
+                descargaExcel("/AdminSucursales/ExcelSituacionAhorro/?"+$.param(datos))
+            }
+               
+        </script>
+        HTML;
+
+        $fechaI = date('Y-m-d', strtotime('-1 month'));
+        $fechaF = date('Y-m-d');
+
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Situación Ahorro")));
+        View::set('footer', $this->_contenedor->footer($extraFooter));
+        View::set('fechaI', $fechaI);
+        View::set('fechaF', $fechaF);
+        View::set('filas', $filas);
+        View::set('opcSucursales', self::GetSucursalesReporteria());
+        View::render("caja_admin_situacion_ahorro");
+    }
+
+    public function GetSituacionAhorro($datos = null)
+    {
+        if ($_POST)
+            echo AdminSucursalesDao::GetSituacionAhorro($_POST);
+
+        return json_decode(AdminSucursalesDao::GetSituacionAhorro($datos), true);        
+    }
+
+    public function ExcelSituacionAhorro()
+    {
+        $estilos = \PHPSpreadsheet::GetEstilosExcel();
+
+        $columnas = [
+            \PHPSpreadsheet::ColumnaExcel('A', 'ID_SOCIO', 'ID Cliente', $estilos['centrado']),
+            \PHPSpreadsheet::ColumnaExcel('B', 'NOMBRE_SOCIO', 'Nombre Cliente'),
+            \PHPSpreadsheet::ColumnaExcel('C', 'ID_PQ', 'ID Peque', $estilos['centrado']),
+            \PHPSpreadsheet::ColumnaExcel('D', 'NOMBRE_PQ', 'Nombre Peque'),
+            \PHPSpreadsheet::ColumnaExcel('E', 'SUCURSAL', 'Sucursal'),
+            \PHPSpreadsheet::ColumnaExcel('F', 'TIPO_CUENTA', 'Producto'),
+            \PHPSpreadsheet::ColumnaExcel('G', 'FECHA_INICIO', 'Fecha Inicio', $estilos['fecha']),
+            \PHPSpreadsheet::ColumnaExcel('H', 'FECHA_VENCIMIENTO', 'Fecha Vencimiento', $estilos['fecha']),
+            \PHPSpreadsheet::ColumnaExcel('I', 'PLAZO', 'Plazo', $estilos['centrado']),
+            \PHPSpreadsheet::ColumnaExcel('J', 'COMISION_APERTURA', 'Comisión', $estilos['moneda'], true),
+            \PHPSpreadsheet::ColumnaExcel('K', 'BONIFICACION', 'Bonificación', $estilos['moneda'], true),
+            \PHPSpreadsheet::ColumnaExcel('L', 'SALDO_AHORRO', 'Saldo Ahorro', $estilos['moneda'], true),
+            \PHPSpreadsheet::ColumnaExcel('M', 'FECHA_INVERSION', 'Fecha Inversión', $estilos['fecha']),
+            \PHPSpreadsheet::ColumnaExcel('N', 'SALDO_INVERSION', 'Saldo Inversión', $estilos['moneda'], true),
+            \PHPSpreadsheet::ColumnaExcel('O', 'SALDO_SOCIO', 'Saldo Total', $estilos['moneda'], true),
+            \PHPSpreadsheet::ColumnaExcel('P', 'EJECUTIVO', 'Ejecutivo'),
+            \PHPSpreadsheet::ColumnaExcel('Q', 'TASA', 'Tasa', $estilos['porcentaje']),
+            \PHPSpreadsheet::ColumnaExcel('R', 'RENDIMIENTO', 'Rendimiento Total', $estilos['moneda'], true)
+        ];
+
+        $filas = self::GetSituacionAhorro($_POST);
+
+        if (!$filas['success']) $filas['datos'] = [];   
+        \PHPSpreadsheet::GeneraExcel('Reporte de situación de ahorro', 'Reporte', 'Situación Ahorro', $columnas, $filas['datos']);
     }
 
     public function GetSucursalesReporteria()
