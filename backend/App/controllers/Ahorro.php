@@ -2690,7 +2690,7 @@ class Ahorro extends Controller
                 addParametro(datos, "sucursal", sucursal_ahorro)
                 addParametro(datos, "cliente", document.querySelector("#modal_act_cl").value)
 
-                consultaServidor("/Ahorro/GetCertificadoInversion/", datos, (respuesta) => {
+                consultaServidor("/Ahorro/ActualizaInversion/", datos, (respuesta) => {
                     if (!respuesta.success) {
                         console.log(respuesta.error)
                         return showError(respuesta.mensaje)
