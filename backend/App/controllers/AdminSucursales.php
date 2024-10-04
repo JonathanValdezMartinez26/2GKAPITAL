@@ -3044,8 +3044,7 @@ script;
             \PHPSpreadsheet::ColumnaExcel('R', 'RENDIMIENTO', 'Rendimiento Total', $estilos['moneda'], true)
         ];
 
-        $filas = self::GetSituacionAhorro($_POST);
-
+        $filas = self::GetSituacionAhorro($_GET);
         if (!$filas['success']) $filas['datos'] = [];   
         \PHPSpreadsheet::GeneraExcel('Reporte de situación de ahorro', 'Reporte', 'Situación Ahorro', $columnas, $filas['datos']);
     }
