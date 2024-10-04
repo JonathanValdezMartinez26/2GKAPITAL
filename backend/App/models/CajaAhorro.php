@@ -28,7 +28,7 @@ class CajaAhorro
     {
         $qry = <<<sql
         SELECT
-            SUC_ESTADO_AHORRO.CDG_SUCURSAL AS CDGCO_AHORRO,
+            SUC_ESTADO_AHORRO.CDG_SUCURSAL AS CDGCO_AHORRO
         FROM
             SUC_CAJERA_AHORRO
         INNER JOIN
@@ -406,7 +406,7 @@ class CajaAhorro
 
     public static function BuscaContratoAhorro($datos)
     {
-        $query = <<<sql
+        $query = <<<SQL
         SELECT
             CONCATENA_NOMBRE(CL.NOMBRE1, CL.NOMBRE2, CL.PRIMAPE, CL.SEGAPE) AS NOMBRE,
             CL.CURP,
@@ -439,12 +439,21 @@ class CajaAhorro
                 WHERE
                     APA.CDGCL = CL.CODIGO
                     AND CDGPR_PRIORITARIO > 2
-            ) AS NO_CONTRATOS
+            ) AS NO_CONTRATOS,
+            (
+                SELECT
+                    COUNT(CU.CDG_CONTRATO)
+                FROM
+                    CUENTA_INVERSION CU
+                WHERE
+                    CU.CDG_CONTRATO = (SELECT CONTRATO FROM ASIGNA_PROD_AHORRO WHERE CDGCL = CL.CODIGO AND CDGPR_PRIORITARIO != 2)
+                    AND ESTATUS = 'A'
+            ) AS NO_INVERSIONES
         FROM
             CL
         WHERE
             CL.CODIGO = '{$datos['cliente']}'
-        sql;
+        SQL;
 
         try {
             $mysqli = new Database();
@@ -1428,6 +1437,207 @@ class CajaAhorro
             return self::Responde(false, "Ocurrió un error al registrar la inversión.");
         } catch (Exception $e) {
             return self::Responde(false, "Ocurrió un error al registrar la inversión.", null, $e->getMessage());
+        }
+    }
+
+    public static function GetInversion($datos)
+    {
+        $qry = <<<SQL
+            SELECT
+                CI.CODIGO AS CODIGO,
+                TI.CODIGO AS CODIGO_TASA,
+                TO_CHAR(CI.FECHA_APERTURA, 'DD/MM/YYYY') AS F_APERTURA,
+                TO_CHAR(CI.FECHA_VENCIMIENTO, 'DD/MM/YYYY') AS F_VENCIMIENTO,
+                TO_CHAR(CI.MODIFICACION, 'DD/MM/YYYY') AS F_ACTUALIZACION,
+                CI.MONTO_INVERSION AS MONTO,
+                TI.TASA AS TASA,
+                PI.PLAZO AS PLAZO,
+                PI.PERIODICIDAD AS PERIODICIDAD,
+                NVL(DDI.RENDIMIENTO, 0) AS RENDIMIENTO
+            FROM    
+                CUENTA_INVERSION CI
+                JOIN TASA_INVERSION TI ON CI.CDG_TASA = TI.CODIGO
+                JOIN PLAZO_INVERSION PI ON TI.CDG_PLAZO = PI.CODIGO
+                LEFT JOIN (
+                    SELECT
+                        CONTRATO,
+                        SUM(DEVENGO) AS RENDIMIENTO
+                    FROM
+                        DEVENGO_DIARIO_INVERSION DDI
+                    WHERE
+                        DDI.CONTRATO = '{$datos['contrato']}'
+                        AND DDI.CONTABILIZADO IS NULL
+                    GROUP BY 
+                        CONTRATO
+                ) DDI ON CI.CDG_CONTRATO = DDI.CONTRATO
+            WHERE
+                CI.CDG_CONTRATO = '{$datos['contrato']}'
+                AND CI.ESTATUS = 'A'
+        SQL;
+
+        try {
+            $mysqli = new Database();
+            $res = $mysqli->queryOne($qry);
+            if (!$res) return self::Responde(false, "No se encontraron datos para la inversión.");
+            return self::Responde(true, "Consulta realizada correctamente.", $res);
+        } catch (Exception $e) {
+            return self::Responde(false, "Ocurrió un error al consultar los datos de la inversión.", null, $e->getMessage());
+        }
+    }
+
+    public static function ActualizaInversion($datos)
+    {
+        $qryInversion = <<<SQL
+            UPDATE CUENTA_INVERSION
+            SET
+                MONTO_INVERSION = MONTO_INVERSION + :monto,
+                CDG_TASA = :tasa,
+                MODIFICACION = SYSDATE
+            WHERE
+                CDG_CONTRATO = :contrato
+                AND CODIGO = :codigo
+                AND ESTATUS = 'A'
+        SQL;
+
+        $qryDevengo = <<<SQL
+            UPDATE DEVENGO_DIARIO_INVERSION
+            SET
+                CONTABILIZADO = SYSDATE
+            WHERE
+                CONTRATO = :contrato
+                AND ID_INVERSION = :codigo
+                AND CONTABILIZADO IS NULL
+        SQL;
+
+        $qrys = [
+            $qryDevengo,
+            self::GetQueryTicket(),
+            self::GetQueryMovimientoAhorro(),
+            $qryInversion,
+            self::GetQueryTicket(),
+            self::GetQueryMovimientoAhorro()
+        ];
+
+        $datosInsert = [
+            [
+                'contrato' => $datos['contrato'],
+                'codigo' => $datos['codigo']
+            ],
+            [
+                'contrato' => $datos['contrato'],
+                'monto' => $datos['rendimiento'],
+                'ejecutivo' => $datos['ejecutivo'],
+                'sucursal' => $datos['sucursal']
+            ],
+            [
+                'tipo_pago' => '17',
+                'contrato' => $datos['contrato'],
+                'monto' => $datos['rendimiento'],
+                'movimiento' => '1',
+                'cliente' => $datos['cliente'],
+                'ejecutivo' => $datos['ejecutivo'],
+                'sucursal' => $datos['sucursal'],
+                'apoderado' => null
+            ],
+            [
+                'monto' => $datos['monto'],
+                'tasa' => $datos['tasa'],
+                'contrato' => $datos['contrato'],
+                'codigo' => $datos['codigo']
+            ],
+            [
+                'contrato' => $datos['contrato'],
+                'monto' => $datos['monto'],
+                'ejecutivo' => $datos['ejecutivo'],
+                'sucursal' => $datos['sucursal']
+            ],
+            [
+                'tipo_pago' => '5',
+                'contrato' => $datos['contrato'],
+                'monto' => $datos['monto'],
+                'movimiento' => '0',
+                'cliente' => $datos['cliente'],
+                'ejecutivo' => $datos['ejecutivo'],
+                'sucursal' => $datos['sucursal'],
+                'apoderado' => null
+            ]
+        ];
+
+        if ($datos['rendimiento'] == 0) {
+            $qrys = array_splice($qrys, -3);
+            $datosInsert = array_splice($datosInsert, -3);
+        }
+
+        $qryCodInv = <<<SQL
+            UPDATE MOVIMIENTOS_AHORRO
+            SET CDG_INVERSION = :codigo
+            WHERE CDG_TICKET = :ticket
+        SQL;
+
+        try {
+            $mysqli = new Database();
+            $res = $mysqli->insertaMultiple($qrys, $datosInsert);
+            if ($res) {
+                LogTransaccionesAhorro::LogTransacciones($qrys, $datosInsert, $_SESSION['cdgco_ahorro'], $_SESSION['usuario'], $datos['contrato'], "Actualización de inversión de cuenta ahorro corriente");
+                $ticket = self::RecuperaTicket($datos['contrato']);
+                $mysqli->insertar($qryCodInv, ['codigo' => $datos['codigo'], 'ticket' => $ticket['CODIGO']]);
+                return self::Responde(true, "Inversión actualizada correctamente.", ['ticket' => $ticket['CODIGO']]);
+            }
+            return self::Responde(false, "Ocurrió un error al actualizar la inversión.");
+        } catch (Exception $e) {
+            return self::Responde(false, "Ocurrió un error al actualizar la inversión.", null, $e->getMessage());
+        }
+    }
+
+    public static function DatosCertificadoInversion($idInversion)
+    {
+        $qry = <<<SQL
+            SELECT
+                APA.CDGCL AS CLIENTE,
+                CL.PRIMAPE AS APELLIDO1,
+                CL.SEGAPE AS APELLIDO2,
+                CL.NOMBRE1 || (
+                CASE
+                    WHEN CL.NOMBRE2 IS NOT NULL THEN ' ' || CL.NOMBRE2
+                    ELSE ''
+                END) AS NOMBRE,
+                CO.CODIGO || '-' || CO.NOMBRE AS SUCURSAL,
+                CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS EJECUTIVO,
+                TO_CHAR(SYSDATE, 'DD/MM/YYYY') AS FECHA,
+                TO_CHAR(CI.FECHA_APERTURA, 'DD/MM/YYYY') AS F_APERTURA,
+                TO_CHAR(CI.FECHA_VENCIMIENTO, 'DD/MM/YYYY') AS F_VENCIMIENTO,
+                'PLAZO FIJO' AS TIPO_NVVERSION,
+                TO_CHAR(CI.MONTO_INVERSION, 'FM$999,999,999.00') AS MONTO,
+                PI.PLAZO || ' ' || CASE
+                    WHEN PI.PERIODICIDAD = 'D' THEN 'DÍAS'
+                    WHEN PI.PERIODICIDAD = 'S' THEN 'SEMANAS'
+                    WHEN PI.PERIODICIDAD = 'M' THEN 'MESES'
+                    WHEN PI.PERIODICIDAD = 'A' THEN 'AÑOS'
+                    ELSE ''
+                END AS PLAZO,
+                TO_CHAR(TI.TASA, 'FM99.00') || '%' AS TASA,
+                'TRANSFERENCIA' AS FORMA_PAGO,
+                TO_CHAR((TRUNC(CI.FECHA_VENCIMIENTO) - TRUNC(SYSDATE)) * TI.TASA * CI.MONTO_INVERSION / 36000, 'FM$999,999,999.00') AS RENDIMIENTO,
+                TO_CHAR(((TRUNC(CI.FECHA_VENCIMIENTO) - TRUNC(SYSDATE)) * TI.TASA * CI.MONTO_INVERSION / 36000) + CI.MONTO_INVERSION, 'FM$999,999,999.00') AS MONTO_FINAL
+            FROM    
+                CUENTA_INVERSION CI
+                JOIN TASA_INVERSION TI ON CI.CDG_TASA = TI.CODIGO
+                JOIN PLAZO_INVERSION PI ON TI.CDG_PLAZO = PI.CODIGO
+                LEFT JOIN ASIGNA_PROD_AHORRO APA ON APA.CONTRATO = CI.CDG_CONTRATO
+                LEFT JOIN CL ON CL.CODIGO = APA.CDGCL
+                LEFT JOIN PE ON PE.CODIGO = CI.CDG_USUARIO
+                LEFT JOIN CO ON CO.CODIGO = APA.CDGCO
+            WHERE
+                CI.CODIGO = '$idInversion'
+        SQL;
+
+        try {
+            $mysqli = new Database();
+            $res = $mysqli->queryOne($qry);
+            if (!$res) [];
+            return $res;
+        } catch (Exception $e) {
+            return [];
         }
     }
 

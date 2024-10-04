@@ -2341,7 +2341,7 @@ class Ahorro extends Controller
         $suc = $_SESSION['cdgco_ahorro'] !== "NULL" ? $_SESSION['cdgco_ahorro'] : CajaAhorroDao::GetSucCajeraAhorro($_SESSION['usuario'])['CDGCO_AHORRO'];
         $usr = $_SESSION['usuario'];
 
-        $extraFooter = <<<html
+        $extraFooter = <<<HTML
         <script>
             const saldoMinimoApertura = $saldoMinimoApertura
             const montoMaximo = 4000000
@@ -2392,15 +2392,55 @@ class Ahorro extends Controller
              
             const llenaDatosCliente = (datos) => {
                 const saldoActual = parseaNumero(datos.SALDO)
-                         
-                huellas = datos.HUELLAS
-                document.querySelector("#nombre").value = datos.NOMBRE
-                document.querySelector("#curp").value = datos.CURP
-                document.querySelector("#contrato").value = datos.CONTRATO
-                document.querySelector("#cliente").value = datos.CDGCL
-                document.querySelector("#saldoActual").value = formatoMoneda(saldoActual)
-                document.querySelector("#saldoFinal").value = formatoMoneda(saldoActual)
-                if (saldoActual >= saldoMinimoApertura) return document.querySelector("#monto").disabled = false
+
+                if (saldoActual >= saldoMinimoApertura) {
+                    if (datos.NO_INVERSIONES > 0) {
+                        document.querySelector("#modal_act_cl").value = datos.CDGCL
+                        document.querySelector("#modal_act_contrato").value = datos.CONTRATO
+                        document.querySelector("#modal_act_nombre_cliente").value = datos.NOMBRE
+
+                        consultaServidor("/Ahorro/GetInversion/", $.param({contrato: datos.CONTRATO}), (respuesta) => {
+                            if (!respuesta.success) {
+                                if (respuesta.error) return showError(respuesta.error)
+                                return showError(respuesta.mensaje)
+                            }
+                            
+                            const info_inversion = respuesta.datos
+                            const textoPlazo = info_inversion.PLAZO + " " + (info_inversion.PERIODICIDAD == "M" ? "Meses" : "Dias")
+
+                            document.querySelector("#modal_act_codigo_inv").value = info_inversion.CODIGO
+                            document.querySelector("#modal_act_fApertura").value = info_inversion.F_APERTURA
+                            document.querySelector("#modal_act_fVencimiento").value = info_inversion.F_VENCIMIENTO
+                            document.querySelector("#modal_act_fActualizacion").value = info_inversion.F_ACTUALIZACION
+                            document.querySelector("#modal_act_inv_actual").value = formatoMoneda(info_inversion.MONTO)
+                            document.querySelector("#modal_act_tasa_actual").value = info_inversion.TASA
+                            document.querySelector("#modal_act_id_tasa_actual").value = info_inversion.CODIGO_TASA
+                            document.querySelector("#modal_act_plazo_completo").value = textoPlazo
+                            document.querySelector("#modal_act_plazo").value = info_inversion.PLAZO
+                            document.querySelector("#modal_act_periodicidad").value = info_inversion.PERIODICIDAD
+                            document.querySelector("#modal_act_saldo_ahorro").value = formatoMoneda(saldoActual)
+
+                            document.querySelector("#modal_act_invertido").value = formatoMoneda(info_inversion.MONTO)
+                            document.querySelector("#modal_act_rendimiento").value = formatoMoneda(info_inversion.RENDIMIENTO)
+                            document.querySelector("#modal_act_tasa").value = info_inversion.TASA
+
+                            document.querySelector("#modal_act_total").value = formatoMoneda(parseaNumero(info_inversion.MONTO) + parseaNumero(info_inversion.RENDIMIENTO))
+                            $("#modal_actualiza_inversion").modal("show")
+                        })
+
+                        return
+                    }
+                             
+                    huellas = datos.HUELLAS
+                    document.querySelector("#nombre").value = datos.NOMBRE
+                    document.querySelector("#curp").value = datos.CURP
+                    document.querySelector("#contrato").value = datos.CONTRATO
+                    document.querySelector("#cliente").value = datos.CDGCL
+                    document.querySelector("#saldoActual").value = formatoMoneda(saldoActual)
+                    document.querySelector("#saldoFinal").value = formatoMoneda(saldoActual)
+                    document.querySelector("#monto").disabled = false
+                    return
+                }
                 
                 showError("No es posible hacer la apertura de inversión.\\nEl saldo mínimo de apertura es de " + saldoMinimoApertura.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }) + 
                 "\\nEl saldo actual del cliente es de " + saldoActual.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }))
@@ -2413,6 +2453,27 @@ class Ahorro extends Controller
                 document.querySelector("#btnRegistraOperacion").disabled = true
                 document.querySelector("#plazo").innerHTML = ""
                 document.querySelector("#plazo").disabled = true
+
+                document.querySelector("#modal_act_cl").value = ""
+                document.querySelector("#modal_act_contrato").value = ""
+                document.querySelector("#modal_act_nombre_cliente").value = ""
+                document.querySelector("#modal_act_codigo_inv").value = ""
+                document.querySelector("#modal_act_fApertura").value = ""
+                document.querySelector("#modal_act_fVencimiento").value = ""
+                document.querySelector("#modal_act_fActualizacion").value = ""
+                document.querySelector("#modal_act_inv_actual").value = ""
+                document.querySelector("#modal_act_tasa_actual").value = ""
+                document.querySelector("#modal_act_id_tasa_actual").value = ""
+                document.querySelector("#modal_act_plazo_completo").value = ""
+                document.querySelector("#modal_act_plazo").value = ""
+                document.querySelector("#modal_act_periodicidad").value = ""
+                document.querySelector("#modal_act_saldo_ahorro").value = "0.00"
+                document.querySelector("#modal_act_invertido").value = "0.00"
+                document.querySelector("#modal_act_rendimiento").value = "0.00"
+                document.querySelector("#modal_act_tasa").value = "0.00"
+                document.querySelector("#modal_act_total").value = "0.00"
+                document.querySelector("#modal_act_monto").value = "0.00"
+                document.querySelector("#registraCambioInversion").disabled = true
                 habiltaEspecs()
             }
             
@@ -2546,6 +2607,7 @@ class Ahorro extends Controller
                     }
                     showSuccess(respuesta.mensaje).then(() => {
                         imprimeContrato(respuesta.datos.codigo, 2)
+                        imprimeCertificado(respuesta.datos.codigo)
                         imprimeTicket(respuesta.datos.ticket, sucursal_ahorro)
                         limpiaDatosCliente()
                     })
@@ -2560,8 +2622,99 @@ class Ahorro extends Controller
                     return showError("El monto mínimo de apertura es de " + saldoMinimoApertura.toLocaleString('es-MX', { style: 'currency', currency: 'MXN' }))
                 }
             }
+
+            const validaNuevaTransferencia = (e) => {
+                let monto = parseaNumero(e.target.value)
+
+                if (monto > parseaNumero(document.querySelector("#modal_act_saldo_ahorro").value)) {
+                    showError("El monto a transferir no puede ser mayor al saldo actual de la cuenta de ahorro.")
+                    e.target.value = parseaNumero(document.querySelector("#modal_act_saldo_ahorro").value)
+                    monto = parseaNumero(e.target.value)
+                }
+
+                document.querySelector("#modal_act_transferir").value = formatoMoneda(monto)
+                document.querySelector("#modal_act_total").value = formatoMoneda(parseaNumero(document.querySelector("#modal_act_invertido").value) + parseaNumero(document.querySelector("#modal_act_rendimiento").value) + monto)
+
+                if (monto < 1) {
+                    document.querySelector("#registraCambioInversion").disabled = true
+                    document.querySelector("#modal_act_tasa").value = document.querySelector("#modal_act_tasa_actual").value
+                    document.querySelector("#modal_act_id_tasa").value = document.querySelector("#modal_act_id_tasa_actual").value
+                    document.querySelector("#modal_act_monto_letra").value = ""
+                    return
+                }
+
+                document.querySelector("#registraCambioInversion").disabled = false
+                document.querySelector("#modal_act_monto_letra").value = numeroLetras(monto)
+
+                const montoFinal = parseaNumero(document.querySelector("#modal_act_total").value)
+                
+                const tasasAplicables =  tasasDisponibles
+                .filter(tasa => tasa.PERIODICIDAD == document.querySelector("#modal_act_periodicidad").value && tasa.PLAZO_NUMERO == document.querySelector("#modal_act_plazo").value)
+
+                if (tasasAplicables.length === 0) {
+                    document.querySelector("#modal_act_tasa").value = document.querySelector("#modal_act_tasa_actual").value
+                    document.querySelector("#modal_act_id_tasa").value = document.querySelector("#modal_act_id_tasa_actual").value
+                    return
+                }
+
+                let mMax = 0
+                const nuevaTasa = tasasAplicables
+                .filter(tasa => {
+                    const r = tasa.MONTO_MINIMO <= montoFinal 
+                    mMax = r ? tasa.MONTO_MINIMO : mMax
+                    return r
+                })
+                .filter(tasa => tasa.MONTO_MINIMO == mMax)
+
+                
+                if (nuevaTasa.length === 0) {
+                    document.querySelector("#modal_act_tasa").value = document.querySelector("#modal_act_tasa_actual").value
+                    document.querySelector("#modal_act_id_tasa").value = document.querySelector("#modal_act_id_tasa_actual").value
+                    return
+                }
+
+                document.querySelector("#modal_act_tasa").value = nuevaTasa[0].TASA
+                document.querySelector("#modal_act_id_tasa").value = nuevaTasa[0].CODIGO
+            }
+
+            const actaulizaInversion = (e) => {
+                // if (!await valida_MCM_Complementos()) return
+                
+                const datos = []
+                addParametro(datos, "contrato", document.querySelector("#modal_act_contrato").value)
+                addParametro(datos, "codigo", document.querySelector("#modal_act_codigo_inv").value)
+                addParametro(datos, "rendimiento", parseaNumero(document.querySelector("#modal_act_rendimiento").value))
+                addParametro(datos, "monto", parseaNumero(document.querySelector("#modal_act_rendimiento").value) + parseaNumero(document.querySelector("#modal_act_transferir").value))
+                addParametro(datos, "tasa", document.querySelector("#modal_act_id_tasa").value)
+                addParametro(datos, "ejecutivo", usuario_ahorro)
+                addParametro(datos, "sucursal", sucursal_ahorro)
+                addParametro(datos, "cliente", document.querySelector("#modal_act_cl").value)
+
+                consultaServidor("/Ahorro/GetCertificadoInversion/", datos, (respuesta) => {
+                    if (!respuesta.success) {
+                        console.log(respuesta.error)
+                        return showError(respuesta.mensaje)
+                    }
+                    showSuccess(respuesta.mensaje).then(() => {
+                        imprimeCertificado(document.querySelector("#modal_act_codigo_inv").value)
+                        imprimeTicket(respuesta.datos.ticket, sucursal_ahorro)
+                        limpiaDatosCliente()
+                        $("#modal_actualiza_inversion").modal("hide")
+                    })
+                })
+            }
+
+            const imprimeCertificado = (idInversion) => {
+                const host = window.location.origin
+                const titulo = 'Certificado de Inversión'
+                const ruta = host
+                    + '/Ahorro/GetCertificadoInversion/?'
+                    + 'idInversion=' + idInversion
+                
+                muestraPDF(titulo, ruta)
+            }
         </script>
-        html;
+        HTML;
 
         $sucursales = CajaAhorroDao::GetSucursalAsignadaCajeraAhorro($this->__usuario);
         $opcSucursales = "";
@@ -2586,8 +2739,56 @@ class Ahorro extends Controller
 
     public function RegistraInversion()
     {
-        $contrato = CajaAhorroDao::RegistraInversion($_POST);
-        echo $contrato;
+        echo CajaAhorroDao::RegistraInversion($_POST);
+    }
+
+    public function GetInversion()
+    {
+        echo CajaAhorroDao::GetInversion($_POST);
+    }
+
+    public function ActualizaInversion()
+    {
+        echo CajaAhorroDao::ActualizaInversion($_POST);
+    }
+
+    public function GetCertificadoInversion()
+    {
+        $nombreArchivo = "Certificado de inversión";
+        $idInversion = $_GET['idInversion'];
+        $datos = CajaAhorroDao::DatosCertificadoInversion($idInversion);
+        $certificado = self::CertificadoInversion($datos);
+        $fi = date('d/m/Y H:i:s');
+        $pie = <<< HTML
+        <table style="width: 100%; font-size: 10px">
+            <tr>
+            <td style="text-align: left; width: 50%;">
+                Fecha de impresión  {$fi}
+            </td>
+            <td style="text-align: right; width: 50%;">
+                Página {PAGENO} de {nb}
+            </td>
+            </tr>
+        </table>
+        HTML;
+
+        $mpdf = new \mPDF([
+            'mode' => 'utf-8',
+            'format' => 'Letter',
+            'default_font_size' => 11,
+            'default_font' => 'Arial',
+            'margin_left' => 10,
+            'margin_right' => 10,
+            'margin_top' => 10,
+            'margin_bottom' => 5,
+        ]);
+
+        $mpdf->SetTitle($nombreArchivo);
+        $mpdf->WriteHTML($certificado["css"], 1);
+        $mpdf->WriteHTML($certificado["html"], 2);
+        $mpdf->SetHTMLFooter($pie);
+
+        $mpdf->Output($nombreArchivo . '.pdf', 'I');
     }
 
     // Visualización de cuentas de inversión
@@ -4534,7 +4735,7 @@ class Ahorro extends Controller
         ]);
         $mpdf->SetDefaultBodyCSS('text-align', 'justify');
         $fi = date('d/m/Y H:i:s');
-        $pie = <<< html
+        $pie = <<< HTML
         <table style="width: 100%; font-size: 10px">
             <tr>
             <td style="text-align: left; width: 50%;">
@@ -4545,7 +4746,7 @@ class Ahorro extends Controller
             </td>
             </tr>
         </table>
-        html;
+        HTML;
         $mpdf->SetHTMLFooter($pie);
         $mpdf->SetTitle($nombreArchivo);
         $mpdf->WriteHTML($style, 1);
@@ -10178,5 +10379,236 @@ class Ahorro extends Controller
                 </tr>
             </table>
         HTML;
+    }
+
+    public function CertificadoInversion($datos)
+    {
+        $css = <<<CSS
+            .encabezado {
+                width: 100%;
+                border-bottom: 1px solid black;
+                padding-bottom: 10px;
+                margin-bottom: 20px;
+            }
+            .tituloPrincipal {
+                font-size: 18px;
+                text-align: center;
+                font-weight: bold;
+                width: 100%;
+            }
+            .titulo {
+                background-color: #dfd8c6;
+                font-weight: bold;
+                padding: 5px;
+                margin-bottom: 5px;
+                text-align: center;
+                border-radius: 15px;
+            }
+            .celdaDato {
+                text-align: center;
+            }
+            .celdaTitulo {
+                font-weight: bold;
+                font-size:10px;
+                text-align: center;
+            }
+            .celdaSeparadora {
+                height: 15px;
+                width: 25%;
+            }
+            .tablaDatos {
+                width: 100%;
+            }
+            .divDatos {
+                border: 1px solid black;
+                border-radius: 10px;
+            }
+            .separador {
+                margin-top: 20px;
+            }
+            .instrucciones {
+                border: 1px solid black;
+                width: 100%;
+                height: 150px;
+            }
+            .firmas {
+                margin-top: 50px;
+                width: 100%;
+                height: 100px;
+            }
+        CSS;
+
+        $html = <<<HTML
+        <div class="container">
+            <div class="encabezado">
+                <table style="width: 100%;">
+                    <tr>
+                        <td style="width: 20%;">
+                            <table style="margin-right: auto;">
+                                <tr>
+                                    <td>LOGO</td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td style="width: 60%; text-align: center; ">
+                            <div class="tituloPrincipal">
+                                CERTIFICADO DE INVERSIÓN
+                            </div>
+                        </td>
+                        <td style="width: 20%;">
+                            <table style="margin-left: auto;">
+                                <tr>
+                                    <td class="celdaTitulo">No. Socio:</td>
+                                </tr>
+                                <tr>
+                                    <td>{$datos["CLIENTE"]}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Datos del ejecutivo -->
+            <div class="divDatos">
+                <table class="tablaDatos">
+                    <tr>
+                        <td class="celdaTitulo" style="width:20%;">Fecha</td>
+                        <td class="celdaTitulo" style="width:30%;">Sucursal</td>
+                        <td class="celdaTitulo" style="width:50%;">Nombre del Ejecutivo</td>
+                    </tr>
+                    <tr>
+                        <td class="celdaDato">{$datos["FECHA"]}</td>
+                        <td class="celdaDato">{$datos["SUCURSAL"]}</td>
+                        <td class="celdaDato">{$datos["EJECUTIVO"]}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Datos generales del socio -->
+            <div class="separador"></div>
+            <div class="titulo">DATOS GENERALES DEL SOCIO</div>
+            <div class="divDatos">
+                <table class="tablaDatos">
+                    <tr>
+                        <td class="celdaTitulo" style="width:33%;">Apellido Paterno</td>
+                        <td class="celdaTitulo" style="width:33%;">Apellido Materno</td>
+                        <td class="celdaTitulo" style="width:33%;">Nombre(s)</td>
+                    </tr>
+                    <tr>
+                        <td class="celdaDato">{$datos["APELLIDO1"]}</td>
+                        <td class="celdaDato">{$datos["APELLIDO2"]}</td>
+                        <td class="celdaDato">{$datos["NOMBRE"]}</td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Inversión -->
+            <div class="separador"></div>
+            <div class="titulo">INVERSIÓN</div>
+            <div class="divDatos">
+                <table class="tablaDatos">
+                    <tr>
+                        <td class="celdaTitulo">Fecha de Apertura</td>
+                        <td class="celdaTitulo">Tipo de Inversión</td>
+                        <td class="celdaTitulo">Monto de Inversión</td>
+                        <td class="celdaTitulo">Plazo</td>
+                    </tr>
+                    <tr>
+                        <td class="celdaDato">{$datos["F_APERTURA"]}</td>
+                        <td class="celdaDato">{$datos["TIPO_NVVERSION"]}</td>
+                        <td class="celdaDato">{$datos["MONTO"]}</td>
+                        <td class="celdaDato">{$datos["PLAZO"]}</td>
+                    </tr>
+                    <tr>
+                        <td class="celdaSeparadora"></td>
+                        <td class="celdaSeparadora"></td>
+                        <td class="celdaSeparadora"></td>
+                        <td class="celdaSeparadora"></td>
+                    </tr>
+                    <tr>
+                        <td class="celdaTitulo">Interés a Pagar</td>
+                        <td class="celdaTitulo">Tasa de Rendimiento Anualizada</td>
+                        <td class="celdaTitulo">Tasa de Retención</td>
+                        <td class="celdaTitulo">Retención de ISR</td>
+                    </tr>
+                    <tr>
+                        <td class="celdaDato">{$datos["F_VENCIMIENTO"]}</td>
+                        <td class="celdaDato">{$datos["FORMA_PAGO"]}</td>
+                    </tr>
+                    <tr>
+                        <td class="celdaSeparadora"></td>
+                        <td class="celdaSeparadora"></td>
+                        <td class="celdaSeparadora"></td>
+                        <td class="celdaSeparadora"></td>
+                    </tr>
+                    <tr>
+                        <td class="celdaTitulo">Fecha de Vencimiento</td>
+                        <td class="celdaTitulo">Forma de Devolución</td>
+                        <td class="celdaTitulo">Monto a Pagar al Vencimiento</td>
+                        <td class="celdaTitulo">Monto a Pagar en cada plazo de devolución</td>
+                    </tr>
+                    <tr>
+                        <td class="celdaDato">{$datos["RENDIMIENTO"]}</td>
+                        <td class="celdaDato">{$datos["TASA"]}</td>
+                        <td class="celdaDato">{$datos["MONTO_FINAL"]}</td>
+                        <td class="celdaDato"></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Instrucciones al vencimiento -->
+            <div class="separador"></div>
+            <div class="titulo">INSTRUCCIONES AL VENCIMIENTO</div>
+            <div class="instrucciones divDatos"></div>
+
+            <div style="text-align: justify; font-size: 11px;">
+                <p>
+                    En este documento se certifica la inversión del socio y las condiciones en las cuales se realiza, por lo que <b>MÁS CON MENOS</b> garantiza la devolución de dicha inversión de acuerdo a lo indicado en el mismo.
+                </p>
+                <p>
+                    <b>Nota:</b> La retención del impuesto sobre la renta estará sujeta a la legislación vigente al momento del pago.
+                </p>
+                <p>
+                    La persona que aquí firma lo hace a ruego y encargo del solicitante que ha plasmado su huella digital en la presente solicitud, haciendo constar con ello que está de acuerdo con el contenido de la misma, con el contenido del contrato y reglamento de ahorro, prestamo e inversiones.
+                </p>
+            </div>
+
+            <!-- Firma -->
+            <div class="separador"></div>
+            <div class="firmas">
+                <table style="width: 100%; text-align: center; margin-top: 30px;">
+                    <tr>
+                        <td style="width: 10%;"></td>
+                        <td style="width: 35%;"></td>
+                        <td style="width: 10%;"></td>
+                        <td style="width: 35%;"></td>
+                        <td style="width: 10%;"></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td style="border-top: 1px solid">
+                            Nombre y Firma del Socio
+                        </td>
+                        <td></td>
+                        <td style="border-top: 1px solid">
+                            Nombre y Firma del Comite
+                        </td>
+                        <td></td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- Nota -->
+            <p style="text-align: right; font-size: 9px;">
+                *Sin excepción anotar el nombre completo de la persona que firma.
+            </p>
+        </div>
+        HTML;
+
+        return [
+            "css" => $css,
+            "html" => $html
+        ];
     }
 }

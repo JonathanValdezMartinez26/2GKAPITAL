@@ -229,6 +229,189 @@ $buscarCliente = new BuscarCliente('Para hacer la apertura de una cuenta de Inve
 </div>
 
 
+<!-- <div class="modal fade in" id="modal_actualiza_inversion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: block; padding-right: 15px;"> -->
+<div class="modal fade" id="modal_actualiza_inversion" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <center>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title" id="myModalLabel">Actualización monto de inversión</h4>
+                </center>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <form id="AddPagoApertura">
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="modal_act_cl">Código de cliente SICAFIN</label>
+                                    <input type="number" class="form-control" id="modal_act_cl" name="modal_act_cl" value="<?php echo $credito; ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="modal_act_contrato">Número de contrato</label>
+                                    <input type="text" class="form-control" id="modal_act_contrato" name="modal_act_contrato" readonly>
+                                    <input type="hidden" class="form-control" id="modal_act_codigo_inv" name="modal_act_codigo_inv" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="modal_act_nombre_cliente">Nombre del cliente</label>
+                                    <input type="text" class="form-control" id="modal_act_nombre_cliente" name="modal_act_nombre_cliente" value="<?php echo $Cliente[0]['NOMBRE']; ?>" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="modal_act_inv_actual">Monto Invertido</label>
+                                    <input type="text" class="form-control" id="modal_act_inv_actual" name="modal_act_inv_actual" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="modal_act_tasa_actual">Tasa Anual</label>
+                                    <input type="text" class="form-control" id="modal_act_tasa_actual" name="modal_act_tasa_actual" readonly>
+                                    <input type="hidden" class="form-control" id="modal_act_id_tasa_actual" name="modal_act_id_tasa_actual" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="modal_act_plazo">Plazo</label>
+                                    <input type="text" class="form-control" id="modal_act_plazo_completo" name="modal_act_plazo_completo" readonly>
+                                    <input type="hidden" class="form-control" id="modal_act_plazo" name="modal_act_plazo" readonly>
+                                    <input type="hidden" class="form-control" id="modal_act_periodicidad" name="modal_act_periodicidad" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="modal_act_tasa_actual">Saldo Ahorro</label>
+                                    <input type="text" class="form-control" id="modal_act_saldo_ahorro" name="modal_act_saldo_ahorro" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="modal_act_fApertura">Fecha de apertura</label>
+                                    <input type="text" class="form-control" id="modal_act_fApertura" name="modal_act_fApertura" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="modal_act_fVencimiento">Fecha de Vencimiento</label>
+                                    <input type="text" class="form-control" id="modal_act_fVencimiento" name="modal_act_fVencimiento" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="form-group">
+                                    <label for="modal_act_fActualizacion">Ultima Actualización</label>
+                                    <input type="text" class="form-control" id="modal_act_fActualizacion" name="modal_act_fActualizacion" readonly>
+                                </div>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="row">
+                            <div class="col-md-3" style="font-size: 18px; padding-top: 5px;">
+                                <label style="color: #000000">Movimiento:</label>
+                            </div>
+                            <div class="col-md-4" style="text-align: center; font-size: 18px; padding-top: 5px;">
+                                <input type="radio" name="esDeposito" checked>
+                                <label for="deposito">Transferencia</label>
+                            </div>
+                            <div class="col-md-1" style="display: flex; justify-content: flex-end;">
+                                <h3>$</h3>
+                            </div>
+                            <div class="col-md-4" style="padding-top: 5px;">
+                                <input type="number" class="form-control" id="modal_act_monto" name="modal_act_monto" min="1" max="1000000" placeholder="0.00" style="font-size: 25px;" oninput=validaNuevaTransferencia(event) onkeydown=soloNumeros(event)>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input type="text" class="form-control" id="modal_act_monto_letra" name="modal_act_monto_letra" style="border: 1px solid #000000; text-align: center; font-size: 25px;" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="text-align:center;">
+                                <hr>
+                                <h3 style="color: #000000">Resumen de movimientos</h3>
+                                <br>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4>Monto invertido</h4>
+                            </div>
+                            <div class="col-md-1" style="display: flex; justify-content: flex-end;">
+                                <h4>$</h4>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" id="modal_act_invertido" name="modal_act_invertido" value="0.00" disabled>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <h4>+</h4>
+                            </div>
+                            <div class="col-md-7">
+                                <h4>Monto a transferir</h4>
+                            </div>
+                            <div class="col-md-1" style="display: flex; justify-content: flex-end;">
+                                <h4>$</h4>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" id="modal_act_transferir" name="modal_act_transferir" value="0.00" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-1">
+                                <h4>+</h4>
+                            </div>
+                            <div class="col-md-7">
+                                <h4>Rendimiento generado</h4>
+                            </div>
+                            <div class="col-md-1" style="display: flex; justify-content: flex-end;">
+                                <h4>$</h4>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" id="modal_act_rendimiento" name="modal_act_rendimiento" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4>Nuevo monto de inversión</h4>
+                            </div>
+                            <div class="col-md-1" style="display: flex; justify-content: flex-end;">
+                                <h4>$</h4>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" id="modal_act_total" name="modal_act_total" value="0.00" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-8">
+                                <h4>Nueva tasa anual</h4>
+                            </div>
+                            <div class="col-md-1" style="display: flex; justify-content: flex-end;">
+                                <h4>%</h4>
+                            </div>
+                            <div class="col-md-3">
+                                <input class="form-control" id="modal_act_tasa" name="modal_act_tasa" value="0.00" readonly>
+                                <input type="hidden" class="form-control" id="modal_act_id_tasa" name="modal_act_id_tasa" readonly>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-12" style="display: flex; justify-content: center; color: red; height: 20px;">
+                                <label id="modal_act_tipSaldo" style="opacity:0; font-size: 18px;"></label>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" id="registraCambioInversion" name="agregar" class="btn btn-primary" value="enviar" onclick=actaulizaInversion(event) disabled><span class="glyphicon glyphicon-floppy-disk"></span> Actualiza inversión</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 
