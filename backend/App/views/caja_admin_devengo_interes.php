@@ -81,14 +81,14 @@
                                     <p style="font-size: 16px;">Historial retiro sucursal</p>
                                 </a>
                             </li>
-                            <li>
+                            <li class="linea">
                                 <a href="/AdminSucursales/SituacionAhorro/">
-                                    <p style="font-size: 16px;"><b>Situación ahorro</b></p>
+                                    <p style="font-size: 16px;">Situación ahorro</p>
                                 </a>
                             </li>
-                            <li class="linea">
+                            <li>
                                 <a href="/AdminSucursales/DevengoInteres/">
-                                    <p style="font-size: 16px;">Devengo interés</p>
+                                    <p style="font-size: 16px;"><b>Devengo interés</b></p>
                                 </a>
                             </li>
                         </ul>
@@ -103,7 +103,7 @@
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="fechaI">Desde *</label>
-                                                <input type="date" class="form-control" id="fechaI" name="fechaI" value="<?= $fechaI; ?>" min="<?= $fechaI; ?>" max="<?= $fechaF; ?>" onchange=validaFechas(event)>
+                                                <input type="date" class="form-control" id="fechaI" name="fechaI" value="<?= $fechaI; ?>" min="2024-01-01" max="<?= $fechaF; ?>" onchange=validaFechas(event)>
                                             </div>
                                         </div>
                                         <div class="col-md-3">
@@ -133,27 +133,25 @@
                                     <button id="export_excel_consulta" class="btn btn-success btn-circle" onclick=GetExcel()><i class="fa fa-file-excel-o"> </i> <b>Exportar a Excel</b></button>
                                     <hr>
                                     <div class="dataTable_wrapper">
-                                        <table class="table table-striped table-bordered table-hover" id="situacion">
+                                        <table class="table table-striped table-bordered table-hover" id="devengo">
                                             <thead>
                                                 <tr>
                                                     <th>ID Socio</th>
                                                     <th>Nombre Socio</th>
                                                     <th>ID Peque</th>
                                                     <th>Nombre Peque</th>
-                                                    <th>Sucursal</th>
-                                                    <th>Tipo Cuenta</th>
-                                                    <th>Fecha Inicio</th>
-                                                    <th>Fecha Vencimiento</th>
-                                                    <th>Plazo</th>
-                                                    <th>Comisión apertura</th>
-                                                    <th>Bonificación Comisión</th>
-                                                    <th>Saldo Ahorro</th>
-                                                    <th>Fecha Inversión</th>
-                                                    <th>Saldo Inversión</th>
-                                                    <th>Saldo Socio</th>
-                                                    <th>Ejecutivo</th>
-                                                    <th>Tasa Rendimiento</th>
-                                                    <th>Rendimiento Generado</th>
+                                                    <th>Producto</th>
+                                                    <th>Tasa</th>
+                                                    <th>ID Promotor</th>
+                                                    <th>Promotor</th>
+                                                    <th>Fecha apertura</th>
+                                                    <th>Fecha corte</th>
+                                                    <th>Saldo</th>
+                                                    <th>Interés devengado</th>
+                                                    <th>Interés devengado (sin IVA)</th>
+                                                    <th>IVA interés devengado</th>
+                                                    <th>Tasa IVA</th>
+                                                    <th>Días devengados</th>
                                                 </tr>
                                             </thead>
                                             <tbody>

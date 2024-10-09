@@ -63,22 +63,37 @@
                         </div>
                         <div>
                             <ul class="nav navbar-nav">
-                                <li><a href="">
+                                <li>
+                                    <a href="">
                                         <p style="font-size: 16px;"><b>Flujo efectivo</b></p>
-                                    </a></li>
-                                <li class="linea"><a href="/AdminSucursales/Transacciones/">
+                                    </a>
+                                </li>
+                                <li class="linea">
+                                    <a href="/AdminSucursales/Transacciones/">
                                         <p style="font-size: 16px;">Transacciones</p>
-                                    </a></li>
-                                <li class="linea"><a href="/AdminSucursales/HistorialFondeoSucursal/">
+                                    </a>
+                                </li>
+                                <li class="linea">
+                                    <a href="/AdminSucursales/HistorialFondeoSucursal/">
                                         <p style="font-size: 16px;">Historial fondeo sucursal</p>
-                                    </a></li>
-                                <li class="linea"><a href="/AdminSucursales/HistorialRetiroSucursal/">
+                                    </a>
+                                </li>
+                                <li class="linea">
+                                    <a href="/AdminSucursales/HistorialRetiroSucursal/">
                                         <p style="font-size: 16px;">Historial retiro sucursal</p>
-                                    </a></li>
-                                <li class="linea"><a href="/AdminSucursales/SituacionAhorro/">
+                                    </a>
+                                </li>
+                                <li class="linea">
+                                    <a href="/AdminSucursales/SituacionAhorro/">
                                         <p style="font-size: 16px;">Situación ahorro</p>
-                                    </a></li>
-                            </ul>   
+                                    </a>
+                                </li>
+                                <li class="linea">
+                                    <a href="/AdminSucursales/DevengoInteres/">
+                                        <p style="font-size: 16px;">Devengo interés</p>
+                                    </a>
+                                </li>
+                            </ul>
                         </div>
                     </div>
                     <div class="modal-body">
@@ -91,7 +106,7 @@
                                                 <div class="col-md-3">
                                                     <div class="form-group">
                                                         <label for="Inicial">Fecha a consultar (flujo de efectivo) *</label>
-                                                        <input type="date" class="form-control" min="2024-06-03" max="<?php echo $fechaActual;?>" id="Inicial" name="Inicial" value="<?php echo $fecha_inicial;?>">
+                                                        <input type="date" class="form-control" min="2024-06-03" max="<?php echo $fechaActual; ?>" id="Inicial" name="Inicial" value="<?php echo $fecha_inicial; ?>">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">
@@ -134,25 +149,25 @@
                                         <form name="all" id="all" method="POST">
                                             <button id="export_excel_consulta" type="button" class="btn btn-success btn-circle"><i class="fa fa-file-excel-o"> </i> <b>Exportar a Excel</b></button>
 
-                                        <hr>
-                                        <div class="dataTable_wrapper">
-                                            <table class="table table-striped table-bordered table-hover" id="muestra-cupones">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Cliente</th>
-                                                        <th></th>
-                                                        <th>Fecha Transacción</th>
-                                                        <th>Detalle Producto</th>
-                                                        <th>Ingreso</th>
-                                                        <th>Egreso</th>
-                                                        <th>Saldo</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?= $tabla; ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                            <hr>
+                                            <div class="dataTable_wrapper">
+                                                <table class="table table-striped table-bordered table-hover" id="muestra-cupones">
+                                                    <thead>
+                                                        <tr>
+                                                            <th>Cliente</th>
+                                                            <th></th>
+                                                            <th>Fecha Transacción</th>
+                                                            <th>Detalle Producto</th>
+                                                            <th>Ingreso</th>
+                                                            <th>Egreso</th>
+                                                            <th>Saldo</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                        <?= $tabla; ?>
+                                                    </tbody>
+                                                </table>
+                                            </div>
                                         </form>
                                     </div>
                                 </div>

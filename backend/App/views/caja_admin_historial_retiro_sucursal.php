@@ -86,6 +86,11 @@
                                     <p style="font-size: 16px;">Situación ahorro</p>
                                 </a>
                             </li>
+                            <li class="linea">
+                                <a href="/AdminSucursales/DevengoInteres/">
+                                    <p style="font-size: 16px;">Devengo interés</p>
+                                </a>
+                            </li>
                         </ul>
                     </div>
                 </div>

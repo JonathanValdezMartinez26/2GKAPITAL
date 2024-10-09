@@ -981,4 +981,72 @@ sql;
             return self::Responde(false, "Error al buscar registros de ahorro.", null, $e->getMessage());
         }
     }
+
+    public static function GetDevengoAhorro($datos)
+    {
+        $fechaI = $datos['fechaI'];
+        $fechaF = $datos['fechaF'];
+
+        $qry = <<<SQL
+        SELECT
+            APA.CDGCL AS ID_SOCIO,
+            CONCATENA_NOMBRE(CL.NOMBRE1, CL.NOMBRE2, CL.PRIMAPE, CL.SEGAPE) AS NOMBRE_SOCIO,
+            CASE
+                WHEN LENGTH(APA.CONTRATO) > 14 THEN SUBSTR(APA.CONTRATO, 15, 2)
+                ELSE NULL
+            END AS ID_PQ,
+            CASE
+                WHEN LENGTH(APA.CONTRATO) > 14 THEN CONCATENA_NOMBRE(CLP.NOMBRE1, CLP.NOMBRE2, CLP.APELLIDO1, CLP.APELLIDO2)
+                ELSE NULL
+            END AS NOMBRE_PQ,
+            PRP.DESCRIPCION AS PRODUCTO,
+            APA.TASA / 100 AS TASA,
+            APA.CDGPE_REGISTRO AS ID_PROMOTOR,
+            CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS NOMBRE_PROMOTOR,
+            TO_CHAR(APA.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_APERTURA,
+            TO_CHAR(SYSDATE, 'DD/MM/YYYY') AS FECHA_CORTE,
+            APA.SALDO_REAL AS SALDO,
+            (
+                SELECT
+                    SUM(DA.DEVENGO)
+                FROM
+                    DEVENGO_AHORRO DA
+                WHERE
+                    DA.CONTRATO = APA.CONTRATO
+                    AND TRUNC(DA.FECHA) BETWEEN TO_DATE('$fechaI', 'YYYY-MM-DD') AND TO_DATE('$fechaF', 'YYYY-MM-DD')
+                GROUP BY
+                    DA.CONTRATO
+            ) AS INTERES_DEVENGADO,
+            0 AS INTERES_DEV_SIN_IVA,
+            0 AS IVA,
+            .16 AS TASA_IVA,
+            TRUNC(SYSDATE) - TRUNC(APA.FECHA_APERTURA) AS DIAS_DEVENGADOS
+        FROM
+            ASIGNA_PROD_AHORRO APA
+            LEFT JOIN CL ON CL.CODIGO = APA.CDGCL
+            LEFT JOIN CL_PQS CLP ON CLP.CDG_CONTRATO = APA.CONTRATO
+            LEFT JOIN PE ON PE.CODIGO = APA.CDGPE_REGISTRO
+            LEFT JOIN CO ON CO.CODIGO = APA.CDGCO
+            LEFT JOIN PR_PRIORITARIO PRP ON PRP.CODIGO = APA.CDGPR_PRIORITARIO
+        WHERE
+            TRUNC(APA.FECHA_APERTURA) BETWEEN TO_DATE('$fechaI', 'YYYY-MM-DD') AND TO_DATE('$fechaF', 'YYYY-MM-DD')
+            filtroExtra
+        ORDER BY
+            APA.CONTRATO
+        SQL;
+
+        $filtroExtra = "";
+        if ($datos['sucursal']) $filtroExtra = "AND APA.CDGCO = '{$datos['sucursal']}'";
+
+        $qry = str_ireplace("filtroExtra", $filtroExtra, $qry);
+
+        try {
+            $mysqli = new Database();
+            $res = $mysqli->queryAll($qry);
+            if (count($res) === 0) return self::Responde(false, "No se encontraron registros de ahorro para los parámetros proporcionados.");
+            return self::Responde(true, "Ahorros encontrados.", $res);
+        } catch (Exception $e) {
+            return self::Responde(false, "Error al buscar registros de ahorro.", null, $e->getMessage());
+        }
+    }
 }

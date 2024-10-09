@@ -10,7 +10,7 @@ class PHPSpreadsheet
 {
     private const formatoMoneda = '"$"#,##0.00';
     private const formatoPorcentaje = '0.00%';
-    
+
     /**
      * ColumnaExcel
      * 
@@ -76,7 +76,7 @@ class PHPSpreadsheet
                 'numberFormat' => ['formatCode' => Style\NumberFormat::FORMAT_DATE_DATETIME]
             ],
             'porcentaje' => [
-                'alignment' => ['horizontal' => Style\Alignment::HORIZONTAL_RIGHT],
+                'alignment' => ['horizontal' => Style\Alignment::HORIZONTAL_CENTER],
                 'numberFormat' => ['formatCode' => self::formatoPorcentaje]
             ]
         ];

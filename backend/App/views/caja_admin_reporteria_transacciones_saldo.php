@@ -61,21 +61,35 @@
                         </div>
                         <div>
                             <ul class="nav navbar-nav">
-                                <li class="linea"><a href="/AdminSucursales/Reporteria/">
+                                <li class="linea">
+                                    <a href="/AdminSucursales/Reporteria/">
                                         <p style="font-size: 16px;">Flujo efectivo</p>
-                                    </a></li>
+                                    </a>
+                                </li>
                                 <li><a href="">
                                         <p style="font-size: 16px;"><b>Transacciones</b></p>
-                                    </a></li>
-                                <li class="linea"><a href="/AdminSucursales/HistorialFondeoSucursal/">
+                                    </a>
+                                </li>
+                                <li class="linea">
+                                    <a href="/AdminSucursales/HistorialFondeoSucursal/">
                                         <p style="font-size: 16px;">Historial fondeo sucursal</p>
-                                    </a></li>
-                                <li class="linea"><a href="/AdminSucursales/HistorialRetiroSucursal/">
+                                    </a>
+                                </li>
+                                <li class="linea">
+                                    <a href="/AdminSucursales/HistorialRetiroSucursal/">
                                         <p style="font-size: 16px;">Historial retiro sucursal</p>
-                                    </a></li>
-                                <li class="linea"><a href="/AdminSucursales/SituacionAhorro/">
+                                    </a>
+                                </li>
+                                <li class="linea">
+                                    <a href="/AdminSucursales/SituacionAhorro/">
                                         <p style="font-size: 16px;">Situación ahorro</p>
-                                    </a></li>
+                                    </a>
+                                </li>
+                                <li class="linea">
+                                    <a href="/AdminSucursales/DevengoInteres/">
+                                        <p style="font-size: 16px;">Devengo interés</p>
+                                    </a>
+                                </li>
                             </ul>
                         </div>
                     </div>
@@ -89,13 +103,13 @@
                                                 <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label for="Inicial">Desde *</label>
-                                                        <input type="date" class="form-control" min="2024-05-22" max="<?php echo $fechaActual;?>" id="Inicial" name="Inicial" value="<?php echo $fecha_inicial; ?>">
+                                                        <input type="date" class="form-control" min="2024-05-22" max="<?php echo $fechaActual; ?>" id="Inicial" name="Inicial" value="<?php echo $fecha_inicial; ?>">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-2">
                                                     <div class="form-group">
                                                         <label for="Final">Hasta *</label>
-                                                        <input type="date" class="form-control" min="2024-05-22" max="<?php echo $fechaActual;?>" id="Final" name="Final" value="<?php echo $fecha_final; ?>">
+                                                        <input type="date" class="form-control" min="2024-05-22" max="<?php echo $fechaActual; ?>" id="Final" name="Final" value="<?php echo $fecha_final; ?>">
                                                     </div>
                                                 </div>
                                                 <div class="col-md-3">

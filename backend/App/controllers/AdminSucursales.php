@@ -2928,8 +2928,6 @@ script;
         View::render("caja_admin_historial_retiro_sucursal");
     }
 
-    
-
     public function SituacionAhorro()
     {
         $extraFooter = <<<HTML
@@ -3006,7 +3004,6 @@ script;
         View::set('footer', $this->_contenedor->footer($extraFooter));
         View::set('fechaI', $fechaI);
         View::set('fechaF', $fechaF);
-        View::set('filas', $filas);
         View::set('opcSucursales', self::GetSucursalesReporteria());
         View::render("caja_admin_situacion_ahorro");
     }
@@ -3016,7 +3013,7 @@ script;
         if ($_POST)
             echo AdminSucursalesDao::GetSituacionAhorro($_POST);
 
-        return json_decode(AdminSucursalesDao::GetSituacionAhorro($datos), true);        
+        return json_decode(AdminSucursalesDao::GetSituacionAhorro($datos), true);
     }
 
     public function ExcelSituacionAhorro()
@@ -3045,7 +3042,7 @@ script;
         ];
 
         $filas = self::GetSituacionAhorro($_GET);
-        if (!$filas['success']) $filas['datos'] = [];   
+        if (!$filas['success']) $filas['datos'] = [];
         \PHPSpreadsheet::GeneraExcel('Reporte de situación de ahorro', 'Reporte', 'Situación Ahorro', $columnas, $filas['datos']);
     }
 
@@ -3057,6 +3054,120 @@ script;
             $opcSucursales .= "<option value='{$sucursales['CODIGO']}'" . ($sucursales['CODIGO'] === $_SESSION['cdgco_ahorro'] ? 'Selected' : '') . ">{$sucursales['NOMBRE']} ({$sucursales['CODIGO']})</option>";
         }
         return $opcSucursales;
+    }
+
+
+    public function DevengoInteres()
+    {
+        $extraFooter = <<<HTML
+        <script>
+            {$this->showError}
+            {$this->showSuccess}
+            {$this->showInfo}
+            {$this->confirmarMovimiento}
+            {$this->consultaServidor}
+            {$this->configuraTabla}
+            {$this->noSubmit}
+            {$this->crearFilas}
+            {$this->descargaExcel}
+         
+            $(document).ready(() => {
+                configuraTabla("devengo")
+            })
+             
+            const validaFechas = (e) => {
+                if (e.target.id === "fechaF") {
+                    const fechaF = $("#fechaF").val()
+                    const fi = document.querySelector("#fechaI")
+                    const nFF = new Date(fechaF)
+                    const nFI = new Date(nFF.setMonth(nFF.getMonth() - 1)).toISOString().split('T')[0]
+    
+                    if (fi.value > fechaF) fi.value = nFI
+                    if (fi.value < nFI) fi.value = nFI
+                }
+            }
+             
+            const buscarSituacion = () => {
+                const datos = {
+                    fechaI: $("#fechaI").val(),
+                    fechaF: $("#fechaF").val()
+                }
+                 
+                if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+                
+                consultaServidor(
+                    "/AdminSucursales/GetDevengoAhorro/",
+                    $.param(datos),
+                    (resultado) => {
+                        $("#devengo").DataTable().destroy()
+                        $("#devengo tbody").html("")
+                        
+                        if (!resultado.success) showError(resultado.mensaje)
+                        else $("#devengo tbody").html(creaFilas(resultado.datos))
+                        
+                        configuraTabla("devengo")
+                    })
+            }
+
+            const GetExcel = () => {
+                const datos = {
+                    fechaI: $("#fechaI").val(),
+                    fechaF: $("#fechaF").val()
+                }
+                 
+                if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+
+                descargaExcel("/AdminSucursales/ExcelDevengoAhorro/?"+$.param(datos))
+            }
+               
+        </script>
+        HTML;
+
+        $fechaI = date('Y-m-d', strtotime('-7 days'));
+        $fechaF = date('Y-m-d');
+
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Situación Ahorro")));
+        View::set('footer', $this->_contenedor->footer($extraFooter));
+        View::set('fechaI', $fechaI);
+        View::set('fechaF', $fechaF);
+        View::set('opcSucursales', self::GetSucursalesReporteria());
+        View::render("caja_admin_devengo_interes");
+    }
+
+    public function GetDevengoAhorro($datos = null)
+    {
+        if ($_POST)
+            echo AdminSucursalesDao::GetDevengoAhorro($_POST);
+
+        return json_decode(AdminSucursalesDao::GetDevengoAhorro($datos), true);
+    }
+
+    public function ExcelDevengoAhorro()
+    {
+        $estilos = \PHPSpreadsheet::GetEstilosExcel();
+
+        $columnas = [
+            \PHPSpreadsheet::ColumnaExcel('A', 'ID_SOCIO', 'ID Cliente', $estilos['centrado']),
+            \PHPSpreadsheet::ColumnaExcel('B', 'NOMBRE_SOCIO', 'Nombre Cliente'),
+            \PHPSpreadsheet::ColumnaExcel('C', 'ID_PQ', 'ID Peque', $estilos['centrado']),
+            \PHPSpreadsheet::ColumnaExcel('D', 'NOMBRE_PQ', 'Nombre Peque'),
+            \PHPSpreadsheet::ColumnaExcel('E', 'PRODUCTO', 'Producto'),
+            \PHPSpreadsheet::ColumnaExcel('F', 'TASA', 'Tasa', $estilos['porcentaje']),
+            \PHPSpreadsheet::ColumnaExcel('G', 'ID_PROMOTOR', 'ID Promotor', $estilos['centrado']),
+            \PHPSpreadsheet::ColumnaExcel('H', 'NOMBRE_PROMOTOR', 'Nombre Promotor'),
+            \PHPSpreadsheet::ColumnaExcel('I', 'FECHA_APERTURA', 'Fecha Apertura', $estilos['fecha']),
+            \PHPSpreadsheet::ColumnaExcel('J', 'FECHA_CORTE', 'Fecha corte', $estilos['fecha']),
+            \PHPSpreadsheet::ColumnaExcel('K', 'SALDO', 'Saldo', $estilos['moneda'], true),
+            \PHPSpreadsheet::ColumnaExcel('L', 'INTERES_DEVENGADO', 'Interés devengado', $estilos['moneda'], true),
+            \PHPSpreadsheet::ColumnaExcel('M', 'INTERES_DEV_SIN_IVA', 'Interés devengado (sin IVA)', $estilos['moneda'], true),
+            \PHPSpreadsheet::ColumnaExcel('N', 'IVA', 'IVA', $estilos['moneda'], true),
+            \PHPSpreadsheet::ColumnaExcel('O', 'TASA_IVA', 'Tasa IVA', $estilos['porcentaje']),
+            \PHPSpreadsheet::ColumnaExcel('P', 'DIAS_DEVENGADOS', 'Días devengados', $estilos['centrado'])
+        ];
+
+        $filas = self::GetDevengoAhorro($_GET);
+        if (!$filas['success']) $filas['datos'] = [];
+        \PHPSpreadsheet::GeneraExcel('Reporte de devengo de ahorro', 'Reporte', 'Devengo Ahorro', $columnas, $filas['datos']);
     }
 
     public function LogConfiguracion()
@@ -3158,9 +3269,6 @@ script;
 
     public function genExcelSolsRetOrdPendiente()
     {
-
-
-        //var_dump("Hola");
         $objPHPExcel = new \PHPExcel();
         $objPHPExcel->getProperties()->setCreator("jma");
         $objPHPExcel->getProperties()->setLastModifiedBy("jma");
