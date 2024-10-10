@@ -871,7 +871,6 @@ sql;
 
     public static function GetSituacionAhorro($datos)
     {
-        $fechaI = $datos['fechaI'];
         $fechaF = $datos['fechaF'];
 
         $qry = <<<SQL
@@ -961,15 +960,27 @@ sql;
             LEFT JOIN CO ON CO.CODIGO = APA.CDGCO
             LEFT JOIN PR_PRIORITARIO PRP ON PRP.CODIGO = APA.CDGPR_PRIORITARIO
         WHERE
-            TRUNC(APA.FECHA_APERTURA) BETWEEN TO_DATE('$fechaI', 'YYYY-MM-DD') AND TO_DATE('$fechaF', 'YYYY-MM-DD')
+            TRUNC(APA.FECHA_APERTURA) BETWEEN FECHA_INICIO_REPORTE AND TO_DATE('$fechaF', 'YYYY-MM-DD')
             filtroExtra
         ORDER BY
             APA.CONTRATO
         SQL;
 
+        $fechaInicio = "TO_DATE('2024-01-01', 'YYYY-MM-DD')";
+        if ($datos['sucursal']) $fechaInicio = <<<SQL
+        (
+            SELECT
+                TRUNC(MIN(FECHA_APERTURA))
+            FROM
+                ASIGNA_PROD_AHORRO
+            WHERE
+                CDGCO = '{$datos['sucursal']}'
+        )
+        SQL;
+        $qry = str_ireplace("FECHA_INICIO_REPORTE", $fechaInicio, $qry);
+
         $filtroExtra = "";
         if ($datos['sucursal']) $filtroExtra = "AND APA.CDGCO = '{$datos['sucursal']}'";
-
         $qry = str_ireplace("filtroExtra", $filtroExtra, $qry);
 
         try {

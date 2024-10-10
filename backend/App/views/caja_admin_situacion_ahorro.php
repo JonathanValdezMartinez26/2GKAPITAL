@@ -102,17 +102,10 @@
                                     <div class="row">
                                         <div class="col-md-3">
                                             <div class="form-group">
-                                                <label for="fechaI">Desde *</label>
-                                                <input type="date" class="form-control" id="fechaI" name="fechaI" value="<?= $fechaI; ?>" min="<?= $fechaI; ?>" max="<?= $fechaF; ?>" onchange=validaFechas(event)>
+                                                <label for="fechaF">Fecha Final *</label>
+                                                <input type="date" class="form-control" id="fechaF" name="fechaF" value="<?= $fechaF; ?>" min="2024-01-01" max="<?= $fechaF; ?>">
                                             </div>
                                         </div>
-                                        <div class="col-md-3">
-                                            <div class="form-group">
-                                                <label for="fechaF">Hasta *</label>
-                                                <input type="date" class="form-control" id="fechaF" name="fechaF" value="<?= $fechaF; ?>" min="2024-01-01" max="<?= $fechaF; ?>" onchange=validaFechas(event)>
-                                            </div>
-                                        </div>
-
                                         <div class="col-md-3">
                                             <div class="form-group">
                                                 <label for="sucursal">Sucursal *</label>
