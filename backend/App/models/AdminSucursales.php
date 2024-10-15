@@ -888,57 +888,13 @@ sql;
             CO.NOMBRE AS SUCURSAL,
             PRP.DESCRIPCION AS TIPO_CUENTA,
             TO_CHAR(APA.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INICIO,
-            (
-                SELECT
-                    TO_CHAR(MAX(CI.FECHA_VENCIMIENTO), 'DD/MM/YYYY')
-                FROM
-                    CUENTA_INVERSION CI
-                WHERE
-                    CI.CDG_CONTRATO = APA.CONTRATO
-                GROUP BY
-                    CDG_CONTRATO
-            ) AS FECHA_VENCIMIENTO,
-            (
-                SELECT
-                    TRUNC(CI.FECHA_VENCIMIENTO) - TRUNC(CI.FECHA_APERTURA)
-                FROM
-                    CUENTA_INVERSION CI
-                WHERE
-                    CI.CDG_CONTRATO = APA.CONTRATO
-                    AND CI.FECHA_VENCIMIENTO = (
-                        SELECT
-                            MAX(CI.FECHA_VENCIMIENTO)
-                        FROM
-                            CUENTA_INVERSION CI
-                        WHERE
-                            CI.CDG_CONTRATO = APA.CONTRATO
-                        GROUP BY
-                            CDG_CONTRATO
-                    )
-            ) AS PLAZO,
+            NULL AS FECHA_VENCIMIENTO,
+            NULL AS PLAZO,
             PRP.COSTO_INSCRIPCION AS COMISION_APERTURA,
             NULL AS BONIFICACION,
             APA.SALDO_REAL AS SALDO_AHORRO,
-            (
-                SELECT
-                    TO_CHAR(MAX(CI.FECHA_APERTURA), 'DD/MM/YYYY')
-                FROM
-                    CUENTA_INVERSION CI
-                WHERE
-                    CI.CDG_CONTRATO = APA.CONTRATO
-                GROUP BY
-                    CDG_CONTRATO
-            ) AS FECHA_INVERSION,
-            (
-                SELECT
-                    SUM(MONTO_INVERSION)
-                FROM
-                    CUENTA_INVERSION CI
-                WHERE
-                    CI.CDG_CONTRATO = APA.CONTRATO
-                GROUP BY
-                    CDG_CONTRATO
-            ) AS SALDO_INVERSION,
+            NULL AS FECHA_INVERSION,
+            NULL AS SALDO_INVERSION,
             APA.SALDO_REAL + NVL((
                 SELECT
                     SUM(MONTO_INVERSION)
@@ -962,8 +918,43 @@ sql;
         WHERE
             TRUNC(APA.FECHA_APERTURA) BETWEEN FECHA_INICIO_REPORTE AND TO_DATE('$fechaF', 'YYYY-MM-DD')
             filtroExtra
-        ORDER BY
-            APA.CONTRATO
+        UNION
+        SELECT
+            APA.CDGCL AS ID_SOCIO,
+            CONCATENA_NOMBRE(CL.NOMBRE1, CL.NOMBRE2, CL.PRIMAPE, CL.SEGAPE) AS NOMBRE_SOCIO,
+            NULL AS ID_PQ,
+            NULL AS NOMBRE_PQ,
+            CO.NOMBRE AS SUCURSAL,
+            'INVERSIÓN' AS TIPO_CUENTA,
+            TO_CHAR(APA.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INICIO,
+            TO_CHAR(CI.FECHA_VENCIMIENTO, 'DD/MM/YYYY') AS FECHA_VENCIMIENTO,
+            PI.PLAZO || ' ' || (
+                CASE
+                    WHEN PI.PERIODICIDAD = 'D' THEN 'DÍAS'
+                    WHEN PI.PERIODICIDAD = 'M' THEN 'MESES'
+                    ELSE 'AÑOS'
+                END
+            ) AS PLAZO,
+            NULL AS COMISION_APERTURA,
+            NULL AS BONIFICACION,
+            APA.SALDO_REAL AS SALDO_AHORRO,
+            TO_CHAR(CI.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INVERSION,
+            CI.MONTO_INVERSION AS SALDO_INVERSION,
+            APA.SALDO_REAL + CI.MONTO_INVERSION AS SALDO_SOCIO,
+            CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS EJECUTIVO,
+            APA.TASA AS TASA,
+            APA.SALDO_REAL - APA.SALDO AS RENDIMIENTO
+        FROM
+            CUENTA_INVERSION CI 
+            LEFT JOIN ASIGNA_PROD_AHORRO APA ON APA.CONTRATO =  CI.CDG_CONTRATO
+            LEFT JOIN CL ON CL.CODIGO = APA.CDGCL
+            LEFT JOIN PE ON PE.CODIGO = APA.CDGPE_REGISTRO
+            LEFT JOIN CO ON CO.CODIGO = APA.CDGCO
+            LEFT JOIN TASA_INVERSION TI ON TI.CODIGO = CI.CDG_TASA
+            LEFT JOIN PLAZO_INVERSION PI ON PI.CODIGO = TI.CDG_PLAZO
+        WHERE
+            TRUNC(APA.FECHA_APERTURA) BETWEEN FECHA_INICIO_REPORTE AND TO_DATE('$fechaF', 'YYYY-MM-DD')
+            filtroExtra
         SQL;
 
         $fechaInicio = "TO_DATE('2024-01-01', 'YYYY-MM-DD')";
