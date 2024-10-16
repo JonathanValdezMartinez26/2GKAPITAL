@@ -329,6 +329,28 @@ $buscarCliente = new BuscarCliente('Para hacer la apertura de una cuenta de Inve
                                 <input type="text" class="form-control" id="modal_act_monto_letra" name="modal_act_monto_letra" style="border: 1px solid #000000; text-align: center; font-size: 25px;" readonly>
                             </div>
                         </div>
+
+                        <div class="row" style="padding-top: 5px;">
+                            <div class="col-md-3">
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="modal_act_plazo_nvo">Nuevo plazo</label>
+                                    <select class="form-control" id="modal_act_plazo_nvo" name="modal_act_plazo_nvo" onchange=cambioNvoPlazo(event) disabled>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="modal_act_tasa">Nueva tasa anual</label>
+                                    <input class="form-control" id="modal_act_tasa" name="modal_act_tasa" value="0.00" readonly>
+                                    <input type="hidden" class="form-control" id="modal_act_id_tasa" name="modal_act_id_tasa" readonly>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                            </div>
+                        </div>
+
                         <div class="row">
                             <div class="col-md-12" style="text-align:center;">
                                 <hr>
@@ -384,18 +406,6 @@ $buscarCliente = new BuscarCliente('Para hacer la apertura de una cuenta de Inve
                             </div>
                             <div class="col-md-3">
                                 <input class="form-control" id="modal_act_total" name="modal_act_total" value="0.00" readonly>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-8">
-                                <h4>Nueva tasa anual</h4>
-                            </div>
-                            <div class="col-md-1" style="display: flex; justify-content: flex-end;">
-                                <h4>%</h4>
-                            </div>
-                            <div class="col-md-3">
-                                <input class="form-control" id="modal_act_tasa" name="modal_act_tasa" value="0.00" readonly>
-                                <input type="hidden" class="form-control" id="modal_act_id_tasa" name="modal_act_id_tasa" readonly>
                             </div>
                         </div>
                         <div class="row">

@@ -2416,6 +2416,8 @@ class Ahorro extends Controller
                             document.querySelector("#modal_act_tasa_actual").value = info_inversion.TASA
                             document.querySelector("#modal_act_id_tasa_actual").value = info_inversion.CODIGO_TASA
                             document.querySelector("#modal_act_plazo_completo").value = textoPlazo
+                            document.querySelector("#modal_act_plazo_nvo").innerHTML = "<option>" + textoPlazo + "</option>"
+                            document.querySelector("#modal_act_plazo_nvo").disabled = true
                             document.querySelector("#modal_act_plazo").value = info_inversion.PLAZO
                             document.querySelector("#modal_act_periodicidad").value = info_inversion.PERIODICIDAD
                             document.querySelector("#modal_act_saldo_ahorro").value = formatoMoneda(saldoActual)
@@ -2640,6 +2642,8 @@ class Ahorro extends Controller
                     document.querySelector("#modal_act_tasa").value = document.querySelector("#modal_act_tasa_actual").value
                     document.querySelector("#modal_act_id_tasa").value = document.querySelector("#modal_act_id_tasa_actual").value
                     document.querySelector("#modal_act_monto_letra").value = ""
+                    document.querySelector("#modal_act_plazo_nvo").innerHTML = ""
+                    document.querySelector("#modal_act_plazo_nvo").disabled = true
                     return
                 }
 
@@ -2648,33 +2652,32 @@ class Ahorro extends Controller
 
                 const montoFinal = parseaNumero(document.querySelector("#modal_act_total").value)
                 
-                const tasasAplicables =  tasasDisponibles
-                .filter(tasa => tasa.PERIODICIDAD == document.querySelector("#modal_act_periodicidad").value && tasa.PLAZO_NUMERO == document.querySelector("#modal_act_plazo").value)
-
-                if (tasasAplicables.length === 0) {
-                    document.querySelector("#modal_act_tasa").value = document.querySelector("#modal_act_tasa_actual").value
-                    document.querySelector("#modal_act_id_tasa").value = document.querySelector("#modal_act_id_tasa_actual").value
-                    return
-                }
-
                 let mMax = 0
-                const nuevaTasa = tasasAplicables
+                const nuevaTasa = tasasDisponibles
                 .filter(tasa => {
-                    const r = tasa.MONTO_MINIMO <= montoFinal 
+                    const r = tasa.MONTO_MINIMO < montoFinal 
                     mMax = r ? tasa.MONTO_MINIMO : mMax
                     return r
                 })
                 .filter(tasa => tasa.MONTO_MINIMO == mMax)
-
                 
-                if (nuevaTasa.length === 0) {
-                    document.querySelector("#modal_act_tasa").value = document.querySelector("#modal_act_tasa_actual").value
-                    document.querySelector("#modal_act_id_tasa").value = document.querySelector("#modal_act_id_tasa_actual").value
+                if (nuevaTasa.length > 0) {
+                    document.querySelector("#modal_act_plazo_nvo").innerHTML = ""
+                    document.querySelector("#modal_act_plazo_nvo").innerHTML = nuevaTasa.map(tasa => "<option value='" + tasa.CODIGO + "' " + (tasa.PLAZO == document.querySelector("#modal_act_plazo_completo").value ? "selected" : "") + ">" + tasa.PLAZO + "</option>").join("")
+                    document.querySelector("#modal_act_plazo_nvo").disabled = false
+                    document.querySelector("#modal_act_tasa").value = nuevaTasa.find(tasa => tasa.PLAZO == document.querySelector("#modal_act_plazo_completo").value).TASA
+                    document.querySelector("#modal_act_id_tasa").value = nuevaTasa.find(tasa => tasa.PLAZO == document.querySelector("#modal_act_plazo_completo").value).CODIGO
                     return
                 }
 
-                document.querySelector("#modal_act_tasa").value = nuevaTasa[0].TASA
-                document.querySelector("#modal_act_id_tasa").value = nuevaTasa[0].CODIGO
+                document.querySelector("#modal_act_plazo_nvo").innerHTML = ""
+                document.querySelector("#modal_act_plazo_nvo").disabled = true
+            }
+
+            const cambioNvoPlazo = (e) => {
+                const info = tasasDisponibles.find(tasa => tasa.CODIGO == e.target.value)
+                document.querySelector("#modal_act_tasa").value = info.TASA
+                document.querySelector("#modal_act_id_tasa").value = info.CODIGO
             }
 
             const actaulizaInversion = (e) => {
@@ -10383,11 +10386,12 @@ class Ahorro extends Controller
 
     public function CertificadoInversion($datos)
     {
+        $logo = __DIR__ . '\..\..\public\img\logo.png';
+
         $css = <<<CSS
             .encabezado {
                 width: 100%;
                 border-bottom: 1px solid black;
-                padding-bottom: 10px;
                 margin-bottom: 20px;
             }
             .tituloPrincipal {
@@ -10444,11 +10448,7 @@ class Ahorro extends Controller
                 <table style="width: 100%;">
                     <tr>
                         <td style="width: 20%;">
-                            <table style="margin-right: auto;">
-                                <tr>
-                                    <td>LOGO</td>
-                                </tr>
-                            </table>
+                            <img src="$logo" alt="Logo" style="width:120px;" />
                         </td>
                         <td style="width: 60%; text-align: center; ">
                             <div class="tituloPrincipal">
@@ -10533,8 +10533,10 @@ class Ahorro extends Controller
                         <td class="celdaTitulo">Retención de ISR</td>
                     </tr>
                     <tr>
-                        <td class="celdaDato">{$datos["F_VENCIMIENTO"]}</td>
-                        <td class="celdaDato">{$datos["FORMA_PAGO"]}</td>
+                        <td class="celdaDato">{$datos["RENDIMIENTO"]}</td>
+                        <td class="celdaDato">{$datos["TASA"]}</td>
+                        <td class="celdaDato"></td>
+                        <td class="celdaDato"></td>
                     </tr>
                     <tr>
                         <td class="celdaSeparadora"></td>
@@ -10549,8 +10551,8 @@ class Ahorro extends Controller
                         <td class="celdaTitulo">Monto a Pagar en cada plazo de devolución</td>
                     </tr>
                     <tr>
-                        <td class="celdaDato">{$datos["RENDIMIENTO"]}</td>
-                        <td class="celdaDato">{$datos["TASA"]}</td>
+                        <td class="celdaDato">{$datos["F_VENCIMIENTO"]}</td>
+                        <td class="celdaDato">{$datos["FORMA_PAGO"]}</td>
                         <td class="celdaDato">{$datos["MONTO_FINAL"]}</td>
                         <td class="celdaDato"></td>
                     </tr>
