@@ -1492,7 +1492,8 @@ class CajaAhorro
             SET
                 MONTO_INVERSION = MONTO_INVERSION + :monto,
                 CDG_TASA = :tasa,
-                MODIFICACION = SYSDATE
+                MODIFICACION = SYSDATE,
+                FECHA_VENCIMIENTO = CALCULAR_FECHA_LIQUIDACION(:tasa, SYSDATE)
             WHERE
                 CDG_CONTRATO = :contrato
                 AND CODIGO = :codigo
