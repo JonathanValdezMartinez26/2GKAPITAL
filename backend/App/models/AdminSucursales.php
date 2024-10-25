@@ -956,7 +956,7 @@ sql;
                 ) AS PLAZO,
                 NULL AS COMISION_APERTURA,
                 NULL AS BONIFICACION,
-                SC.SALDO_CORTE AS SALDO_AHORRO,
+                NULL AS SALDO_AHORRO,
                 TO_CHAR(CI.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INVERSION,
                 SC.INVERSION AS SALDO_INVERSION,
                 SC.SALDO_CORTE + SC.INVERSION AS SALDO_SOCIO,
