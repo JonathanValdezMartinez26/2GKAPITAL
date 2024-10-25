@@ -954,7 +954,7 @@ sql;
                         ELSE 'AÑOS'
                     END
                 ) AS PLAZO,
-                0 AS COMISION_APERTURA,
+                '0' AS COMISION_APERTURA,
                 NULL AS BONIFICACION,
                 0 AS SALDO_AHORRO,
                 TO_CHAR(CI.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INVERSION,
@@ -962,7 +962,9 @@ sql;
                 SC.SALDO_CORTE + SC.INVERSION AS SALDO_SOCIO,
                 CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS EJECUTIVO,
                 TI.TASA / 100 AS TASA,
-                SC.RENDIMIENTO
+                (
+                    (TRUNC(TO_DATE('$fechaF', 'YYYY-MM-DD')) - TRUNC(CI.FECHA_APERTURA)) * ((CI.MONTO * (TI.TASA / 100)) / 365)
+                ) AS RENDIMIENTO
             FROM
                 CUENTA_INVERSION CI 
                 LEFT JOIN ASIGNA_PROD_AHORRO APA ON APA.CONTRATO =  CI.CDG_CONTRATO
