@@ -894,7 +894,7 @@ sql;
                 NULL AS BONIFICACION,
                 SC.SALDO_CORTE AS SALDO_AHORRO,
                 NULL AS FECHA_INVERSION,
-                SC.INVERSION AS SALDO_INVERSION,
+                0 AS SALDO_INVERSION,
                 SC.SALDO_CORTE + SC.INVERSION AS SALDO_SOCIO,
                 CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS EJECUTIVO,
                 APA.TASA / 100 AS TASA,
@@ -954,9 +954,9 @@ sql;
                         ELSE 'AÑOS'
                     END
                 ) AS PLAZO,
-                NULL AS COMISION_APERTURA,
+                0 AS COMISION_APERTURA,
                 NULL AS BONIFICACION,
-                NULL AS SALDO_AHORRO,
+                0 AS SALDO_AHORRO,
                 TO_CHAR(CI.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INVERSION,
                 SC.INVERSION AS SALDO_INVERSION,
                 SC.SALDO_CORTE + SC.INVERSION AS SALDO_SOCIO,
