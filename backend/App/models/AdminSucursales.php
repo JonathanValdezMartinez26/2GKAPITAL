@@ -962,8 +962,10 @@ sql;
                 SC.SALDO_CORTE + SC.INVERSION AS SALDO_SOCIO,
                 CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS EJECUTIVO,
                 TI.TASA / 100 AS TASA,
-                (
-                    (TRUNC(TO_DATE('$fechaF', 'YYYY-MM-DD')) - TRUNC(CI.FECHA_APERTURA)) * ((CI.MONTO * (TI.TASA / 100)) / 365)
+                TO_NUMBER(
+                    TO_CHAR(
+                        (TRUNC(TO_DATE('2024-10-25', 'YYYY-MM-DD')) - TRUNC(CI.FECHA_APERTURA)) * ((CI.MONTO_INVERSION * (TI.TASA / 100)) / 365)
+                    , '999999999.00')
                 ) AS RENDIMIENTO
             FROM
                 CUENTA_INVERSION CI 
