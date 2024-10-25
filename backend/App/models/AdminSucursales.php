@@ -874,87 +874,134 @@ sql;
         $fechaF = $datos['fechaF'];
 
         $qry = <<<SQL
-        SELECT
-            APA.CDGCL AS ID_SOCIO,
-            CONCATENA_NOMBRE(CL.NOMBRE1, CL.NOMBRE2, CL.PRIMAPE, CL.SEGAPE) AS NOMBRE_SOCIO,
-            CASE
-                WHEN LENGTH(APA.CONTRATO) > 14 THEN SUBSTR(APA.CONTRATO, 15, 2)
-                ELSE NULL
-            END AS ID_PQ,
-            CASE
-                WHEN LENGTH(APA.CONTRATO) > 14 THEN CONCATENA_NOMBRE(CLP.NOMBRE1, CLP.NOMBRE2, CLP.APELLIDO1, CLP.APELLIDO2)
-                ELSE NULL
-            END AS NOMBRE_PQ,
-            CO.NOMBRE AS SUCURSAL,
-            PRP.DESCRIPCION AS TIPO_CUENTA,
-            TO_CHAR(APA.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INICIO,
-            NULL AS FECHA_VENCIMIENTO,
-            NULL AS PLAZO,
-            PRP.COSTO_INSCRIPCION AS COMISION_APERTURA,
-            NULL AS BONIFICACION,
-            APA.SALDO_REAL AS SALDO_AHORRO,
-            NULL AS FECHA_INVERSION,
-            NULL AS SALDO_INVERSION,
-            APA.SALDO_REAL + NVL((
-                SELECT
-                    SUM(MONTO_INVERSION)
-                FROM
-                    CUENTA_INVERSION CI
-                WHERE
-                    CI.CDG_CONTRATO = APA.CONTRATO
-                GROUP BY
-                    CDG_CONTRATO
-            ), 0) AS SALDO_SOCIO,
-            CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS EJECUTIVO,
-            APA.TASA / 100 AS TASA,
-            APA.SALDO_REAL - APA.SALDO AS RENDIMIENTO
-        FROM
-            ASIGNA_PROD_AHORRO APA
-            LEFT JOIN CL ON CL.CODIGO = APA.CDGCL
-            LEFT JOIN CL_PQS CLP ON CLP.CDG_CONTRATO = APA.CONTRATO
-            LEFT JOIN PE ON PE.CODIGO = APA.CDGPE_REGISTRO
-            LEFT JOIN CO ON CO.CODIGO = APA.CDGCO
-            LEFT JOIN PR_PRIORITARIO PRP ON PRP.CODIGO = APA.CDGPR_PRIORITARIO
-        WHERE
-            TRUNC(APA.FECHA_APERTURA) BETWEEN FECHA_INICIO_REPORTE AND TO_DATE('$fechaF', 'YYYY-MM-DD')
-            filtroExtra
-        UNION
-        SELECT
-            APA.CDGCL AS ID_SOCIO,
-            CONCATENA_NOMBRE(CL.NOMBRE1, CL.NOMBRE2, CL.PRIMAPE, CL.SEGAPE) AS NOMBRE_SOCIO,
-            NULL AS ID_PQ,
-            NULL AS NOMBRE_PQ,
-            CO.NOMBRE AS SUCURSAL,
-            'INVERSIÓN' AS TIPO_CUENTA,
-            TO_CHAR(APA.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INICIO,
-            TO_CHAR(CI.FECHA_VENCIMIENTO, 'DD/MM/YYYY') AS FECHA_VENCIMIENTO,
-            PI.PLAZO || ' ' || (
+            SELECT
+                APA.CDGCL AS ID_SOCIO,
+                CONCATENA_NOMBRE(CL.NOMBRE1, CL.NOMBRE2, CL.PRIMAPE, CL.SEGAPE) AS NOMBRE_SOCIO,
                 CASE
-                    WHEN PI.PERIODICIDAD = 'D' THEN 'DÍAS'
-                    WHEN PI.PERIODICIDAD = 'M' THEN 'MESES'
-                    ELSE 'AÑOS'
-                END
-            ) AS PLAZO,
-            NULL AS COMISION_APERTURA,
-            NULL AS BONIFICACION,
-            APA.SALDO_REAL AS SALDO_AHORRO,
-            TO_CHAR(CI.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INVERSION,
-            CI.MONTO_INVERSION AS SALDO_INVERSION,
-            APA.SALDO_REAL + CI.MONTO_INVERSION AS SALDO_SOCIO,
-            CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS EJECUTIVO,
-            TI.TASA / 100 AS TASA,
-            APA.SALDO_REAL - APA.SALDO AS RENDIMIENTO
-        FROM
-            CUENTA_INVERSION CI 
-            LEFT JOIN ASIGNA_PROD_AHORRO APA ON APA.CONTRATO =  CI.CDG_CONTRATO
-            LEFT JOIN CL ON CL.CODIGO = APA.CDGCL
-            LEFT JOIN PE ON PE.CODIGO = APA.CDGPE_REGISTRO
-            LEFT JOIN CO ON CO.CODIGO = APA.CDGCO
-            LEFT JOIN TASA_INVERSION TI ON TI.CODIGO = CI.CDG_TASA
-            LEFT JOIN PLAZO_INVERSION PI ON PI.CODIGO = TI.CDG_PLAZO
-        WHERE
-            TRUNC(APA.FECHA_APERTURA) BETWEEN FECHA_INICIO_REPORTE AND TO_DATE('$fechaF', 'YYYY-MM-DD')
-            filtroExtra
+                    WHEN LENGTH(APA.CONTRATO) > 14 THEN SUBSTR(APA.CONTRATO, 15, 2)
+                    ELSE NULL
+                END AS ID_PQ,
+                CASE
+                    WHEN LENGTH(APA.CONTRATO) > 14 THEN CONCATENA_NOMBRE(CLP.NOMBRE1, CLP.NOMBRE2, CLP.APELLIDO1, CLP.APELLIDO2)
+                    ELSE NULL
+                END AS NOMBRE_PQ,
+                CO.NOMBRE AS SUCURSAL,
+                PRP.DESCRIPCION AS TIPO_CUENTA,
+                TO_CHAR(APA.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INICIO,
+                NULL AS FECHA_VENCIMIENTO,
+                NULL AS PLAZO,
+                PRP.COSTO_INSCRIPCION AS COMISION_APERTURA,
+                NULL AS BONIFICACION,
+                SC.SALDO_CORTE AS SALDO_AHORRO,
+                NULL AS FECHA_INVERSION,
+                SC.INVERSION AS SALDO_INVERSION,
+                SC.SALDO_CORTE + SC.INVERSION AS SALDO_SOCIO,
+                CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS EJECUTIVO,
+                APA.TASA / 100 AS TASA,
+                SC.RENDIMIENTO
+            FROM
+                ASIGNA_PROD_AHORRO APA
+                LEFT JOIN CL ON CL.CODIGO = APA.CDGCL
+                LEFT JOIN CL_PQS CLP ON CLP.CDG_CONTRATO = APA.CONTRATO
+                LEFT JOIN PE ON PE.CODIGO = APA.CDGPE_REGISTRO
+                LEFT JOIN CO ON CO.CODIGO = APA.CDGCO
+                LEFT JOIN PR_PRIORITARIO PRP ON PRP.CODIGO = APA.CDGPR_PRIORITARIO
+                LEFT JOIN (
+                    SELECT
+                        MA.CDG_CONTRATO AS CONTRATO,
+                        SUM(
+                            CASE 
+                                WHEN MA.CDG_TIPO_PAGO IN (15) THEN 0
+                                WHEN MA.MOVIMIENTO = 0 THEN -MA.MONTO
+                                WHEN MA.MOVIMIENTO = 1 THEN MA.MONTO
+                            END
+                        ) AS SALDO_CORTE,
+                        SUM(
+                            CASE MA.CDG_TIPO_PAGO
+                                WHEN '15' THEN MONTO
+                                ELSE 0
+                            END
+                        ) AS RENDIMIENTO,
+                        SUM(
+                            CASE MA.CDG_TIPO_PAGO
+                                WHEN '5' THEN MA.MONTO
+                                ELSE 0
+                            END
+                        ) AS INVERSION
+                    FROM
+                        MOVIMIENTOS_AHORRO MA
+                    WHERE
+                        TRUNC(MA.FECHA_MOV) BETWEEN FECHA_INICIO_REPORTE AND TO_DATE('$fechaF', 'YYYY-MM-DD')
+                    GROUP BY MA.CDG_CONTRATO
+                ) SC ON SC.CONTRATO = APA.CONTRATO
+            WHERE
+                TRUNC(APA.FECHA_APERTURA) BETWEEN FECHA_INICIO_REPORTE AND TO_DATE('$fechaF', 'YYYY-MM-DD')
+                filtroExtra
+            UNION
+            SELECT
+                APA.CDGCL AS ID_SOCIO,
+                CONCATENA_NOMBRE(CL.NOMBRE1, CL.NOMBRE2, CL.PRIMAPE, CL.SEGAPE) AS NOMBRE_SOCIO,
+                NULL AS ID_PQ,
+                NULL AS NOMBRE_PQ,
+                CO.NOMBRE AS SUCURSAL,
+                'INVERSIÓN' AS TIPO_CUENTA,
+                TO_CHAR(APA.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INICIO,
+                TO_CHAR(CI.FECHA_VENCIMIENTO, 'DD/MM/YYYY') AS FECHA_VENCIMIENTO,
+                PI.PLAZO || ' ' || (
+                    CASE
+                        WHEN PI.PERIODICIDAD = 'D' THEN 'DÍAS'
+                        WHEN PI.PERIODICIDAD = 'M' THEN 'MESES'
+                        ELSE 'AÑOS'
+                    END
+                ) AS PLAZO,
+                NULL AS COMISION_APERTURA,
+                NULL AS BONIFICACION,
+                SC.SALDO_CORTE AS SALDO_AHORRO,
+                TO_CHAR(CI.FECHA_APERTURA, 'DD/MM/YYYY') AS FECHA_INVERSION,
+                SC.INVERSION AS SALDO_INVERSION,
+                SC.SALDO_CORTE + SC.INVERSION AS SALDO_SOCIO,
+                CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS EJECUTIVO,
+                TI.TASA / 100 AS TASA,
+                SC.RENDIMIENTO
+            FROM
+                CUENTA_INVERSION CI 
+                LEFT JOIN ASIGNA_PROD_AHORRO APA ON APA.CONTRATO =  CI.CDG_CONTRATO
+                LEFT JOIN CL ON CL.CODIGO = APA.CDGCL
+                LEFT JOIN PE ON PE.CODIGO = APA.CDGPE_REGISTRO
+                LEFT JOIN CO ON CO.CODIGO = APA.CDGCO
+                LEFT JOIN TASA_INVERSION TI ON TI.CODIGO = CI.CDG_TASA
+                LEFT JOIN PLAZO_INVERSION PI ON PI.CODIGO = TI.CDG_PLAZO
+                LEFT JOIN (
+                    SELECT
+                        MA.CDG_CONTRATO AS CONTRATO,
+                        SUM(
+                            CASE 
+                                WHEN MA.CDG_TIPO_PAGO IN (15) THEN 0
+                                WHEN MA.MOVIMIENTO = 0 THEN -MA.MONTO
+                                WHEN MA.MOVIMIENTO = 1 THEN MA.MONTO
+                            END
+                        ) AS SALDO_CORTE,
+                        SUM(
+                            CASE MA.CDG_TIPO_PAGO
+                                WHEN '15' THEN MONTO
+                                ELSE 0
+                            END
+                        ) AS RENDIMIENTO,
+                        SUM(
+                            CASE MA.CDG_TIPO_PAGO
+                                WHEN '5' THEN MA.MONTO
+                                ELSE 0
+                            END
+                        ) AS INVERSION
+                    FROM
+                        MOVIMIENTOS_AHORRO MA
+                    WHERE
+                        TRUNC(MA.FECHA_MOV) BETWEEN FECHA_INICIO_REPORTE AND TO_DATE('$fechaF', 'YYYY-MM-DD')
+                    GROUP BY MA.CDG_CONTRATO
+                ) SC ON SC.CONTRATO = APA.CONTRATO
+            WHERE
+                TRUNC(APA.FECHA_APERTURA) BETWEEN FECHA_INICIO_REPORTE AND TO_DATE('$fechaF', 'YYYY-MM-DD')
+                filtroExtra
         SQL;
 
         $fechaInicio = "TO_DATE('2024-01-01', 'YYYY-MM-DD')";
