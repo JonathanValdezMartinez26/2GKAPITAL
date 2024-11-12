@@ -480,6 +480,7 @@ sql;
         $qry = <<<SQL
             SELECT * FROM (
                 SELECT
+                    MA.CODIGO,
                     TO_CHAR(MA.FECHA_MOV, 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
                     MA.CDG_TIPO_PAGO AS TIPO,
                     'AHORRO' AS CUENTA,
@@ -557,6 +558,7 @@ sql;
                     MA.CDG_CONTRATO = '$contrato'
                 UNION ALL
                 SELECT
+                    NULL,
                     TO_CHAR(FECHA_APERTURA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
                     '5' AS TIPO,
                     'INVERSIÓN' AS CUENTA,
@@ -570,7 +572,7 @@ sql;
                     CUENTA_INVERSION
                 WHERE
                     CDG_CONTRATO = '$contrato'
-            ) ORDER BY TO_DATE(FECHA, 'DD/MM/YYYY HH24:MI:SS') DESC, CUENTA DESC
+            ) ORDER BY TO_DATE(FECHA, 'DD/MM/YYYY HH24:MI:SS') DESC, CODIGO DESC, CUENTA DESC
         SQL;
 
         try {
