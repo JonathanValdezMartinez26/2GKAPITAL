@@ -17,7 +17,6 @@ class Job
         else date_default_timezone_set("America/Mexico_City");
 
         if (!file_exists($this->logPath)) mkdir($this->logPath, 0777, true);
-
         $this->nombreJob = $nj;
     }
 

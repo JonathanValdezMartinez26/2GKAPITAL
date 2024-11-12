@@ -2,7 +2,8 @@
 
 namespace Core;
 
-use Core\App;
+include_once dirname(__DIR__) . "/Core/App.php";
+
 use PDO;
 
 /**
@@ -12,28 +13,25 @@ use PDO;
 class Database
 {
     private $configuracion;
-    private $gkapital;
     public $db_activa;
 
-    function __construct()
+    function __construct($s = null, $u = null, $p = null)
     {
         $this->configuracion = App::getConfig();
-        $this->DB_GKAPITAL();
-
-        // La base por defecto seria 2gkapital"
-        $this->db_activa = $this->gkapital;
+        $this->Conecta($s, $u, $p);
     }
 
-    private function Conecta($s, $u = null, $p = null)
+    private function Conecta($s = null, $u = null, $p = null)
     {
-        $host = 'oci:dbname=//' . $s . ':' . $this->configuracion['PUERTO'] . '/ESIACOM;charset=UTF8';
+        $s = $this->configuracion[$s] ?? $s;
+        $host = 'oci:dbname=//' . ($s ?? $this->configuracion['SERVIDOR']) . ':1521/ESIACOM;charset=UTF8';
         $usuario = $u ?? $this->configuracion['USUARIO'];
         $password = $p ?? $this->configuracion['PASSWORD'];
         try {
-            return new PDO($host, $usuario, $password);
+            $this->db_activa =  new PDO($host, $usuario, $password);
         } catch (\PDOException $e) {
             echo self::muestraError($e);
-            return null;
+            $this->db_activa =  null;
         }
     }
 
@@ -45,17 +43,6 @@ class Database
         if ($parametros != null) $error .= "\nDatos: " . print_r($parametros, 1);
         echo $error . "\n";
         return $error;
-    }
-
-    private function DB_GKAPITAL()
-    {
-        $servidor = $this->configuracion['SERVIDOR'];
-        $this->gkapital = self::Conecta($servidor);
-    }
-
-    public function SetDB_GKAPITAL()
-    {
-        $this->db_activa = $this->gkapital;
     }
 
     public function insert($sql)
@@ -96,19 +83,15 @@ class Database
 
     public function insertaMultiple($sql, $registros, $validacion = null)
     {
-        $sqlError = '';
-        $valoresError = '';
         try {
             $this->db_activa->beginTransaction();
             foreach ($registros as $i => $valores) {
-                $sqlError = $sql[$i];
-                $valoresError = $valores;
                 $stmt = $this->db_activa->prepare($sql[$i]);
                 $result = $stmt->execute($valores);
                 if (!$result) {
                     $err = $stmt->errorInfo();
                     $this->db_activa->rollBack();
-                    throw new \Exception("Error: " . print_r($err, 1) . "\nSql : " . $sql[$i] . "\nDatos : " . print_r($valores, 1));
+                    throw new \Exception("Error: " . print_r($err, 1) . "\nSql: " . $sql[$i] . "\nDatos: " . print_r($valores, 1));
                 }
             }
 
@@ -127,7 +110,9 @@ class Database
             return true;
         } catch (\PDOException $e) {
             $this->db_activa->rollBack();
-            throw new \Exception("Error en insertaMultiple: " . $e->getMessage() . "\nSql : " . $sqlError . "\nDatos : " . print_r($valoresError, 1));
+            throw new \Exception("Error en insertaMultiple: " . $e->getMessage() . "\nSql: " . $sql[$i] . "\nDatos: " . print_r($valores, 1));
+        } catch (\Exception $e) {
+            throw new \Exception("Error en insertaMultiple: " . $e->getMessage());
         }
     }
 
@@ -171,13 +156,13 @@ class Database
         }
     }
 
-    public function queryOne($sql, $params = '')
+    public function queryOne($sql, $params = null)
     {
-
-        if ($params == '') {
+        if ($params == null) {
             try {
                 $stmt = $this->db_activa->query($sql);
-                return array_shift($stmt->fetchAll(PDO::FETCH_ASSOC));
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return array_shift($res);
             } catch (\PDOException $e) {
                 self::muestraError($e, $sql, $params);
                 return false;
@@ -185,10 +170,13 @@ class Database
         } else {
             try {
                 $stmt = $this->db_activa->prepare($sql);
-                foreach ($params as $values => $val)
+                foreach ($params as $values => $val) {
                     $stmt->bindParam($values, $val);
+                }
+
                 $stmt->execute($params);
-                return array_shift($stmt->fetchAll(PDO::FETCH_ASSOC));
+                $res = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                return array_shift($res);
             } catch (\PDOException $e) {
                 self::muestraError($e, $sql, $params);
                 return false;
@@ -196,9 +184,9 @@ class Database
         }
     }
 
-    public function queryAll($sql, $params = '')
+    public function queryAll($sql, $params = null)
     {
-        if ($params == '') {
+        if ($params == null) {
             try {
                 $stmt = $this->db_activa->query($sql);
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -209,8 +197,9 @@ class Database
         } else {
             try {
                 $stmt = $this->db_activa->prepare($sql);
-                foreach ($params as $values => $val)
+                foreach ($params as $values => $val) {
                     $stmt->bindParam($values, $val);
+                }
                 $stmt->execute($params);
                 return $stmt->fetchAll(PDO::FETCH_ASSOC);
             } catch (\PDOException $e) {
@@ -536,12 +525,10 @@ class Database
     }
     public function queryProcedureActualizaNumCreditoCiclo($credito_a, $ciclo_n)
     {
-
         $empresa = "EMPFIN";
         $credito_actual = $credito_a;
         $ciclo_n = $ciclo_n;
         $resultado_s = "";
-
 
         $query_text = "CALL SPACTUALIZACICLOGPO(?,?,?,?)";
 
@@ -564,13 +551,11 @@ class Database
 
     public function queryProcedureActualizaNumCreditoSituacion($credito_a, $ciclo_n, $situacion)
     {
-
         $empresa = "EMPFIN";
         $credito_actual = $credito_a;
         $ciclo_n = $ciclo_n;
         $situacion_n = $situacion;
         $resultado_s = "";
-
 
         $query_text = "CALL SPACTUALIZASITUACION(?,?,?,?,?)";
 
