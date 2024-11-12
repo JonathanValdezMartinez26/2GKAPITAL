@@ -7,7 +7,7 @@ use DateTimeZone;
 
 class Job
 {
-    private $logPath = "C:/xampp/Logs Jobs/";
+    private $logPath;
     private $nombreJob;
 
     public function __construct($nj)
@@ -16,7 +16,7 @@ class Job
         if ($validaHV->format("I")) date_default_timezone_set("America/Mazatlan");
         else date_default_timezone_set("America/Mexico_City");
 
-        if (!file_exists($this->logPath)) mkdir($this->logPath, 0777, true);
+        $this->logPath = dirname(__DIR__) . "/Jobs/Logs/";
         $this->nombreJob = $nj;
     }
 
