@@ -1031,89 +1031,89 @@ class AdminSucursales extends Controller
     ///
     public function EstadoCuentaCliente()
     {
-        $extraFooter = <<<script
-        <script>
-            let infoCliente = {}
-            let vistaActiva = ""
-         
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->noSubmit}
-            {$this->soloNumeros}
-            {$this->consultaServidor}
-            {$this->numeroLetras}
-            {$this->validarYbuscar}
-            {$this->primeraMayuscula}
-            {$this->addParametro}
-            {$this->sinContrato}
-            {$this->buscaCliente}
-            {$this->parseaNumero}
-            {$this->formatoMoneda}
-            {$this->configuraTabla}
-            {$this->muestraPDF}
-            {$this->getFecha}
-         
-            const buscar = () => buscaCliente()
-         
-            const getVista = (vista) => {
-                if (vista === "") return
-                consultaServidor("/AdminSucursales/" + vista + "/", infoCliente, (res) => {
-                    const cuerpo = document.querySelector("#cuerpoModal")
-                    while(cuerpo.firstChild) {
-                        cuerpo.firstChild.remove()
-                    }
-                     
-                    const fragmento = document.createElement("template");
-                    fragmento.innerHTML = res || ""
-                     
-                    const contenido = fragmento.content.querySelector(".modal-body")
-                    const script = fragmento.content.querySelector("script")
+        $extraFooter = <<<HTML
+            <script>
+                let infoCliente = {}
+                let vistaActiva = ""
+            
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->noSubmit}
+                {$this->soloNumeros}
+                {$this->consultaServidor}
+                {$this->numeroLetras}
+                {$this->validarYbuscar}
+                {$this->primeraMayuscula}
+                {$this->addParametro}
+                {$this->sinContrato}
+                {$this->buscaCliente}
+                {$this->parseaNumero}
+                {$this->formatoMoneda}
+                {$this->configuraTabla}
+                {$this->muestraPDF}
+                {$this->getFecha}
+            
+                const buscar = () => buscaCliente()
+            
+                const getVista = (vista) => {
+                    if (vista === "") return
+                    consultaServidor("/AdminSucursales/" + vista + "/", infoCliente, (res) => {
+                        const cuerpo = document.querySelector("#cuerpoModal")
+                        while(cuerpo.firstChild) {
+                            cuerpo.firstChild.remove()
+                        }
+                        
+                        const fragmento = document.createElement("template");
+                        fragmento.innerHTML = res || ""
+                        
+                        const contenido = fragmento.content.querySelector(".modal-body")
+                        const script = fragmento.content.querySelector("script")
+                        
+                        document.querySelector("#cuerpoModal").innerHTML = contenido.innerHTML
+                        if (script) {
+                            const nuevoScript = document.createElement("script")
+                            nuevoScript.innerHTML = script.innerHTML
+                            document.querySelector("#cuerpoModal").appendChild(nuevoScript)
+                        }
+                    }, "POST", "html")
+                }
+                
+                const llenaDatosCliente = (datos) => {
+                    infoCliente = datos
+                    if (vistaActiva) return getVista(vistaActiva)
+                    const opciones = document.querySelector("#opcionesCat").querySelectorAll("li")
+                    opciones.forEach((opcion) => {
+                        if (!opcion.classList.contains("linea")) vistaActiva = opcion.children[0].id
+                    })
+                    getVista(vistaActiva)
+                }
+                
+                const limpiaDatosCliente = () => {
+                    infoCliente = {}
+                    document.querySelector("#cuerpoModal").innerHTML = ""
+                }
+                
+                const actualizaVista = (e) => {
+                    if (infoCliente.CDGCL === undefined) return showError("No se ha realizado la búsqueda de un cliente.")
+                    if (vistaActiva === e.target.id) return
                     
-                    document.querySelector("#cuerpoModal").innerHTML = contenido.innerHTML
-                    if (script) {
-                        const nuevoScript = document.createElement("script")
-                        nuevoScript.innerHTML = script.innerHTML
-                        document.querySelector("#cuerpoModal").appendChild(nuevoScript)
-                    }
-                }, "POST", "html")
-            }
-             
-            const llenaDatosCliente = (datos) => {
-                infoCliente = datos
-                if (vistaActiva) return getVista(vistaActiva)
-                const opciones = document.querySelector("#opcionesCat").querySelectorAll("li")
-                opciones.forEach((opcion) => {
-                    if (!opcion.classList.contains("linea")) vistaActiva = opcion.children[0].id
-                })
-                getVista(vistaActiva)
-            }
-             
-            const limpiaDatosCliente = () => {
-                infoCliente = {}
-                document.querySelector("#cuerpoModal").innerHTML = ""
-            }
-             
-            const actualizaVista = (e) => {
-                if (infoCliente.CDGCL === undefined) return showError("No se ha realizado la búsqueda de un cliente.")
-                if (vistaActiva === e.target.id) return
-                 
-                vistaActiva = e.target.id
-                reiniciaOpciones()
-                e.target.parentElement.classList.remove("linea")
-                e.target.style.fontWeight = "bold"
-                getVista(vistaActiva)
-            }
-             
-            const reiniciaOpciones = () => {
-                const opciones = document.querySelector("#opcionesCat").querySelectorAll("li")
-                opciones.forEach((opcion) => {
-                    opcion.classList.add("linea")
-                    opcion.children[0].style.fontWeight = "normal"
-                })
-            }
-        </script>
-        script;
+                    vistaActiva = e.target.id
+                    reiniciaOpciones()
+                    e.target.parentElement.classList.remove("linea")
+                    e.target.style.fontWeight = "bold"
+                    getVista(vistaActiva)
+                }
+                
+                const reiniciaOpciones = () => {
+                    const opciones = document.querySelector("#opcionesCat").querySelectorAll("li")
+                    opciones.forEach((opcion) => {
+                        opcion.classList.add("linea")
+                        opcion.children[0].style.fontWeight = "normal"
+                    })
+                }
+            </script>
+        HTML;
 
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Catalogo de Clientes")));
         View::set('footer', $this->_contenedor->footer($extraFooter));
@@ -1188,8 +1188,13 @@ class AdminSucursales extends Controller
                 $conteoTotal++;
                 $saldoFinal = $registro['SALDO'];
                 if ($registro['ABONO'] > 0) {
-                    $conteoAbonos++;
-                    $montoAbonos += $registro['ABONO'];
+                    if ($registro['TIPO'] != 11) {
+                        $conteoAbonos++;
+                        $montoAbonos += $registro['ABONO'];
+                    } else {
+                        $conteoTransferencias--;
+                        $montoTransferencias -= $registro['ABONO'];
+                    }
                 } else {
                     if ($registro['TIPO'] == 5) {
                         $conteoTransferencias++;
