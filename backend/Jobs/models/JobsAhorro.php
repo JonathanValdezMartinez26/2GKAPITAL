@@ -104,7 +104,7 @@ class JobsAhorro extends Model
                 CI.MONTO_INVERSION AS MONTO,
                 CI.CDG_TASA AS ID_TASA,
                 TI.TASA,
-                PI.DESCRIPCION AS PLAZO
+                PI.PLAZO
             FROM
                 CUENTA_INVERSION CI
             JOIN
