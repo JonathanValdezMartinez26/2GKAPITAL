@@ -148,35 +148,37 @@ class CajaAhorro
 
     public static function GetTasas()
     {
-        $query = <<<sql
-        SELECT
-            TI.CODIGO,
-            TI.TASA,
-            TI.MONTO_MINIMO,
-            TI.CDG_PLAZO,
-            PI.PLAZO AS PLAZO_NUMERO,
-            PI.PERIODICIDAD,
-            CONCAT(
-                CONCAT(PI.PLAZO, ' '),
-                CASE PI.PERIODICIDAD
-                    WHEN 'D' THEN 'Días'
-                    WHEN 'S' THEN 'Semanas'
-                    WHEN 'M' THEN 'Meses'
-                    WHEN 'A' THEN 'Años'
-                END
-            ) AS PLAZO
-        FROM
-            TASA_INVERSION TI
-        LEFT JOIN
-            PLAZO_INVERSION PI
-        ON
-            TI.CDG_PLAZO = PI.CODIGO
-        WHERE
-            TI.ESTATUS = 'A'
-        ORDER BY 
-            TI.MONTO_MINIMO,
-            TI.TASA
-        sql;
+        $query = <<<SQL
+            SELECT
+                TI.CODIGO,
+                TI.TASA,
+                ROUND(((TI.TASA / 100) / 365) * PI.DIAS_PLAZO, 6) AS TASA_PLAZO,
+                TI.MONTO_MINIMO,
+                TI.CDG_PLAZO,
+                pi.CODIGO,
+                PI.PLAZO AS PLAZO_NUMERO,
+                PI.PERIODICIDAD,
+                CONCAT(
+                    CONCAT(PI.PLAZO, ' '),
+                    CASE PI.PERIODICIDAD
+                        WHEN 'D' THEN 'Días'
+                        WHEN 'S' THEN 'Semanas'
+                        WHEN 'M' THEN 'Meses'
+                        WHEN 'A' THEN 'Años'
+                    END
+                ) AS PLAZO
+            FROM
+                TASA_INVERSION TI
+            LEFT JOIN
+                PLAZO_INVERSION PI
+            ON
+                TI.CDG_PLAZO = PI.CODIGO
+            WHERE
+                TI.ESTATUS = 'A'
+            ORDER BY 
+                TI.MONTO_MINIMO,
+                TI.TASA
+        SQL;
 
         try {
             $mysqli = new Database();

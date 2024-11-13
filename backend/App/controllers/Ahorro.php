@@ -2539,7 +2539,7 @@ class Ahorro extends Controller
                 const tasa = parseaNumero(info.TASA)
                 const monto = parseaNumero(document.querySelector("#monto").value) 
                 if (tasa) {
-                    document.querySelector("#rendimiento").value = formatoMoneda(monto * plazo * ((tasa/100) / 12))
+                    document.querySelector("#rendimiento").value = formatoMoneda(monto * info.TASA_PLAZO)
                     document.querySelector("#leyendaRendimiento").innerText = "* Rendimiento calculado con una tasa anual fija del " + info.TASA + "%"
                     return
                 }
