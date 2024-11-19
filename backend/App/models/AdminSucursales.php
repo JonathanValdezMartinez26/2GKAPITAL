@@ -1007,6 +1007,7 @@ sql;
                 ) SC ON SC.CONTRATO = APA.CONTRATO
             WHERE
                 TRUNC(APA.FECHA_APERTURA) BETWEEN FECHA_INICIO_REPORTE AND TO_DATE('$fechaF', 'YYYY-MM-DD')
+                AND CI.ESTATUS = 'A'
                 filtroExtra
         SQL;
 
