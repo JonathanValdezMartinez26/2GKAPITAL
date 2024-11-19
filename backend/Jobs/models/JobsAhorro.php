@@ -168,7 +168,7 @@ class JobsAhorro extends Model
             [
                 "contrato" => $datos["contrato"],
                 "monto" => $datos["monto"],
-                "tipo_pago" => 11,
+                "tipo_pago" => 10,
                 "movimiento" => 1,
                 "cliente" => $datos["cliente"],
             ],
@@ -179,7 +179,7 @@ class JobsAhorro extends Model
             [
                 "contrato" => $datos["contrato"],
                 "monto" => $datos["rendimiento"],
-                "tipo_pago" => 12,
+                "tipo_pago" => 17,
                 "movimiento" => 1,
                 "cliente" => $datos["cliente"],
 

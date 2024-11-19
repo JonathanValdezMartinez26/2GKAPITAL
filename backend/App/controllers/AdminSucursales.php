@@ -1188,7 +1188,7 @@ class AdminSucursales extends Controller
                 $conteoTotal++;
                 $saldoFinal = $registro['SALDO'];
                 if ($registro['ABONO'] > 0) {
-                    if ($registro['TIPO'] != 11) {
+                    if ($registro['TIPO'] != 10) {
                         $conteoAbonos++;
                         $montoAbonos += $registro['ABONO'];
                     } else {

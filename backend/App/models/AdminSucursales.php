@@ -559,19 +559,45 @@ sql;
                 UNION ALL
                 SELECT
                     NULL,
-                    TO_CHAR(FECHA_APERTURA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
-                    '5' AS TIPO,
+                    TO_CHAR((
+                        CASE MA.CDG_TIPO_PAGO
+                            WHEN '5' THEN MA.FECHA_MOV + INTERVAL '1' SECOND
+                            WHEN '10' THEN MA.FECHA_MOV - INTERVAL '1' SECOND
+                        END
+                    ), 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
+                    MA.CDG_TIPO_PAGO AS TIPO,
                     'INVERSIÓN' AS CUENTA,
-                    'TRANSFERENCIA INVERSIÓN (RECEPCIÓN)' AS DESCRIPCION,
+                    (
+                        SELECT
+                            TPA.DESCRIPCION
+                        FROM
+                            TIPO_PAGO_AHORRO TPA
+                        WHERE
+                            TPA.CODIGO = (CASE MA.CDG_TIPO_PAGO
+                                    WHEN '5' THEN '10'
+                                    WHEN '10' THEN '5'
+                                END)
+                    ) AS DESCRIPCION,
                     0 AS TRANSITO,
-                    MONTO_INVERSION AS ABONO,
-                    0 AS CARGO,
-                    SUM(MONTO_INVERSION) OVER (ORDER BY FECHA_APERTURA) AS SALDO,
-                    NVL(CDG_USUARIO, 'SISTEMA') AS USUARIO
+                    CASE MA.CDG_TIPO_PAGO
+                        WHEN '5' THEN MA.MONTO 
+                        ELSE 0
+                    END AS ABONO,
+                    CASE MA.CDG_TIPO_PAGO
+                        WHEN '10' THEN MA.MONTO 
+                        ELSE 0
+                    END AS CARGO,
+                    SUM(CASE MA.CDG_TIPO_PAGO
+                        WHEN '5' THEN MA.MONTO
+                        WHEN '10' THEN -MA.MONTO 
+                        ELSE 0
+                    END) OVER (ORDER BY MA.FECHA_MOV) AS SALDO,
+                    NVL(MA.CDGPE, 'SISTEMA') AS USUARIO
                 FROM
-                    CUENTA_INVERSION
+                    MOVIMIENTOS_AHORRO MA
                 WHERE
-                    CDG_CONTRATO = '$contrato'
+                    MA.CDG_CONTRATO = '$contrato'
+                    AND MA.CDG_TIPO_PAGO IN (5,10)
             ) ORDER BY TO_DATE(FECHA, 'DD/MM/YYYY HH24:MI:SS') DESC, CODIGO DESC, CUENTA DESC
         SQL;
 
