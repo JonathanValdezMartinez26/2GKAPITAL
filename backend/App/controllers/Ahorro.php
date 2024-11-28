@@ -1809,7 +1809,7 @@ class Ahorro extends Controller
                     + " (" + document.querySelector("#monto_letra").value + ")?"
                 ).then((continuar) => {
                     if (!continuar) return
-                    //if (!document.querySelector("#deposito").checked && huellas > 0) return showHuella(true, datos)
+                    if (!document.querySelector("#deposito").checked && huellas > 0 && document.querySelector("#esTitular").checked) return showHuella(true, datos)
                     enviaRegistroOperacion(datos)
                 })
             }
