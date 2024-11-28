@@ -152,10 +152,10 @@ class CajaAhorro
             SELECT
                 TI.CODIGO,
                 TI.TASA,
-                ROUND(((TI.TASA / 100) / 365) * PI.DIAS_PLAZO, 6) AS TASA_PLAZO,
+                ROUND(((TI.TASA / 100) / 365), 6) * TRUNC(PI.DIAS_PLAZO) AS TASA_PLAZO,
                 TI.MONTO_MINIMO,
                 TI.CDG_PLAZO,
-                pi.CODIGO,
+                PI.CODIGO,
                 PI.PLAZO AS PLAZO_NUMERO,
                 PI.PERIODICIDAD,
                 CONCAT(

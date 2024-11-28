@@ -15,9 +15,9 @@ class JobsAhorro extends Job
         parent::__construct("JobsAhorro");
     }
 
-    public function DevengoInteresAhorroDiario()
+    public function DD_InteresAhorro()
     {
-        self::SaveLog("Inicio -> Devengo Interés Ahorro Diario");
+        self::SaveLog("Inicio");
         $resumen = [];
         $cuentas = JobsDao::GetCuentasActivas();
         if (!$cuentas["success"]) return self::SaveLog("Error al obtener las cuentas de ahorro activas: " . $cuentas["error"]);
@@ -39,12 +39,42 @@ class JobsAhorro extends Job
             $resumen[] = [
                 "fecha" => date("Y-m-d H:i:s"),
                 "datos" => $datos,
-                "RES_APLICA_DEVENGO" => JobsDao::AplicaDevengo($datos),
+                "RES_APLICA_DEVENGO" => JobsDao::AplicaDevengoAhorro($datos),
             ];
         };
 
         self::SaveLog(json_encode($resumen)); //, JSON_PRETTY_PRINT));
-        self::SaveLog("Finalizado -> Devengo Interés Ahorro Diario");
+        self::SaveLog("Finalizado");
+    }
+
+    public function DD_RendimientoInversion()
+    {
+        self::SaveLog("Inicio");
+        $resumen = [];
+        $inversiones = JobsDao::GetInversiones();
+        if (!$inversiones["success"]) return self::SaveLog("Error al obtener las inversiones: " . $inversiones["error"]);
+        if (count($inversiones["datos"]) == 0) return self::SaveLog("No se encontraron inversiones para aplicar devengo.");
+
+        foreach ($inversiones["datos"] as $key => $inversion) {
+            $vencimiento = strtotime($inversion["VENCIMIENTO"]);
+            if ($vencimiento > strtotime(date("Y-m-d"))) continue;
+            $datos = [
+                "contrato" => $inversion["CONTRATO"],
+                "id" => $inversion["CODIGO"],
+                "monto" => $inversion["MONTO"],
+                "tasa" => $inversion["TASA"],
+                "rendimiento" => $inversion["RENDIMIENTO"]
+            ];
+
+            $resumen[] = [
+                "fecha" => date("Y-m-d H:i:s"),
+                "datos" => $datos,
+                "resultado" => JobsDao::AplicaDevengoInversion($datos),
+            ];
+        };
+
+        self::SaveLog(json_encode($resumen)); //, JSON_PRETTY_PRINT));
+        self::SaveLog("Finalizado");
     }
 
     public function LiquidaInversion()
@@ -221,9 +251,12 @@ if (isset($argv[1])) {
             // Programar a las 5:25 pm, de lunes a viernes
             $jobs->RechazaSolicitudesSinAtender();
             break;
-        case 'DevengoInteresAhorroDiario':
+        case 'DD_InteresAhorro':
             // Programar a las 6:00 pm, todos los días
-            $jobs->DevengoInteresAhorroDiario();
+            $jobs->DD_InteresAhorro();
+            break;
+        case 'DD_RendimientoInversion':
+            $jobs->DD_RendimientoInversion();
             break;
         case 'LiquidaInversion':
             // Programar 11:50 pm, todos los dias
@@ -239,7 +272,8 @@ if (isset($argv[1])) {
             echo "Los jobs disponibles son: \n";
             echo "SucursalesSinArqueo: Se recomienda se ejecute a las 5:20 pm, de lunes a viernes.\n";
             echo "CapturaSaldosSucursales: Se recomienda se ejecute a las 5:22 pm, de lunes a viernes.\n";
-            echo "DevengoInteresAhorroDiario: Se recomienda se ejecute a las 6:00 pm, todos los días.\n";
+            echo "DD_InteresAhorro: Se recomienda se ejecute a las 6:00 pm, todos los días.\n";
+            echo "DD_RendimientoInversion: Se recomienda se ejecute a las 11:50 pm, todos los días.\n";
             echo "RechazaSolicitudesSinAtender: Se recomienda se ejecute a las 5:25 pm, de lunes a viernes.\n";
             echo "LiquidaInversion: Se recomienda se ejecute a las 11:50 pm, todos los días.\n";
             echo "ComprobacionDevengoAhorro: Se plica de forma manual unicamente cuando se requiera validar los intereses devengados.\n";

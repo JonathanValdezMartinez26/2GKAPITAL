@@ -34,7 +34,7 @@ class JobsAhorro extends Model
         }
     }
 
-    public static function AplicaDevengo($datos)
+    public static function AplicaDevengoAhorro($datos)
     {
         $f = $datos["fecha"] ? ':fecha' : 'SYSDATE';
         $qryDevengo = <<<SQL
@@ -97,23 +97,18 @@ class JobsAhorro extends Model
     {
         $qry = <<<SQL
             SELECT
-                (SELECT CDGCL FROM ASIGNA_PROD_AHORRO WHERE CONTRATO = CI.CDG_CONTRATO) AS CLIENTE,
+                CI.CODIGO,
                 CI.CDG_CONTRATO AS CONTRATO,
-                CI.FECHA_APERTURA AS APERTURA,
-                CI.FECHA_VENCIMIENTO AS VENCIMIENTO,
                 CI.MONTO_INVERSION AS MONTO,
-                CI.CDG_TASA AS ID_TASA,
                 TI.TASA,
-                PI.PLAZO
+                ROUND(((TI.TASA / 100) / 365), 6) * CI.MONTO_INVERSION AS RENDIMIENTO,
+                TO_CHAR(CI.FECHA_VENCIMIENTO, 'DD/MM/YYYY') AS VENCIMIENTO
             FROM
                 CUENTA_INVERSION CI
             JOIN
                 TASA_INVERSION TI ON CI.CDG_TASA = TI.CODIGO
-            JOIN
-                PLAZO_INVERSION PI ON TI.CDG_PLAZO = PI.CODIGO
             WHERE
                 CI.ESTATUS = 'A'
-                AND TRUNC(CI.FECHA_VENCIMIENTO) = TRUNC(SYSDATE)
         SQL;
 
         try {
@@ -122,6 +117,24 @@ class JobsAhorro extends Model
             return self::Responde(true, "Inversiones obtenidas correctamente", ($res ?? []));
         } catch (\Exception $e) {
             return self::Responde(false, "Error al obtener las inversiones", null, $e->getMessage());
+        }
+    }
+
+    public static function AplicaDevengoInversion($datos)
+    {
+        $qry = <<<SQL
+            INSERT INTO DEVENGO_DIARIO_INVERSION
+            (CONTRATO, ID_INVERSION, FECHA, MONTO, TASA, DEVENGO)
+            VALUES
+            (:contrato, :id, SYSDATE, :monto, :tasa, :rendimiento)
+        SQL;
+
+        try {
+            $db = new Database();
+            $db->insertar($qry, $datos);
+            return self::Responde(true, "Devengo aplicado correctamente");
+        } catch (\Exception $e) {
+            return self::Responde(false, "Error al aplicar el devengo", null, $e->getMessage());
         }
     }
 
