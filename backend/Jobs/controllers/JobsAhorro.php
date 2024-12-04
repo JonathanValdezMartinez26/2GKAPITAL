@@ -85,8 +85,10 @@ class JobsAhorro extends Job
         if (!$inversiones["success"]) return self::SaveLog("Error al obtener las inversiones: " . $inversiones["error"]);
         if (count($inversiones["datos"]) == 0) return self::SaveLog("No se encontraron inversiones para liquidar.");
 
+        $hoy = new \DateTime();
         foreach ($inversiones["datos"] as $key => $inversion) {
-            if (strtotime($inversion["VENCIMIENTO"]) > strtotime(date("d/m/Y"))) continue;
+            $vencimiento = \DateTime::createFromFormat('d/m/Y', $inversion["VENCIMIENTO"]);
+            if ($vencimiento > $hoy) continue;
 
             $datos = [
                 "codigo" => $inversion["CODIGO"],
