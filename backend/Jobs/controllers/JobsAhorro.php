@@ -94,6 +94,7 @@ class JobsAhorro extends Job
                 "monto" => $inversion["MONTO"],
                 "rendimiento" => round(floatval($inversion["RENDIMIENTO"]) * floatval($inversion["PLAZO"]), 2),
                 "cliente" => substr($inversion["CONTRATO"], 0, 6),
+                "vencimiento" => $inversion["VENCIMIENTO"],
             ];
 
             $resumen[] = [
