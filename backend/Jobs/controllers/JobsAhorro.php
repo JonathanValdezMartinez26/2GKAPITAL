@@ -86,22 +86,12 @@ class JobsAhorro extends Job
         if (count($inversiones["datos"]) == 0) return self::SaveLog("No se encontraron inversiones para liquidar.");
 
         foreach ($inversiones["datos"] as $key => $inversion) {
-            // Obtinene el monto de inversion, validar si el dato es tipo string y convertirlo a float
-            $monto = is_string($inversion["MONTO"]) ? floatval($inversion["MONTO"]) : $inversion["MONTO"];
-            $tasa = is_string($inversion["TASA"]) ? floatval($inversion["TASA"]) : $inversion["TASA"];
-            $plazo = is_string($inversion["PLAZO"]) ? floatval($inversion["PLAZO"]) : $inversion["PLAZO"];
-            $rendimiento = round($monto * $plazo * (($tasa / 100) / 12), 2);
-
             $datos = [
+                "codigo" => $inversion["CODIGO"],
                 "contrato" => $inversion["CONTRATO"],
-                "monto" => $monto,
-                "tasa" => $tasa,
-                "plazo" => $plazo,
-                "rendimiento" => $rendimiento,
-                "cliente" => $inversion["CLIENTE"],
-                "fecha_apertura" => $inversion["APERTURA"],
-                "fecha_vencimiento" => $inversion["VENCIMIENTO"],
-                "id_tasa" => $inversion["ID_TASA"],
+                "monto" => $inversion["MONTO"],
+                "rendimiento" => $inversion["RENDIMIENTO"],
+                "cliente" => substr($inversion["CONTRATO"], 0, 6),
             ];
 
             $resumen[] = [

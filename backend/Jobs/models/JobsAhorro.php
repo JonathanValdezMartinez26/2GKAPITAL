@@ -151,10 +151,7 @@ class JobsAhorro extends Model
             WHERE
                 CDG_CONTRATO = :contrato
                 AND ESTATUS = 'A'
-                AND FECHA_VENCIMIENTO = TO_TIMESTAMP(:fecha_vencimiento, 'DD/MM/YY HH24:MI:SS.FF6')
-                AND FECHA_APERTURA = TO_TIMESTAMP(:fecha_apertura, 'DD/MM/YY HH24:MI:SS.FF6')
-                AND CDG_TASA = :id_tasa
-                AND MONTO_INVERSION = :monto
+                AND CODIGO = :codigo
         SQL;
 
         $qrys = [
@@ -169,10 +166,7 @@ class JobsAhorro extends Model
             [
                 "rendimiento" => $datos["rendimiento"],
                 "contrato" => $datos["contrato"],
-                "fecha_vencimiento" => $datos["fecha_vencimiento"],
-                "fecha_apertura" => $datos["fecha_apertura"],
-                "id_tasa" => $datos["id_tasa"],
-                "monto" => $datos["monto"]
+                "codigo" => $datos["codigo"],
             ],
             [
                 "contrato" => $datos["contrato"],
@@ -195,7 +189,6 @@ class JobsAhorro extends Model
                 "tipo_pago" => 17,
                 "movimiento" => 1,
                 "cliente" => $datos["cliente"],
-
             ]
         ];
 
