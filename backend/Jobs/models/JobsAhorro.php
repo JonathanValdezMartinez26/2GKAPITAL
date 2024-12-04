@@ -101,12 +101,15 @@ class JobsAhorro extends Model
                 CI.CDG_CONTRATO AS CONTRATO,
                 CI.MONTO_INVERSION AS MONTO,
                 TI.TASA,
+                ROUND(PI.DIAS_PLAZO) AS PLAZO,
                 ROUND(((TI.TASA / 100) / 365), 6) * CI.MONTO_INVERSION AS RENDIMIENTO,
                 TO_CHAR(CI.FECHA_VENCIMIENTO, 'DD/MM/YYYY') AS VENCIMIENTO
             FROM
                 CUENTA_INVERSION CI
             JOIN
                 TASA_INVERSION TI ON CI.CDG_TASA = TI.CODIGO
+            JOIN
+                PLAZO_INVERSION PI ON TI.CDG_PLAZO = PI.CODIGO
             WHERE
                 CI.ESTATUS = 'A'
         SQL;

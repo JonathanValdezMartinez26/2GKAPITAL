@@ -86,13 +86,13 @@ class JobsAhorro extends Job
         if (count($inversiones["datos"]) == 0) return self::SaveLog("No se encontraron inversiones para liquidar.");
 
         foreach ($inversiones["datos"] as $key => $inversion) {
-            if (strtotime($inversion["VENCIMIENTO"]) > strtotime(date("d/m/Y"))) continue;
+            if (strtotime($inversion["VENCIMIENTO"]) <= strtotime(date("d/m/Y"))) continue;
 
             $datos = [
                 "codigo" => $inversion["CODIGO"],
                 "contrato" => $inversion["CONTRATO"],
                 "monto" => $inversion["MONTO"],
-                "rendimiento" => $inversion["RENDIMIENTO"],
+                "rendimiento" => floatval($inversion["RENDIMIENTO"]) * floatval($inversion["PLAZO"]),
                 "cliente" => substr($inversion["CONTRATO"], 0, 6),
             ];
 
