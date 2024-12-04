@@ -94,7 +94,7 @@ class JobsAhorro extends Job
                 "codigo" => $inversion["CODIGO"],
                 "contrato" => $inversion["CONTRATO"],
                 "monto" => $inversion["MONTO"],
-                "rendimiento" => round(floatval($inversion["RENDIMIENTO"]) * floatval($inversion["PLAZO"]), 2),
+                "rendimiento" => bcmul(floatval($inversion["RENDIMIENTO"]), floatval($inversion["PLAZO"]), 2),
                 "cliente" => substr($inversion["CONTRATO"], 0, 6),
                 "vencimiento" => $inversion["VENCIMIENTO"],
             ];
