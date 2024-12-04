@@ -99,7 +99,7 @@ class JobsAhorro extends Job
             $resumen[] = [
                 "fecha" => date("Y-m-d H:i:s"),
                 "datos" => $datos,
-                "RES_LIQUIDA_INVERSION" => JobsDao::LiquidaInversion($datos),
+                "RES_LIQUIDA_INVERSION" => "liquidado" //JobsDao::LiquidaInversion($datos),
             ];
         };
 
