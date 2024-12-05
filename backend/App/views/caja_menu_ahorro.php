@@ -89,7 +89,7 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
                                     </a>
                                 </li>
                                 <li>
-                                    <a onclick=mostrarAhorro() href="">
+                                    <a href="/Ahorro/CajaCredito/">
                                         <p style="font-size: 16px;"><b>Caja Crédito</b></p>
                                     </a>
                                 </li>
