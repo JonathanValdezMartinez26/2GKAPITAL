@@ -10,6 +10,7 @@ use \Core\MasterDom;
 use Core\App;
 use \App\models\CajaAhorro as CajaAhorroDao;
 use \App\models\Ahorro as AhorroDao;
+use \App\models\Ahorro as PagosDao;
 use \App\components\TarjetaDedo;
 use DateTime;
 
@@ -1838,7 +1839,7 @@ class Ahorro extends Controller
                 validaMonto()
             }
         </script>
-        HTML;
+HTML;
 
         if ($_GET['cliente']) View::set('cliente', $_GET['cliente']);
 
@@ -2069,7 +2070,7 @@ class Ahorro extends Controller
                 }
             }
         </script>
-        HTML;
+HTML;
 
         $credito = $_GET['Credito'];
         $tabla = '';
@@ -2167,7 +2168,7 @@ class Ahorro extends Controller
                         $editar = <<<HTML
                         <button type="button" class="btn btn-success btn-circle" onclick="EditarPago('{$value['FECHA']}', '{$value['CDGNS']}', '{$value['NOMBRE']}', '{$value['CICLO']}', '{$value['TIP']}', '{$value['MONTO']}', '{$value['CDGOCPE']}', '{$value['SECUENCIA']}', '{$situacion_credito}');"><i class="fa fa-edit"></i></button>
                         <button type="button" class="btn btn-danger btn-circle" onclick="FunDelete_Pago('{$value['SECUENCIA']}', '{$value['FECHA']}', '{$this->__usuario}');"><i class="fa fa-trash"></i></button>
-                        HTML;
+HTML;
                     } else {
                         if ($fue_dia_festivo == 4) {
                             $date_past_b = strtotime('-6 days', strtotime($fechaActual));
@@ -2198,18 +2199,18 @@ class Ahorro extends Controller
                                 $editar = <<<HTML
                                 <button type="button" class="btn btn-success btn-circle" onclick="EditarPago('{$value['FECHA']}', '{$value['CDGNS']}', '{$value['NOMBRE']}', '{$value['CICLO']}', '{$value['TIP']}', '{$value['MONTO']}', '{$value['CDGOCPE']}', '{$value['SECUENCIA']}', '{$situacion_credito}');"><i class="fa fa-edit"></i></button>
                                 <button type="button" class="btn btn-danger btn-circle" onclick="FunDelete_Pago('{$value['SECUENCIA']}', '{$value['FECHA']}', '{$this->__usuario}');"><i class="fa fa-trash"></i></button>
-                                HTML;
+HTML;
                             } else {
                                 $editar = <<<HTML
                                 <button type="button" class="btn btn-success btn-circle" onclick="Desactivado()" style="background: #E5E5E5"><i class="fa fa-edit"></i></button>
                                 <button type="button" class="btn btn-danger btn-circle"  onclick="Desactivado()" style="background: #E5E5E5"><i class="fa fa-trash"></i></button>
-                                HTML;
+HTML;
                             }
                         } else {
                             $editar = <<<HTML
                             <button type="button" class="btn btn-success btn-circle" onclick="Desactivado()" style="background: #E5E5E5"><i class="fa fa-edit"></i></button>
                             <button type="button" class="btn btn-danger btn-circle"  onclick="Desactivado()" style="background: #E5E5E5"><i class="fa fa-trash"></i></button>
-                            HTML;
+HTML;
                         }
                     }
 
@@ -2226,7 +2227,7 @@ class Ahorro extends Controller
                         <td style="padding: 0px !important;">{$value['EJECUTIVO']}</td>
                         <td style="padding: 0px !important;" class="center">{$editar}</td>
                     </tr>
-                    HTML;
+HTML;
                 }
 
                 View::set('tabla', $tabla);

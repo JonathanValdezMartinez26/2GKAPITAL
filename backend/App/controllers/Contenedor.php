@@ -80,7 +80,7 @@ class Contenedor extends Controller
                             </div>
                             <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
                                 <div class="menu_section">
-        HTML;
+HTML;
 
 
         if ($permiso_ahorro == '1' || $this->__usuario == 'LGFR' || $this->__usuario == 'GASC' || $this->__usuario == 'PAES' || $this->__usuario == 'PMAB' || $this->__usuario == 'AMGM' || $this->__usuario == 'DCRI' || $this->__usuario == 'GUGJ' || $this->__usuario == 'JUSA' || $this->__usuario == 'HEDC' || $this->__usuario == 'JACJ') {
@@ -88,7 +88,7 @@ class Contenedor extends Controller
             <hr>
             <h3>General WEB AHORRO</h3>
             <ul class="nav side-menu">     
-            HTML;
+HTML;
         }
 
 
@@ -96,14 +96,14 @@ class Contenedor extends Controller
             $menu .= <<<HTML
                 <li><a href="/Ahorro/CuentaCorriente/"><i class="glyphicon glyphicon-usd"> </i>&nbsp; Mi espacio </a> </li>
         
-            HTML;
+HTML;
         }
 
         if ($this->__usuario == 'AMGM' || $this->__usuario == 'LGFR' || $this->__usuario == 'GASC' || $this->__usuario == 'PAES' || $this->__usuario == 'PMAB' || $this->__usuario == 'DCRI' || $this->__usuario == 'GUGJ' || $this->__usuario == 'JUSA' || $this->__usuario == 'HEDC' || $this->__usuario == 'JACJ' || $this->__usuario == 'PHEE') {
             $menu .= <<<HTML
                 <li><a href="/AdminSucursales/SaldosDiarios/"><i class="glyphicon glyphicon-paste"> </i>&nbsp; Admin Sucursales </a> </li>
              </ul>
-            HTML;
+HTML;
         }
 
         $menu .= <<<HTML
@@ -132,7 +132,7 @@ class Contenedor extends Controller
                 </div>
             </div>
         </div>
-        HTML;
+HTML;
 
         return $header . $menu;
     }
@@ -161,7 +161,7 @@ class Contenedor extends Controller
             $extra
         </body>
         </html>
-        HTML;
+HTML;
 
         return $footer;
     }
