@@ -10,7 +10,7 @@ use \Core\MasterDom;
 use Core\App;
 use \App\models\CajaAhorro as CajaAhorroDao;
 use \App\models\Ahorro as AhorroDao;
-use \App\models\Ahorro as PagosDao;
+use \App\models\Pagos as PagosDao;
 use \App\components\TarjetaDedo;
 use DateTime;
 
@@ -2035,6 +2035,7 @@ HTML;
 
                         option.text = ciclo
                         option.value = ciclo
+                        
                         txt_ciclo.add(option)
 
                         option1.text = ciclo_anterior
