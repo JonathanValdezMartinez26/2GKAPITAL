@@ -2144,7 +2144,7 @@ HTML;
                 View::set('status', $getStatus);
                 View::set('credito', $credito);
                 View::set('usuario', $this->__usuario);
-                View::render("pagos_menu_pago");
+                View::render("caja_menu_pago");
             } else {
                 $Administracion = PagosDao::ConsultarPagosAdministracion($credito, $hora_cierre);
                 foreach ($Administracion as $key => $value) {
