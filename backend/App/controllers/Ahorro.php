@@ -78,7 +78,7 @@ class Ahorro extends Controller
         
         document.querySelector("#btnBskClnt").disabled = false
     }
-    script;
+script;
     private $getHoy = 'const getHoy = (completo = true) => {
         const hoy = new Date()
         const dd = String(hoy.getDate()).padStart(2, "0")
@@ -220,7 +220,7 @@ class Ahorro extends Controller
             const url = URL.createObjectURL(blob)
             window.open(url, '_blank')
     }
-    script;
+script;
     private $imprimeTicket = <<<script
     const imprimeTicket = async (ticket, sucursal = '', copia = true) => {
         const espera = swal({ text: "Procesando la solicitud, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
@@ -292,7 +292,7 @@ class Ahorro extends Controller
          
         muestraPDF(titulo, ruta)
     }
-    script;
+script;
     private $imprimeResponsivaApoderado = <<<script
     const imprimeResponsivaApoderado = (numero_contrato, curp) => {
         if (!numero_contrato) return
@@ -305,7 +305,7 @@ class Ahorro extends Controller
          
         muestraPDF(titulo, ruta)
     }
-    script;
+script;
     private $sinContrato = <<<script
     const sinContrato = (datosCliente) => {
         if (datosCliente["NO_CONTRATOS"] == 0) {
@@ -342,7 +342,7 @@ class Ahorro extends Controller
         }
         return true
     }
-    script;
+script;
     private $addParametro = 'const addParametro = (parametros, newParametro, newValor) => {
         parametros.push({ name: newParametro, value: newValor })
     }';
@@ -2482,7 +2482,7 @@ HTML;
                 })
             }
         </script>
-        html;
+html;
 
         if ($_GET['cliente']) View::set('cliente', $_GET['cliente']);
 
