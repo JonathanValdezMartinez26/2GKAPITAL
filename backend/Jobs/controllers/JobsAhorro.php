@@ -94,7 +94,7 @@ class JobsAhorro extends Job
                 "codigo" => $inversion["CODIGO"],
                 "contrato" => $inversion["CONTRATO"],
                 "monto" => $inversion["MONTO"],
-                "rendimiento" => bcmul(floatval($inversion["RENDIMIENTO"]), floatval($inversion["PLAZO"]), 2),
+                "rendimiento" => round(floatval($inversion["RENDIMIENTO"]) * floatval($inversion["PLAZO"]), 2),
                 "cliente" => substr($inversion["CONTRATO"], 0, 6),
                 "vencimiento" => $inversion["VENCIMIENTO"],
             ];
@@ -102,7 +102,7 @@ class JobsAhorro extends Job
             $resumen[] = [
                 "fecha" => date("Y-m-d H:i:s"),
                 "datos" => $datos,
-                "RES_LIQUIDA_INVERSION" => "liquidado" //JobsDao::LiquidaInversion($datos),
+                "RES_LIQUIDA_INVERSION" => JobsDao::LiquidaInversion($datos),
             ];
         };
 
