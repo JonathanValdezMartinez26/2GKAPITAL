@@ -1550,7 +1550,7 @@ script;
 
     public function EngineHuellas($endpoint, $datos)
     {
-        $ci = curl_init($this->configuracion['URL_HUELLAS'] . $endpoint);
+        $ci = curl_init($this->configuracion['API_HUELLAS'] . $endpoint);
         curl_setopt($ci, CURLOPT_POST, true);
         curl_setopt($ci, CURLOPT_POSTFIELDS, http_build_query($datos));
         curl_setopt($ci, CURLOPT_HTTPHEADER, array('Content-Type: application/x-www-form-urlencoded'));
@@ -1853,8 +1853,20 @@ HTML;
 
     public function CajaCredito()
     {
-      View::render("caja_menu_pago");
+        $extraFooter = <<<HTML
+            <script>
+                {$this->configuraTabla}
 
+                $(document).ready(() => {
+                    configuraTabla("historialPagos")
+                })
+
+            </script>
+        HTML;
+
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Caja de Crédito", [$this->swal2, $this->huellas])));
+        View::set('footer', $this->_contenedor->footer($extraFooter));
+        View::render("caja_menu_credito");
     }
 
     public function BuscaContratoAhorro()
