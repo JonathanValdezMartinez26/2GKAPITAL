@@ -811,7 +811,7 @@ class AdminSucursales extends Controller
     public function GetLogTransacciones()
     {
         $log = CajaAhorroDao::GetLogTransacciones($_POST);
-        echo $log;
+        echo json_encode($log);
     }
 
     //********************Activación de sucursales y cajeras********************//
@@ -2313,12 +2313,12 @@ html;
 
     public function ActualizaSolicitudRetiro()
     {
-        echo CajaAhorroDao::ActualizaSolicitudRetiro($_POST);
+        echo json_encode(CajaAhorroDao::ActualizaSolicitudRetiro($_POST));
     }
 
     public function ModificaSolicitudRetiro()
     {
-        echo CajaAhorroDao::ModificaSolicitudRetiro($_POST);
+        echo json_encode(CajaAhorroDao::ModificaSolicitudRetiro($_POST));
     }
 
     public function SolicitudRetiroExpress()

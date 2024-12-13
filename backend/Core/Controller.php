@@ -8,6 +8,38 @@ use \App\models\General as GeneralDao;
 
 class Controller
 {
+    public $configuraTabla = 'const configuraTabla = (id, {noRegXvista = true} = {}) => {
+        const configuracion = {
+            lengthMenu: [
+                [10, 40, -1],
+                [10, 40, "Todos"]
+            ],
+            order: [],
+            language: {
+                emptyTable: "No hay datos disponibles",
+                paginate: {
+                    previous: "Anterior",
+                    next: "Siguiente",
+                },
+                info: "Mostrando de _START_ a _END_ de _TOTAL_ registros",
+                infoEmpty: "Sin registros para mostrar",
+                zeroRecords: "No se encontraron registros",
+                lengthMenu: "Mostrar _MENU_ registros por página",
+                search: "Buscar:",
+            }
+        }
+
+        configuracion.lengthChange = noRegXvista
+
+        $("#" + id).DataTable(configuracion)
+
+        $("#"  + id + " input[type=search]").keyup(() => {
+            $("#example")
+                .DataTable()
+                .search(jQuery.fn.DataTable.ext.type.search.html(this.value))
+                .draw()
+        })
+    }';
 
     public $__usuario = '';
     public $__nombre = '';

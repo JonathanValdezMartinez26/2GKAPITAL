@@ -214,8 +214,8 @@ class Database
     public function queryProcedurePago($credito, $ciclo_, $monto_, $tipo_, $nombre_, $user_, $ejecutivo_id,  $ejec_nom_, $tipo_procedure, $fecha_aux, $secuencia, $fecha)
     {
 
-        $newDate = date("d-m-Y", strtotime($fecha));
-        $newDateFechaAux = date("d-m-Y", strtotime($fecha_aux));
+        $newDate = date("d-m-Y", strtotime($fecha)); //date("Y-m-d", strtotime($fecha)); //
+        $newDateFechaAux = date("d-m-Y", strtotime($fecha_aux)); //date("Y-m-d", strtotime($fecha_aux)); //
 
         $empresa = "EMPFIN";
         $fecha = $newDate;
@@ -233,7 +233,7 @@ class Database
         $resultado = "";
         $identifica_app = "";
 
-        $query_text = "CALL SPACCIONPAGODIA_PRUEBA(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $query_text = "CALL SPACCIONPAGODIA_PRUEBA(?,TO_DATE(?, 'DD-MM-YYYY'),TO_DATE(?, 'DD-MM-YYYY'),?,?,?,?,?,?,?,?,?,?,?)";
         ///$query_text = "CALL SPACCIONPAGODIA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";/////este es el que funciona bien cuando se actualice la base de datos de produccion
         $stmt = $this->db_activa->prepare($query_text);
         $stmt->bindParam(1, $empresa, PDO::PARAM_STR);
@@ -255,13 +255,9 @@ class Database
 
         $result = $stmt->execute();
 
-        if ($result) {
-            echo $resultado;
-        } else {
-            echo "\nPDOStatement::errorInfo():\n";
-            $arr = $stmt->errorInfo();
-            print_r($arr);
-        }
+        if ($result) return $resultado;
+
+        throw new \Exception("Error en queryProcedurePago: " . print_r($stmt->errorInfo(), 1));
     }
     public function queryProcedureDeletePago($cdgns_, $fecha_, $user_, $secuencia_)
     {
@@ -286,7 +282,7 @@ class Database
         $resultado = "";
         $identifica_app = "";
 
-        $query_text = "CALL SPACCIONPAGODIA_PRUEBA(?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
+        $query_text = "CALL SPACCIONPAGODIA_PRUEBA(?,TO_DATE(?, 'DD-MM-YYYY'),?,?,?,?,?,?,?,?,?,?,?,?)";
         //$query_text = "CALL SPACCIONPAGODIA(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";
         $stmt = $this->db_activa->prepare($query_text);
         $stmt->bindParam(1, $empresa, PDO::PARAM_STR);
@@ -308,13 +304,9 @@ class Database
 
         $result = $stmt->execute();
 
-        if ($result) {
-            echo $resultado;
-        } else {
-            echo "\nPDOStatement::errorInfo():\n";
-            $arr = $stmt->errorInfo();
-            print_r($arr);
-        }
+        if ($result) return $resultado;
+
+        throw new \Exception("Error en queryProcedureDeletePago: " . print_r($stmt->errorInfo(), 1));
     }
 
     public function queryProcedureActualizaSucursal($n_credito_p, $ciclo_p, $nueva_suc_p)

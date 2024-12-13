@@ -5,25 +5,13 @@ namespace App\models;
 defined("APPPATH") or die("Access denied");
 
 use \Core\Database;
+use \Core\Model;
 use \App\models\LogTransaccionesAhorro;
 use Exception;
 use DateTime;
 
-class CajaAhorro
+class CajaAhorro extends Model
 {
-    public static function Responde($respuesta, $mensaje, $datos = null, $error = null)
-    {
-        $res = array(
-            "success" => $respuesta,
-            "mensaje" => $mensaje
-        );
-
-        if ($datos !== null) $res['datos'] = $datos;
-        if ($error !== null) $res['error'] = $error;
-
-        return json_encode($res);
-    }
-
     public static function GetSucCajeraAhorro($cajera)
     {
         $qry = <<<sql
@@ -3859,6 +3847,286 @@ sql;
             return $mysqli->queryOne($qry);
         } catch (Exception $e) {
             return [];
+        }
+    }
+
+    public static function BuscaCredito($datos)
+    {
+        $qry = <<<SQL
+            SELECT 
+                SC.CDGNS NO_CREDITO,
+                SC.CDGCL ID_CLIENTE,
+                GET_NOMBRE_CLIENTE(SC.CDGCL) CLIENTE,
+                SC.CICLO,
+                NVL(SC.CANTAUTOR,SC.CANTSOLIC) MONTO,
+                PRN.SITUACION,
+                CASE PRN.SITUACION
+                    WHEN 'S'THEN 'SOLICITADO' 
+                    WHEN 'E'THEN 'ENTREGADO' 
+                    WHEN 'A'THEN 'AUTORIZADO' 
+                    WHEN 'L'THEN 'LIQUIDADO' 
+                    ELSE 'DESCONOCIDO'
+                END SITUACION_NOMBRE,
+                CASE PRN.SITUACION
+                    WHEN 'S'THEN '#1F6CC1FF'
+                    WHEN 'E'THEN '#298732FF' 
+                    WHEN 'A'THEN '#A31FC1FF' 
+                    WHEN 'L'THEN '#000000FF' 
+                    ELSE '#FF0000FF'
+                END COLOR,
+                CASE PRN.SITUACION
+                    WHEN 'E'THEN ''
+                    ELSE 'none'
+                END ACTIVO,
+                SN.PLAZOSOL PLAZO,
+                SN.PERIODICIDAD,
+                SN.TASA,
+                DIA_PAGO(SN.NOACUERDO) DIA_PAGO,
+                CALCULA_PARCIALIDAD(SN.PERIODICIDAD, SN.TASA, NVL(SC.CANTAUTOR,SC.CANTSOLIC), SN.PLAZOSOL) PARCIALIDAD,
+                Q2.CDGCL ID_AVAL,
+                GET_NOMBRE_CLIENTE(Q2.CDGCL) AVAL,
+                SN.CDGCO ID_SUCURSAL,
+                GET_NOMBRE_SUCURSAL(SN.CDGCO) SUCURSAL,
+                SN.CDGOCPE ID_EJECUTIVO,
+                GET_NOMBRE_EMPLEADO(SN.CDGOCPE) EJECUTIVO,
+                SC.CDGPI ID_PROYECTO,
+                (
+                    SELECT HORA_CIERRE FROM CIERRE_HORARIO WHERE CDGCO = SN.CDGCO
+                ) AS HORA_CIERRE
+            FROM 
+                SN, SC, SC Q2, PRN
+            WHERE
+                SC.CDGNS = :cliente
+                AND SC.CDGNS = Q2.CDGNS
+                AND SC.CICLO = Q2.CICLO
+                AND SC.CDGCL <> Q2.CDGCL
+                AND SC.CDGNS = SN.CDGNS
+                AND SC.CICLO = SN.CICLO
+                AND PRN.CICLO = SC.CICLO 
+                AND PRN.CDGNS = SC.CDGNS 
+                AND PRN.SITUACION IN ('E', 'L')
+                AND SC.CANTSOLIC <> '9999'
+        SQL;
+
+        $parametros = [
+            'cliente' => $datos['cliente']
+        ];
+
+        if ($datos['perfil'] && $datos['perfil'] != 'ADMIN') {
+            $qry .= <<<SQL
+            AND PRN.CDGCO = ANY(
+                SELECT
+                    CO.CODIGO ID_SUCURSAL
+                FROM
+                    PCO, CO, RG
+                WHERE
+                    PCO.CDGCO = CO.CODIGO
+                    AND CO.CDGRG = RG.CODIGO
+                    AND PCO.CDGEM = 'EMPFIN'
+                    AND PCO.CDGPE = :usuario
+            )
+            SQL;
+
+            $parametros['usuario'] = $datos['usuario'];
+        }
+
+        $qry .= 'ORDER BY SC.SOLICITUD DESC';
+
+        try {
+            $db = new Database();
+            $res = $db->queryOne($qry, $parametros);
+            if ($res) return self::Responde(true, "Datos del crédito obtenidos correctamente.", $res);
+            return self::Responde(false, "No se encontraron datos de crédito para el cliente solicitado.");
+        } catch (Exception $e) {
+            return self::Responde(false, "Ocurrió un error al consultar los datos de crédito del cliente.", null, $e->getMessage());
+        }
+    }
+
+    public static function GetDiaFestivo($datos)
+    {
+        $qry = <<<SQL
+            SELECT COUNT(*) AS TOT, TO_CHAR(FECHA_CAPTURA, 'YYYY-mm-dd') as FECHA_CAPTURA FROM DIAS_FESTIVOS WHERE FECHA_CAPTURA =  TO_DATE(:fecha, 'YYYY-MM-DD')
+            GROUP BY FECHA_CAPTURA 
+        SQL;
+
+        $parametros = [
+            "fecha" => $datos["fecha"]
+        ];
+
+        try {
+            $mysqli = new Database();
+            $res = $mysqli->queryOne($qry, $parametros);
+            if ($res) return self::Responde(true, "Consulta realizada correctamente.", $res);
+            return self::Responde(false, "No se encontraron registros para la consulta.");
+        } catch (Exception $e) {
+            return self::Responde(false, "Error al consultar día festivo.", null, $e->getMessage());
+        }
+    }
+
+    public static function ListaEjecutivosCredito($datos)
+    {
+        $qry = <<<SQL
+            SELECT 
+                PRN.CDGCO,
+                PE.CODIGO AS EJECUTIVO,
+                CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS EJECUTIVO_NOMBRE
+            FROM 
+                PRN
+            JOIN 
+                PE ON PRN.CDGCO = PE.CDGCO
+            WHERE 
+                PRN.CDGNS = :credito
+                AND PRN.CICLO = :ciclo
+                AND PE.CDGEM = 'EMPFIN'
+                AND PE.ACTIVO = 'S'
+                AND PE.BLOQUEO = 'N'
+            ORDER BY 
+                PE.CODIGO
+        SQL;
+
+        $parametros = [
+            "credito" => $datos["credito"],
+            "ciclo" => $datos["ciclo"]
+        ];
+
+        try {
+            $db = new Database();
+            $res = $db->queryAll($qry, $parametros);
+            if ($res) return self::Responde(true, "Ejecutivos obtenidos correctamente.", $res);
+            return self::Responde(false, "No se encontraron ejecutivos para el crédito.");
+        } catch (Exception $e) {
+            return self::Responde(false, "Ocurrió un error al consultar los ejecutivos del crédito.", null, $e->getMessage());
+        }
+    }
+
+    public static function ConsultarPagosCredito($datos)
+    {
+        $qry = <<<SQL
+            SELECT
+                RG.CODIGO ID_REGION,
+                RG.NOMBRE REGION,
+                NS.CDGCO ID_SUCURSAL,
+                GET_NOMBRE_SUCURSAL(NS.CDGCO),
+                PAGOSDIA.SECUENCIA,
+                TO_CHAR(PAGOSDIA.FECHA, 'YYYY-MM-DD' ) AS FECHA,
+                TO_CHAR(PAGOSDIA.FECHA, 'DD-MM-YYYY' ) AS FECHA_TABLA,
+                PAGOSDIA.CDGNS,
+                PAGOSDIA.NOMBRE,
+                PAGOSDIA.CICLO,
+                PAGOSDIA.MONTO,
+                TIPO_OPERACION(PAGOSDIA.TIPO) as TIPO_OP,
+                PAGOSDIA.TIPO AS TIPO,
+                PAGOSDIA.EJECUTIVO,
+                PAGOSDIA.CDGOCPE,
+                (PE.NOMBRE1 || ' ' || PE.NOMBRE2 || ' ' ||PE.PRIMAPE || ' ' ||PE.SEGAPE) AS NOMBRE_CDGPE,
+                PAGOSDIA.FREGISTRO,
+                ------PAGOSDIA.FIDENTIFICAPP,
+                TRUNC(FECHA) AS DE,
+                TRUNC(FECHA) + 1 + 10/24 +  10/1440 AS HASTA,
+                CASE
+                    WHEN SYSDATE 
+                    BETWEEN (FECHA) 
+                    AND TO_DATE((TO_CHAR((TRUNC(FECHA) + 1),  'YYYY-MM-DD') || ' ' || :hora), 'YYYY-MM-DD HH24:MI:SS')
+                    THEN 'SI'
+                    ELSE 'NO'
+                END AS DESIGNATION,
+                CASE
+                    WHEN SYSDATE BETWEEN (FECHA) AND (TRUNC(FECHA) + 2 + 11/24 + 0/1440) THEN 'SI'
+                    ELSE 'NO'
+                END AS DESIGNATION_ADMIN
+            FROM
+                PAGOSDIA, NS, CO, RG, PE    
+            WHERE
+                PAGOSDIA.CDGEM = 'EMPFIN'
+                AND PAGOSDIA.ESTATUS = 'A'
+                AND PAGOSDIA.CDGNS = :noCredito
+                AND NS.CODIGO = PAGOSDIA.CDGNS
+                AND NS.CDGCO = CO.CODIGO 
+                AND CO.CDGRG = RG.CODIGO
+                AND PE.CODIGO = PAGOSDIA.CDGPE
+                AND PE.CDGEM = 'EMPFIN'
+            ORDER BY
+                FREGISTRO DESC, SECUENCIA
+        SQL;
+
+        $parametros = [
+            "noCredito" => $datos["NO_CREDITO"],
+            "hora" => $datos["HORA_CIERRE"]
+        ];
+
+        try {
+            $mysqli = new Database();
+            $res = $mysqli->queryAll($qry, $parametros);
+            if ($res) return self::Responde(true, "Pagos obtenidos correctamente.", $res);
+            return self::Responde(false, "No se encontraron pagos para el crédito.");
+        } catch (Exception $e) {
+            return self::Responde(false, "Ocurrió un error al consultar los pagos del crédito.", null, $e->getMessage());
+        }
+    }
+
+    public static function RegistrarPagoCredito($datos)
+    {
+        $credito = $datos['credito'];
+        $fecha = $datos['fecha'];
+        $ciclo = $datos['ciclo'];
+        $monto = $datos['monto'];
+        $tipo = $datos['tipo'];
+        $nombre = $datos['nombre'];
+        $user = $datos['usuario'];
+        $ejecutivo = $datos['ejecutivo'];
+        $ejecutivo_nombre = $datos['ejecutivo_nombre'];
+        $tipo_procedure_ = 1;
+        $fecha_aux = "";
+
+        try {
+            $db = new Database();
+            $r = $db->queryProcedurePago($credito, $ciclo, $monto, $tipo, $nombre, $user,  $ejecutivo, $ejecutivo_nombre,  $tipo_procedure_, $fecha_aux, "", $fecha);
+            if (str_starts_with($r, "1")) return self::Responde(true, "Pago registrado correctamente.");
+            return self::Responde(false, "El pago no se registro.");
+        } catch (\Error $e) {
+            return self::Responde(false, "Error al registrar pago.", null, $e->getMessage());
+        }
+    }
+
+    public static function EditarPagoCredito($datos)
+    {
+        $credito = $datos['credito'];
+        $fecha = $datos['fecha'];
+        $secuencia = $datos['secuencia'];
+        $ciclo = $datos['ciclo'];
+        $monto = $datos['monto'];
+        $tipo = $datos['tipo'];
+        $nombre = $datos['nombre'];
+        $usuario = $datos['usuario'];
+        $ejecutivo = $datos['ejecutivo'];
+        $ejecutivo_nombre = $datos['ejecutivo_nombre'];
+        $fecha_aux = $datos['fecha_aux'];
+        $tipo_procedure = 2;
+
+        try {
+            $db = new Database();
+            $r = $db->queryProcedurePago($credito, $ciclo, $monto, $tipo, $nombre, $usuario,  $ejecutivo, $ejecutivo_nombre, $tipo_procedure, $fecha_aux, $secuencia, $fecha);
+            if (str_starts_with($r, "1")) return self::Responde(true, "Pago actualizado correctamente.");
+            return self::Responde(false, "El pago no se actualizó.");
+        } catch (\Error $e) {
+            return self::Responde(false, "Error al actualizar pago.", null, $e->getMessage());
+        }
+    }
+
+    public static function EliminaPagoCredito($datos)
+    {
+        $cdgns = $datos['cdgns'];
+        $fecha = $datos['fecha'];
+        $usuario = $datos['usuario'];
+        $secuencia = $datos['secuencia'];
+
+        try {
+            $db = new Database();
+            $r = $db->queryProcedureDeletePago($cdgns, $fecha, $usuario, $secuencia);
+            if (str_starts_with($r, "1")) return self::Responde(true, "Pago eliminado correctamente.");
+            return self::Responde(false, "El pago no se eliminó.");
+        } catch (Exception $e) {
+            return self::Responde(false, "Error al eliminar pago.", null, $e->getMessage());
         }
     }
 }

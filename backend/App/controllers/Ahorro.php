@@ -387,36 +387,6 @@ script;
         })
     }';
     private $noSubmit = 'const noSUBMIT = (e) => e.preventDefault()';
-    private $configuraTabla = 'const configuraTabla = (id) => {
-        $("#" + id).tablesorter()
-        $("#" + id).DataTable({
-            lengthMenu: [
-                [10, 40, -1],
-                [10, 40, "Todos"]
-            ],
-            columnDefs: [
-                {
-                    orderable: false,
-                    targets: 0
-                }
-            ],
-            order: false,
-            language: {
-                emptyTable: "No hay datos disponibles",
-                paginate: {
-                    previous: "Anterior",
-                    next: "Siguiente",
-                }
-            }
-        })
-
-        $("#"  + id + " input[type=search]").keyup(() => {
-            $("#example")
-                .DataTable()
-                .search(jQuery.fn.DataTable.ext.type.search.html(this.value))
-                .draw()
-        })
-    }';
     private $exportaExcel = 'const exportaExcel = (id, nombreArchivo, nombreHoja = "Reporte") => {
         const tabla = document.querySelector("#" + id)
         const wb = XLSX.utils.book_new()
@@ -1439,23 +1409,23 @@ script;
 
     public function GetBeneficiarios()
     {
-        echo CajaAhorroDao::GetBeneficiarios($_POST['contrato']);
+        echo json_encode(CajaAhorroDao::GetBeneficiarios($_POST['contrato']));
     }
 
     public function AgregaContratoAhorro()
     {
-        echo CajaAhorroDao::AgregaContratoAhorro($_POST);
+        echo json_encode(CajaAhorroDao::AgregaContratoAhorro($_POST));
     }
 
     public function ActualizaContratoAhorro()
     {
-        echo CajaAhorroDao::ActualizaContratoAhorro($_POST);
+        echo json_encode(CajaAhorroDao::ActualizaContratoAhorro($_POST));
     }
 
     public function PagoApertura()
     {
         $pago = CajaAhorroDao::AddPagoApertura($_POST);
-        echo $pago;
+        echo json_encode($pago);
         return $pago;
     }
 
@@ -1479,7 +1449,7 @@ script;
             "derecha" => $huellas['datos']['derecha']
         ];
 
-        echo CajaAhorroDao::RegistraHuellas($datos);
+        echo json_encode(CajaAhorroDao::RegistraHuellas($datos));
     }
 
     public function ActualizaHuella()
@@ -1508,7 +1478,7 @@ script;
             "dedos" => $dedos,
         ];
 
-        echo CajaAhorroDao::ActualizaHuella($datos);
+        echo json_encode(CajaAhorroDao::ActualizaHuella($datos));
     }
 
     public function ValidaHuella()
@@ -1562,17 +1532,17 @@ script;
 
     public function ValidaRegistroHuellas()
     {
-        echo CajaAhorroDao::ValidaRegistroHuellas($_POST);
+        echo json_encode(CajaAhorroDao::ValidaRegistroHuellas($_POST));
     }
 
     public function EliminaHuellas()
     {
-        echo CajaAhorroDao::EliminaHuellas($_POST);
+        echo json_encode(CajaAhorroDao::EliminaHuellas($_POST));
     }
 
     public function RegistraApoderado()
     {
-        echo CajaAhorroDao::RegistraApoderado($_POST);
+        echo json_encode(CajaAhorroDao::RegistraApoderado($_POST));
     }
 
     // Movimientos sobre cuentas de ahorro corriente //
@@ -1851,28 +1821,10 @@ HTML;
         View::render("caja_menu_ahorro");
     }
 
-    public function CajaCredito()
-    {
-        $extraFooter = <<<HTML
-            <script>
-                {$this->configuraTabla}
-
-                $(document).ready(() => {
-                    configuraTabla("historialPagos")
-                })
-
-            </script>
-        HTML;
-
-        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Caja de Crédito", [$this->swal2, $this->huellas])));
-        View::set('footer', $this->_contenedor->footer($extraFooter));
-        View::render("caja_menu_credito");
-    }
-
     public function BuscaContratoAhorro()
     {
         if (self::ValidaHorario()) {
-            echo CajaAhorroDao::BuscaContratoAhorro($_POST);
+            echo json_encode(CajaAhorroDao::BuscaContratoAhorro($_POST));
             return;
         }
         echo self::FueraHorario();
@@ -1881,17 +1833,352 @@ HTML;
     public function RegistraOperacion()
     {
         $resutado =  CajaAhorroDao::RegistraOperacion($_POST);
-        echo $resutado;
+        echo json_encode($resutado);
     }
 
     public function ValidaRetirosDia()
     {
-        echo CajaAhorroDao::ValidaRetirosDia($_POST);
+        echo json_encode(CajaAhorroDao::ValidaRetirosDia($_POST));
     }
 
     public function GetApoderados()
     {
-        echo CajaAhorroDao::GetApoderados($_POST);
+        echo json_encode(CajaAhorroDao::GetApoderados($_POST));
+    }
+
+    // Registro de pagos de créditos
+    public function CajaCredito()
+    {
+        $fecha = date('Y-m-d');
+
+        $extraFooter = <<<HTML
+            <script>
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->showWarning}
+                {$this->confirmarMovimiento}
+                {$this->configuraTabla}
+                {$this->consultaServidor}
+                {$this->formatoMoneda}
+                {$this->showHuella}
+                {$this->validaHuella}
+                {$this->validarYbuscar}
+
+                let datosCredito = null
+
+                $(document).ready(() => {
+                    configuraTabla("historialPagos")
+
+                    $("#fechaPago").val("{$fecha}")
+
+                    $("#agregarPago").click(modalPago)
+
+                    $("#registrarPago").click(registrarPago)
+                    $("#editarPago").click(editarPago)
+                })
+
+                const buscaCliente = () => {
+                    limpiaDatosCredito()
+                    const cliente = $("#clienteBuscado").val()
+                    if (!cliente) return showError("Ingrese un número de cliente válido.")
+                    if (cliente.length !== 6) return showError("El número de cliente debe tener 6 caracteres.")
+
+                    datosCredito = null
+                    consultaServidor("/Ahorro/BuscaCredito/", { cliente, fecha: "{$fecha}" }, (dc) => {
+                        if (!dc.success) return showError(dc.mensaje)
+
+                        datosCredito = dc.datos
+                        consultaServidor("/Ahorro/ListaEjecutivosCredito", { credito: datosCredito.NO_CREDITO, ciclo: datosCredito.CICLO }, (respuesta) => {
+                            if (!respuesta.success) return showError(respuesta.mensaje)
+
+                            $("#ejecutivo2").html("")
+                            respuesta.datos.forEach((ejecutivo) => {
+                                if (ejecutivo.EJECUTIVO === datosCredito.ID_EJECUTIVO) $("#ejecutivo2").append(new Option(ejecutivo.EJECUTIVO_NOMBRE, ejecutivo.EJECUTIVO, true))
+                                else $("#ejecutivo2").append(new Option(ejecutivo.EJECUTIVO_NOMBRE, ejecutivo.EJECUTIVO))
+                            })
+                            llenaDatosCredito()
+                            buscaPagos()
+                        })
+                    })
+                }
+
+                const buscaPagos = () => {
+                    if (!datosCredito) return showError("No se ha encontrado un crédito para el cliente ingresado.")
+
+                    consultaServidor("/Ahorro/ConsultarPagosCredito/", datosCredito, (pagos) => {
+                        if (!pagos.success) return showError(pagos.mensaje)
+
+                        $("#historialPagos").DataTable().destroy()
+                        pagos.datos.forEach((pago) => {
+                            const tr = document.createElement("tr")
+                            const tdMedio = document.createElement("td")
+                            const tdSecuencia = document.createElement("td")
+                            const tdCdgns = document.createElement("td")
+                            const tdFecha = document.createElement("td")
+                            const tdCiclo = document.createElement("td")
+                            const tdMonto = document.createElement("td")
+                            const tdTipo = document.createElement("td")
+                            const tdEjecutivo = document.createElement("td")
+                            const tdEditar = document.createElement("td")
+
+                            tdMedio.innerHTML =
+                                '<span class="count_top" style="font-size: 30px"><i class="fa fa-female"></i></span>'
+                            tdSecuencia.innerText = pago.SECUENCIA
+                            tdCdgns.innerText = pago.CDGNS
+                            tdFecha.innerText = formatoFecha(pago.FECHA)
+                            tdCiclo.innerText = pago.CICLO
+                            tdMonto.innerText = "$ " + formatoMoneda(pago.MONTO)
+                            tdTipo.innerText = pago.TIPO_OP
+                            tdEjecutivo.innerText = pago.EJECUTIVO
+
+                            const btnEditar = document.createElement("button")
+                            btnEditar.type = "button"
+                            btnEditar.classList.add("btn", "btn-success", "btn-circle")
+                            btnEditar.innerHTML = '<i class="fa fa-edit"></i>'
+                            btnEditar.onclick = () => modalPago(pago)
+
+                            const btnEliminar = document.createElement("button")
+                            btnEliminar.type = "button"
+                            btnEliminar.classList.add("btn", "btn-danger", "btn-circle")
+                            btnEliminar.innerHTML = '<i class="fa fa-trash"></i>'
+                            btnEliminar.onclick = () => eliminaPago(pago)
+
+                            tdEditar.appendChild(btnEditar)
+                            tdEditar.appendChild(btnEliminar)
+
+                            tr.appendChild(centrarCelda(tdMedio))
+                            tr.appendChild(centrarCelda(tdSecuencia))
+                            tr.appendChild(centrarCelda(tdCdgns))
+                            tr.appendChild(centrarCelda(tdFecha))
+                            tr.appendChild(centrarCelda(tdCiclo))
+                            tr.appendChild(centrarCelda(tdMonto))
+                            tr.appendChild(centrarCelda(tdTipo))
+                            tr.appendChild(centrarCelda(tdEjecutivo))
+                            tr.appendChild(centrarCelda(tdEditar))
+
+                            $("#historialPagos tbody").append(tr)
+                        })
+
+                        configuraTabla("historialPagos")
+                    })
+                }
+
+                const modalPago = (pago = null) => {
+                    if (pago.SECUENCIA){
+                        $("#tituloModal").text("Edición de Pago (Cajera)")
+                        $("#grpSecuencia").prop("style", "display: block;")
+                        $("#registrarPago").prop("style", "display: none;")
+                        $("#editarPago").prop("style", "display: inline-block;")
+
+                        $("#secuencia").val(pago.SECUENCIA)
+                        $("#fechaPago").val(pago.FECHA)
+                        $("#fechaOriginalPago").val(pago.FECHA)
+                        $("#montoPago").val(pago.MONTO)
+                        $("#tipo").val(pago.TIPO)
+                        $("#ejecutivo2").val(pago.CDGOCPE)
+                        $("#modal_pago").modal("show")
+                        return
+                    }
+
+                    $("#tituloModal").text("Registro de Pago (Cajera)")
+                    $("#grpSecuencia").prop("style", "display: none;")
+                    $("#registrarPago").prop("style", "display: inline-block;")
+                    $("#editarPago").prop("style", "display: none;")
+                    $("#secuencia").val("")
+                    $("#fechaPago").val("{$fecha}")
+                    $("#fechaOriginalPago").val("{$fecha}")
+                    $("#montoPago").val("")
+                    $("#tipo").val("P")
+                    $("#ejecutivo2").val(datosCredito.ID_EJECUTIVO)
+                    $("#modal_pago").modal("show")
+                }
+
+                const registrarPago = () => {
+                    const monto = $("#montoPago").val()
+
+                    if (parseFloat(monto) <= 0) return showError("Ingrese un monto válido.")
+                    confirmarMovimiento("¿Segúro que desea EDITAR el registro seleccionado?")
+                    .then((continuar) => {
+                        if (!continuar) return
+
+                        const datos = {}
+                        datos.credito = $("#credito").val()
+                        datos.fecha = $("#fechaPago").val()
+                        datos.ciclo = $("#ciclo2").val()
+                        datos.monto = parseFloat(monto)
+                        datos.tipo = $("#tipo").val()
+                        datos.nombre = $("#nombre").val()
+                        datos.usuario = "{$_SESSION['usuario']}"
+                        datos.ejecutivo = $("#ejecutivo2").val()
+                        datos.ejecutivo_nombre = $("#ejecutivo2 :selected").text()
+
+                        consultaServidor("/Ahorro/RegistrarPagoCredito/", datos, (respuesta) => {
+                            if (!respuesta.success) return showError(respuesta.mensaje)
+                            showSuccess(respuesta.mensaje).then(() => {
+                                $("#modal_pago").modal("hide")
+                                $("#montoPago").val("")
+                                $("#tipo").val("")
+                                $("#historialPagos").DataTable().destroy()
+                                $("#historialPagos tbody").empty()
+                                buscaPagos()
+                            })
+                        })
+                    })
+                }
+
+                const editarPago = () => {
+                    const monto = $("#montoPago").val()
+
+                    if (parseFloat(monto) <= 0) return showError("Ingrese un monto válido.")
+                    confirmarMovimiento("¿Segúro que desea EDITAR el registro seleccionado?")
+                    .then((continuar) => {
+                        if (!continuar) return
+
+                        const datos = {}
+                        datos.credito = $("#credito").val()
+                        datos.fecha = $("#fechaPago").val()
+                        datos.fecha_aux = $("#fechaOriginalPago").val()
+                        datos.secuencia = $("#secuencia").val()
+                        datos.ciclo = $("#ciclo2").val()
+                        datos.monto = parseFloat(monto)
+                        datos.tipo = $("#tipo").val()
+                        datos.nombre = $("#nombre").val()
+                        datos.usuario = "{$_SESSION['usuario']}"
+                        datos.ejecutivo = $("#ejecutivo2").val()
+                        datos.ejecutivo_nombre = $("#ejecutivo2 :selected").text()
+
+                        consultaServidor("/Ahorro/EditarPagoCredito/", datos, (respuesta) => {
+                            if (!respuesta.success) return showError(respuesta.mensaje)
+                            showSuccess(respuesta.mensaje).then(() => {
+                                $("#modal_pago").modal("hide")
+                                $("#montoPago").val("")
+                                $("#tipo").val("")
+                                $("#historialPagos").DataTable().destroy()
+                                $("#historialPagos tbody").empty()
+                                buscaPagos()
+                            })
+                        })
+                    })
+                }
+
+                const eliminaPago = (pago) => {
+                    confirmarMovimiento("¿Segúro que desea ELIMINAR el registro seleccionado?")
+                    .then((continuar) => {
+                            if (!continuar) return
+
+                            consultaServidor(
+                                "/Ahorro/EliminaPagoCredito/",
+                                {
+                                    cdgns: pago.CDGNS,
+                                    fecha: pago.FECHA,
+                                    secuencia: pago.SECUENCIA,
+                                    usuario: "{$_SESSION['usuario']}"
+                                },
+                                (respuesta) => {
+                                    if (!respuesta.success) return showError(respuesta.mensaje)
+                                    showSuccess(respuesta.mensaje).then(() => {
+                                        $("#historialPagos").DataTable().destroy()
+                                        $("#historialPagos tbody").empty()
+                                        buscaPagos()
+                                    })
+                                }
+                            )
+                        }
+                    )
+                }
+
+                const llenaDatosCredito = () => {
+                    $("#cliente").val(datosCredito.ID_CLIENTE)
+                    $("#ciclo").val(datosCredito.CICLO)
+                    $("#monto").val("$ " + formatoMoneda(datosCredito.MONTO))
+                    $("#situacion").val(datosCredito.SITUACION_NOMBRE)
+                    $("#situacion").attr("style", "background: " + datosCredito.COLOR)
+                    $("#sucursal").val(datosCredito.ID_SUCURSAL + " - " + datosCredito.SUCURSAL)
+                    $("#diaPago").val(datosCredito.DIA_PAGO)
+                    $("#parcialidad").val("$ " + formatoMoneda(datosCredito.PARCIALIDAD))
+                    $("#ejecutivo").val(datosCredito.EJECUTIVO)
+
+                    $("#fechaPago").val("{$fecha}")
+                    $("#credito").val(datosCredito.NO_CREDITO)
+                    $("#nombre").val(datosCredito.CLIENTE)
+                    $("#ciclo2").val(datosCredito.CICLO)
+
+                    $("#agregarPago").prop("disabled", datosCredito.SITUACION_NOMBRE === "SOLICITADO")
+                }
+
+                const limpiaDatosCredito = () => {
+                    $("#cliente").val("")
+                    $("#ciclo").val("")
+                    $("#monto").val("")
+                    $("#situacion").val("")
+                    $("#situacion").removeAttr("style")
+                    $("#sucursal").val("")
+                    $("#diaPago").val("")
+                    $("#parcialidad").val("")
+                    $("#ejecutivo").val("")
+
+                    $("#agregarPago").prop("disabled", true)
+                    $("#historialPagos").DataTable().destroy()
+                    $("#historialPagos tbody").empty()
+                    configuraTabla("historialPagos")
+                }
+
+                const centrarCelda = (td) => {
+                    td.style.textAlign = "center"
+                    td.style.verticalAlign = "middle"
+                    return td
+                }
+
+                const formatoFecha = (fecha) => {
+                    const f = new Date(fecha)
+                    return f.getDate() + "/" + (f.getMonth() + 1) + "/" + f.getFullYear()
+                }
+            </script>
+        HTML;
+
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Caja de Crédito", [$this->swal2, $this->huellas])));
+        View::set('footer', $this->_contenedor->footer($extraFooter));
+        View::set('fecha', $fecha);
+        View::render("caja_menu_credito");
+    }
+
+    public function BuscaCredito()
+    {
+        $r = CajaAhorroDao::BuscaCredito($_POST);
+        if ($r['success']) {
+            $festivo = CajaAhorroDao::GetDiaFestivo($_POST);
+            if ($festivo['success']) $r['datos'] += $festivo['datos'];
+            echo json_encode($r);
+            return;
+        }
+
+        echo json_encode($r);
+    }
+
+    public function ListaEjecutivosCredito()
+    {
+        echo json_encode(CajaAhorroDao::ListaEjecutivosCredito($_POST));
+    }
+
+    public function ConsultarPagosCredito()
+    {
+        echo json_encode(CajaAhorroDao::ConsultarPagosCredito($_POST));
+    }
+
+    public function RegistrarPagoCredito()
+    {
+        echo json_encode(CajaAhorroDao::RegistrarPagoCredito($_POST));
+    }
+
+    public function EditarPagoCredito()
+    {
+        echo json_encode(CajaAhorroDao::EditarPagoCredito($_POST));
+    }
+
+    public function EliminaPagoCredito()
+    {
+        echo json_encode(CajaAhorroDao::EliminaPagoCredito($_POST));
     }
 
     // Registro de solicitudes de retiros mayores de cuentas de ahorro //
@@ -2119,7 +2406,7 @@ html;
     public function RegistraSolicitud()
     {
         $datos = CajaAhorroDao::RegistraSolicitud($_POST);
-        echo $datos;
+        echo json_encode($datos);
     }
 
     // Historial de solicitudes de retiros de cuentas de ahorro //
@@ -2297,17 +2584,17 @@ html;
 
     public function ResumenEntregaRetiro()
     {
-        echo CajaAhorroDao::ResumenEntregaRetiro($_POST);
+        echo json_encode(CajaAhorroDao::ResumenEntregaRetiro($_POST));
     }
 
     public function EntregaRetiro()
     {
-        echo CajaAhorroDao::EntregaRetiro($_POST);
+        echo json_encode(CajaAhorroDao::EntregaRetiro($_POST));
     }
 
     public function DevolucionRetiro()
     {
-        echo CajaAhorroDao::DevolucionRetiro($_POST);
+        echo json_encode(CajaAhorroDao::DevolucionRetiro($_POST));
     }
 
     public function HistoricoSolicitudRetiro($p = 1)
@@ -2318,8 +2605,8 @@ html;
         $estatus = $_POST['estatus'] ?? "1";
         $tipo = $_POST['tipo'] ?? "";
 
-        $historico = json_decode(CajaAhorroDao::HistoricoSolicitudRetiro(["producto" => $producto, "fechaI" => $fi, "fechaF" => $ff, "estatus" => $estatus, "tipo" => $tipo]));
-        $detalles = $historico->success ? $historico->datos : [];
+        $historico = CajaAhorroDao::HistoricoSolicitudRetiro(["producto" => $producto, "fechaI" => $fi, "fechaF" => $ff, "estatus" => $estatus, "tipo" => $tipo]);
+        $detalles = $historico['success'] ? $historico['datos'] : [];
 
         $tabla = "";
         foreach ($detalles as $key1 => $detalle) {
@@ -2761,17 +3048,17 @@ html;
 
     public function RegistraInversion()
     {
-        echo CajaAhorroDao::RegistraInversion($_POST);
+        echo json_encode(CajaAhorroDao::RegistraInversion($_POST));
     }
 
     public function GetInversion()
     {
-        echo CajaAhorroDao::GetInversion($_POST);
+        echo json_encode(CajaAhorroDao::GetInversion($_POST));
     }
 
     public function ActualizaInversion()
     {
-        echo CajaAhorroDao::ActualizaInversion($_POST);
+        echo json_encode(CajaAhorroDao::ActualizaInversion($_POST));
     }
 
     public function GetCertificadoInversion()
@@ -2899,7 +3186,7 @@ html;
     public function GetInversiones()
     {
         $inversiones = CajaAhorroDao::GetInversiones($_GET);
-        echo $inversiones;
+        echo json_encode($inversiones);
     }
 
     //********************CUENTA PEQUES********************//
@@ -3266,7 +3553,7 @@ html;
     public function BuscaClientePQ()
     {
         if (self::ValidaHorario()) {
-            echo CajaAhorroDao::BuscaClienteNvoContratoPQ($_POST);
+            echo json_encode(CajaAhorroDao::BuscaClienteNvoContratoPQ($_POST));
             return;
         }
         echo self::FueraHorario();
@@ -3274,14 +3561,14 @@ html;
 
     public function AgregaContratoAhorroPQ()
     {
-        $contrato = CajaAhorroDao::AgregaContratoAhorroPQ($_POST);
+        $contrato = json_encode(CajaAhorroDao::AgregaContratoAhorroPQ($_POST));
         echo $contrato;
     }
 
     public function BuscaContratoPQ()
     {
         if (self::ValidaHorario()) {
-            echo CajaAhorroDao::BuscaClienteContratoPQ($_POST);
+            echo json_encode(CajaAhorroDao::BuscaClienteContratoPQ($_POST));
             return;
         }
         echo self::FueraHorario();
@@ -4342,7 +4629,6 @@ html;
 
         $d = CajaAhorroDao::HistoricoArqueo(["fecha_inicio" => date('Y-m-d', strtotime('-7 day')), "fecha_fin" => date('Y-m-d'), "sucursal" => $_SESSION['cdgco_ahorro'], "ejecutivo" => $_SESSION['usuario']]);
 
-        $d = json_decode($d, true);
         $detalles = $d['datos'];
 
         $tabla = "";
@@ -4420,13 +4706,13 @@ html;
 
     public function HistoricoArqueos()
     {
-        echo CajaAhorroDao::HistoricoArqueo($_POST);
+        echo json_encode(CajaAhorroDao::HistoricoArqueo($_POST));
     }
 
     public function RegistraArqueo()
     {
         if (self::ValidaHorario()) {
-            echo CajaAhorroDao::RegistraArqueo($_POST);
+            echo json_encode(CajaAhorroDao::RegistraArqueo($_POST));
             return;
         }
         echo self::FueraHorario();
@@ -4457,7 +4743,7 @@ html;
     public function GetLogTransacciones()
     {
         $log = CajaAhorroDao::GetLogTransacciones($_POST);
-        echo $log;
+        echo json_encode($log);
     }
 
     public function EstadoCuenta()
