@@ -2,8 +2,10 @@
 
 <?php
 
+use App\components\SubMenuAhorro;
 use App\components\BuscarCliente;
 
+$subMenuAhorro = new SubMenuAhorro('SolicitudRetiroCuentaCorriente');
 $buscarCliente = new BuscarCliente('Para realizar un retiro es necesario que el cliente tenga una cuenta ahorro corriente activa, de lo contrario, es necesaria la creación de una a través de la opción: <a href="/Ahorro/ContratoCuentaCorriente/" target="_blank">Nuevo Contrato</a>.');
 
 ?>
@@ -68,27 +70,7 @@ $buscarCliente = new BuscarCliente('Para realizar un retiro es necesario que el 
                             &nbsp;&nbsp;
                         </div>
                         <div>
-                            <ul class="nav navbar-nav">
-                                <li class="linea">
-                                    <a href="/Ahorro/CuentaCorriente/">
-                                        <p style="font-size: 15px;">Ahorro cuenta corriente</p>
-                                    </a>
-                                </li>
-                                <li class="linea">
-                                    <a href="/Ahorro/ContratoCuentaCorriente/">
-                                        <p style="font-size: 15px;">Nuevo contrato</p>
-                                    </a>
-                                <li>
-                                    <a href="/Ahorro/SolicitudRetiroCuentaCorriente/">
-                                        <p style="font-size: 16px;"><b>Solicitud de retiro</b></p>
-                                    </a>
-                                </li>
-                                <li class="linea">
-                                    <a href="/Ahorro/HistorialSolicitudRetiroCuentaCorriente/">
-                                        <p style="font-size: 15px;">Procesar solicitudes de retiro</p>
-                                    </a>
-                                </li>
-                            </ul>
+                            <?= $subMenuAhorro->mostrar(); ?>
                         </div>
                     </div>
                     <div class="modal-body">
@@ -230,12 +212,6 @@ $buscarCliente = new BuscarCliente('Para realizar un retiro es necesario que el 
     .imagen:hover {
         --escala: 1.2;
         cursor: pointer;
-    }
-
-    .linea:hover {
-        --escala: 1.2;
-        cursor: pointer;
-        text-decoration: underline;
     }
 </style>
 

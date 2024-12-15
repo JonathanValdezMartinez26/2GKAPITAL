@@ -4006,10 +4006,9 @@ sql;
                 RG.CODIGO ID_REGION,
                 RG.NOMBRE REGION,
                 NS.CDGCO ID_SUCURSAL,
-                GET_NOMBRE_SUCURSAL(NS.CDGCO),
+                GET_NOMBRE_SUCURSAL(NS.CDGCO) AS NOMBRE_SUCURSAL,
                 PAGOSDIA.SECUENCIA,
                 TO_CHAR(PAGOSDIA.FECHA, 'YYYY-MM-DD' ) AS FECHA,
-                TO_CHAR(PAGOSDIA.FECHA, 'DD-MM-YYYY' ) AS FECHA_TABLA,
                 PAGOSDIA.CDGNS,
                 PAGOSDIA.NOMBRE,
                 PAGOSDIA.CICLO,
@@ -4029,11 +4028,11 @@ sql;
                     AND TO_DATE((TO_CHAR((TRUNC(FECHA) + 1),  'YYYY-MM-DD') || ' ' || :hora), 'YYYY-MM-DD HH24:MI:SS')
                     THEN 'SI'
                     ELSE 'NO'
-                END AS DESIGNATION,
+                END AS DESIGNACION,
                 CASE
                     WHEN SYSDATE BETWEEN (FECHA) AND (TRUNC(FECHA) + 2 + 11/24 + 0/1440) THEN 'SI'
                     ELSE 'NO'
-                END AS DESIGNATION_ADMIN
+                END AS DESIGNACION_ADMIN
             FROM
                 PAGOSDIA, NS, CO, RG, PE    
             WHERE

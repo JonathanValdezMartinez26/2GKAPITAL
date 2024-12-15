@@ -2,11 +2,10 @@
 
 <?php
 
-use App\components\MenuAhorro;
+use App\components\SubMenuAhorro;
 use App\components\BuscarCliente;
 
-// $menuAhorro = new MenuAhorro('/Ahorro/CuentaCorriente/');
-
+$subMenuAhorro = new SubMenuAhorro('CajaCredito');
 $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que el cliente tenga una cuenta ahorro corriente activa, de lo contrario, es necesaria la creación de una a través de la opción: <a href="/Ahorro/ContratoCuentaCorriente/" target="_blank">Nuevo Contrato</a>.');
 
 ?>
@@ -71,34 +70,7 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
                         &nbsp;&nbsp;
                     </div>
                     <div>
-                        <ul class="nav navbar-nav">
-                            <li class="linea">
-                                <a href="/Ahorro/CuentaCorriente/">
-                                    <p style="font-size: 15px;">Ahorro cuenta corriente</p>
-                                </a>
-                            </li>
-
-                            <li>
-                                <a href="/Ahorro/CajaCredito/">
-                                    <p style="font-size: 16px;"><b>Caja Crédito</b></p>
-                                </a>
-                            </li>
-                            <li class="linea">
-                                <a href="/Ahorro/ContratoCuentaCorriente/">
-                                    <p style="font-size: 15px;">Nuevo contrato</p>
-                                </a>
-                            </li>
-                            <li class="linea">
-                                <a href="/Ahorro/SolicitudRetiroCuentaCorriente/">
-                                    <p style="font-size: 15px;">Solicitud de retiro</p>
-                                </a>
-                            </li>
-                            <li class="linea">
-                                <a href="/Ahorro/HistorialSolicitudRetiroCuentaCorriente/">
-                                    <p style="font-size: 15px;">Procesar solicitudes de retiro</p>
-                                </a>
-                            </li>
-                        </ul>
+                        <?= $subMenuAhorro->mostrar(); ?>
                     </div>
                 </div>
                 <div class="modal-body">
@@ -107,48 +79,46 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
                         <div class="card">
                             <div class="card-header">
                                 <div class="row">
-                                    <div class="col-md-4 form-group">
+                                    <div class="col-md-2 form-group">
                                         <label>Cliente:</label>
-                                        <input class="form-control" id="cliente" value="" disabled />
+                                        <input class="form-control" id="cliente" disabled />
                                     </div>
-
+                                    <div class="col-md-5 form-group">
+                                        <label>Nombre:</label>
+                                        <input class="form-control" id="clienteNombre" disabled />
+                                    </div>
                                     <div class="col-md-1 form-group">
                                         <label>Ciclo:</label>
-                                        <input class="form-control" id="ciclo" value="" disabled />
+                                        <input class="form-control" id="ciclo" disabled />
                                     </div>
-
                                     <div class="col-md-2 form-group">
                                         <label>Préstamo:</label>
-                                        <input class="form-control" id="monto" value="" disabled />
+                                        <input class="form-control" id="monto" disabled />
                                     </div>
-
                                     <div class="col-md-2 form-group">
                                         <label>Situación:</label>
-                                        <input class="form-control" id="situacion" value="" disabled />
+                                        <input class="form-control" id="situacion" disabled />
                                         </input>
                                     </div>
 
                                     <div class="col-md-3 form-group">
                                         <label>Sucursal:</label>
-                                        <input class="form-control" id="sucursal" value="" disabled />
+                                        <input class="form-control" id="sucursal" disabled />
                                     </div>
-
                                     <div class="col-md-2 form-group">
                                         <label>Día de Pago:</label>
-                                        <input class="form-control" id="diaPago" value="" disabled />
+                                        <input class="form-control" id="diaPago" disabled />
                                     </div>
 
                                     <div class="col-md-2 form-group">
                                         <label>Parcialidad:</label>
-                                        <input class="form-control" id="parcialidad" value="" disabled />
+                                        <input class="form-control" id="parcialidad" disabled />
                                     </div>
-
-                                    <div class="col-md-4 form-group">
+                                    <div class="col-md-3 form-group">
                                         <label>Ejecutivo de cuenta:</label>
-                                        <input class="form-control" id="ejecutivo" value="" disabled />
+                                        <input class="form-control" id="ejecutivo" disabled />
                                     </div>
-
-                                    <div class="col-md-4 form-group">
+                                    <div class="col-md-2 form-group">
                                         <div style="height: 58px; width: 100%; display: flex; align-items: center; justify-content: center;">
                                             <button type="button" class="btn btn-primary" id="agregarPago" disabled>
                                                 <i class="fa fa-plus"></i> Agregar Pago
@@ -165,9 +135,9 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
                                             <tr>
                                                 <th>Medio</th>
                                                 <th>Consecutivo</th>
-                                                <th>CDGNS</th>
-                                                <th>Fecha</th>
+                                                <th>Crédito</th>
                                                 <th>Ciclo</th>
+                                                <th>Fecha</th>
                                                 <th>Monto</th>
                                                 <th>Tipo</th>
                                                 <th>Ejecutivo</th>
@@ -175,7 +145,6 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?= $tabla; ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -303,12 +272,6 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
     .imagen:hover {
         --escala: 1.2;
         cursor: pointer;
-    }
-
-    .linea:hover {
-        --escala: 1.2;
-        cursor: pointer;
-        text-decoration: underline;
     }
 </style>
 

@@ -2,8 +2,10 @@
 
 <?php
 
+use App\components\SubMenuAhorro;
 use App\components\TarjetaMano;
 
+$subMenuAhorro = new SubMenuAhorro('ContratoCuentaCorriente');
 $izquierda = new TarjetaMano('izquierda');
 $derecha = new TarjetaMano('derecha');
 
@@ -62,20 +64,7 @@ $derecha = new TarjetaMano('derecha');
                         <a class="navbar-brand">Mi espacio / Nuevo contrato de ahorro corriente</a>
                     </div>
                     <div>
-                        <ul class="nav navbar-nav">
-                            <li class="linea"><a href="/Ahorro/CuentaCorriente/">
-                                    <p style="font-size: 15px;">Ahorro cuenta corriente</p>
-                                </a></li></a></li>
-                            <li><a href="/Ahorro/ContratoCuentaCorriente/">
-                                    <p style="font-size: 16px;"><b>Nuevo contrato</b></p>
-                                </a></li>
-                            <li class="linea"><a href="/Ahorro/SolicitudRetiroCuentaCorriente/">
-                                    <p style="font-size: 15px;">Solicitud de retiro</p>
-                                </a></li></a></li>
-                            <li class="linea"><a href="/Ahorro/HistorialSolicitudRetiroCuentaCorriente/">
-                                    <p style="font-size: 15px;">Procesar solicitudes de retiro</p>
-                                </a></li>
-                        </ul>
+                        <?= $subMenuAhorro->mostrar(); ?>
                     </div>
                 </div>
                 <div class="modal-body">
@@ -588,12 +577,6 @@ $derecha = new TarjetaMano('derecha');
     .imagen:hover {
         --escala: 1.2;
         cursor: pointer;
-    }
-
-    .linea:hover {
-        --escala: 1.2;
-        cursor: pointer;
-        text-decoration: underline;
     }
 </style>
 

@@ -1950,8 +1950,8 @@ HTML;
                             tr.appendChild(centrarCelda(tdMedio))
                             tr.appendChild(centrarCelda(tdSecuencia))
                             tr.appendChild(centrarCelda(tdCdgns))
-                            tr.appendChild(centrarCelda(tdFecha))
                             tr.appendChild(centrarCelda(tdCiclo))
+                            tr.appendChild(centrarCelda(tdFecha))
                             tr.appendChild(centrarCelda(tdMonto))
                             tr.appendChild(centrarCelda(tdTipo))
                             tr.appendChild(centrarCelda(tdEjecutivo))
@@ -2090,10 +2090,11 @@ HTML;
 
                 const llenaDatosCredito = () => {
                     $("#cliente").val(datosCredito.ID_CLIENTE)
+                    $("#clienteNombre").val(datosCredito.CLIENTE)
                     $("#ciclo").val(datosCredito.CICLO)
                     $("#monto").val("$ " + formatoMoneda(datosCredito.MONTO))
                     $("#situacion").val(datosCredito.SITUACION_NOMBRE)
-                    $("#situacion").attr("style", "background: " + datosCredito.COLOR)
+                    $("#situacion").attr("style", "color: #fff; background: " + datosCredito.COLOR)
                     $("#sucursal").val(datosCredito.ID_SUCURSAL + " - " + datosCredito.SUCURSAL)
                     $("#diaPago").val(datosCredito.DIA_PAGO)
                     $("#parcialidad").val("$ " + formatoMoneda(datosCredito.PARCIALIDAD))

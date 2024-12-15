@@ -1,5 +1,13 @@
 <?php echo $header; ?>
 
+<?php
+
+use App\components\SubMenuAhorro;
+
+$subMenuAhorro = new SubMenuAhorro('HistorialSolicitudRetiroCuentaCorriente');
+
+?>
+
 <div class="right_col">
     <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
         <div class="col-md-3 panel panel-body" style="margin-bottom: 0px;">
@@ -60,20 +68,7 @@
                         <a class="navbar-brand">Mi espacio / Procesar solicitudes de retiro</a>
                     </div>
                     <div>
-                        <ul class="nav navbar-nav">
-                            <li class="linea"><a href="/Ahorro/CuentaCorriente/">
-                                    <p style="font-size: 15px;">Ahorro cuenta corriente</p>
-                                </a></li></a></li>
-                            <li><a href="/Ahorro/ContratoCuentaCorriente/">
-                                    <p style="font-size: 16px;">Nuevo contrato</p>
-                                </a></li>
-                            <li class="linea"><a href="/Ahorro/SolicitudRetiroCuentaCorriente/">
-                                    <p style="font-size: 15px;">Solicitud de retiro</p>
-                                </a></li></a></li>
-                            <li class="linea"><a href="/Ahorro/HistorialSolicitudRetiroCuentaCorriente/">
-                                    <p style="font-size: 15px;"><b>Procesar solicitudes de retiro</b></p>
-                                </a></li>
-                        </ul>
+                        <?= $subMenuAhorro->mostrar(); ?>
                     </div>
                 </div>
                 <div class="modal-body">
@@ -156,7 +151,6 @@
         </div>
     </div>
 </div>
-</div>
 
 <style>
     .imagen {
@@ -167,12 +161,6 @@
     .imagen:hover {
         --escala: 1.2;
         cursor: pointer;
-    }
-
-    .linea:hover {
-        --escala: 1.2;
-        cursor: pointer;
-        text-decoration: underline;
     }
 </style>
 
