@@ -233,36 +233,6 @@ class AdminSucursales extends Controller
     }';
     private $parseaNumero = 'const parseaNumero = (numero) => parseFloat(numero.replace(/-[^0-9.]/g, "")) || 0';
     private $formatoMoneda = 'const formatoMoneda = (numero) => parseFloat(numero).toLocaleString("es-MX", { style: "currency", currency: "MXN" })';
-    private $configuraTabla = 'const configuraTabla = (id, filas = 10) => {
-        $("#" + id).tablesorter()
-        $("#" + id).DataTable({
-            lengthMenu: [
-                [filas, 40, -1],
-                [filas, 40, "Todos"]
-            ],
-            columnDefs: [
-                {
-                    orderable: false,
-                    targets: 0
-                }
-            ],
-            order: false,
-            language: {
-                emptyTable: "No hay datos disponibles",
-                paginate: {
-                    previous: "Anterior",
-                    next: "Siguiente",
-                }
-            }
-        })
-
-        $("#"  + id + " input[type=search]").keyup(() => {
-            $("#example")
-                .DataTable()
-                .search(jQuery.fn.DataTable.ext.type.search.html(this.value))
-                .draw()
-        })
-    }';
     private $muestraPDF = <<<script
     const muestraPDF = (titulo, ruta) => {
         let plantilla = '<!DOCTYPE html>'
@@ -352,44 +322,44 @@ class AdminSucursales extends Controller
     // Reporte de saldos diarios por sucursal
     public function SaldosDiarios()
     {
-        $extraFooter = <<<script
-        <script>
-            {$this->configuraTabla}
-            {$this->exportaExcel}
-            {$this->consultaServidor}
-            {$this->validaFIF}
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->addParametro}
-         
-            $(document).ready(() => {
-                configuraTabla("saldos")
-            })
-             
-            const imprimeExcel = () => exportaExcel("saldos", "Saldos de sucursales")
-             
-            const consultaSaldos = () => {
-                const fechaI = document.querySelector("#fechaI").value
-                const fechaF = document.querySelector("#fechaF").value
-                const datos = []
-                addParametro(datos, "fechaI", fechaI)
-                addParametro(datos, "fechaF", fechaF)
+        $extraFooter = <<<HTML
+            <script>
+                {$this->configuraTabla}
+                {$this->exportaExcel}
+                {$this->consultaServidor}
+                {$this->validaFIF}
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->addParametro}
+            
+                $(document).ready(() => {
+                    configuraTabla("saldos")
+                })
                 
-                consultaServidor(
-                    "/AdminSucursales/GetSaldosSucursal/",
-                    $.param(datos),
-                    (respuesta) => {
-                        $("#saldos").DataTable().destroy()
-                     
-                        if (respuesta.datos == "") showError("No se encontraron saldos para el rango de fechas seleccionado.")
-                         
-                        $("#saldos tbody").html(respuesta.datos)
-                        configuraTabla("saldos")
-                    }
-                )
-            }
-        </script>
-        script;
+                const imprimeExcel = () => exportaExcel("saldos", "Saldos de sucursales")
+                
+                const consultaSaldos = () => {
+                    const fechaI = document.querySelector("#fechaI").value
+                    const fechaF = document.querySelector("#fechaF").value
+                    const datos = []
+                    addParametro(datos, "fechaI", fechaI)
+                    addParametro(datos, "fechaF", fechaF)
+                    
+                    consultaServidor(
+                        "/AdminSucursales/GetSaldosSucursal/",
+                        $.param(datos),
+                        (respuesta) => {
+                            $("#saldos").DataTable().destroy()
+                        
+                            if (respuesta.datos == "") showError("No se encontraron saldos para el rango de fechas seleccionado.")
+                            
+                            $("#saldos tbody").html(respuesta.datos)
+                            configuraTabla("saldos")
+                        }
+                    )
+                }
+            </script>
+        HTML;
 
         $filas = self::GetSaldosSucursal();
         $filas = $filas['success'] ? $filas['datos'] : "";

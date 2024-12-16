@@ -75,7 +75,7 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
                 </div>
                 <div class="modal-body">
                     <div class="container-fluid">
-                        <?= $buscarCliente->mostrar(); ?>
+                        <?= $buscarCliente->mostrar(['tipo' => "crédito"]); ?>
                         <div class="card">
                             <div class="card-header">
                                 <div class="row">

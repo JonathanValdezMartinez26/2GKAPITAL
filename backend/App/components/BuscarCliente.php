@@ -31,15 +31,16 @@ class BuscarCliente
      * 
      * @return string El código HTML del componente.
      */
-    public function mostrar()
+    public function mostrar($configuracion = [])
     {
-        return <<<html
+        $tipo = $configuracion['tipo'] ?? "cliente";
+        return <<<HTML
         <div class="row" style="height: 100px; display: flex; align-items: flex-start;">
             <div class="col-md-6">
                 <p>{$this->recordatorio}</p>
                 </div>
             <div class="col-md-3">
-                <label for="movil">Código de cliente SICAFIN *</label>
+                <label for="movil">Código de {$tipo} SICAFIN *</label>
                 <input type="text" onkeypress=validarYbuscar(event) class="form-control" id="clienteBuscado" name="clienteBuscado" placeholder="000000" required>
             </div>
             <div class="col-md-3" style="display: flex; align-items: flex-start; justify-content: space-between; height: 100%;">
@@ -52,6 +53,6 @@ class BuscarCliente
             </div>
         </div>
         <hr>
-        html;
+        HTML;
     }
 }
