@@ -394,7 +394,7 @@ script;
         XLSX.utils.book_append_sheet(wb, ws, nombreHoja)
         XLSX.writeFile(wb, nombreArchivo + ".xlsx")
     }';
-    private $validaFIF = 'const validaFIF = (idI, idF) => {
+    private $validaFIF = 'const validaFIF = (idI = "fechaI", idF = "fechaF") => {
         const fechaI = document.getElementById(idI).value
         const fechaF = document.getElementById(idF).value
         if (fechaI && fechaF && fechaI > fechaF) {
@@ -2180,6 +2180,78 @@ HTML;
     public function EliminaPagoCredito()
     {
         echo json_encode(CajaAhorroDao::EliminaPagoCredito($_POST));
+    }
+
+    // Lista de pagos de créditos con layout contable
+    public function LayoutPagosCredito()
+    {
+        $extraFooter = <<<HTML
+            <script>
+                {$this->showError}
+                {$this->validaFIF}
+                {$this->configuraTabla}
+                {$this->consultaServidor}
+                {$this->formatoMoneda}
+
+                $(document).ready(() => {
+                    configuraTabla("historialPagos")
+                
+                    $("#fechaI").change(valFIF)
+                    $("#fechaF").change(valFIF)
+                    $("#buscar").click(generaLayout)
+                })
+
+                const valFIF = () => {
+                    validaFIF()
+                }
+
+                const generaLayout = () => {
+                    const datos = {}
+                    datos.fechaI = $("#fechaI").val()
+                    datos.fechaF = $("#fechaF").val()
+
+                    consultaServidor("/Ahorro/GetLayoutPagosCredito/", datos, (resultado) => {
+                        if (!resultado.success) return showError(resultado.mensaje)
+                        $("#historialPagos").DataTable().destroy()
+                        $("#historialPagos tbody").empty()
+
+                        resultado.datos.forEach((pago) => {
+                            const tr = document.createElement("tr")
+                            const fecha = document.createElement("td")
+                            const referencia = document.createElement("td")
+                            const monto = document.createElement("td")
+                            const moneda = document.createElement("td")
+
+                            fecha.innerText = pago.FECHA
+                            referencia.innerText = pago.REFERENCIA
+                            monto.innerText = "$ " + formatoMoneda(pago.MONTO)
+                            moneda.innerText = pago.MONEDA
+
+                            tr.appendChild(fecha)
+                            tr.appendChild(referencia)
+                            tr.appendChild(monto)
+                            tr.appendChild(moneda)
+
+                            $("#historialPagos tbody").append(tr)
+                        })
+
+                        configuraTabla("historialPagos")
+                    })
+                }
+            </script>
+        HTML;
+
+        $fecha = date('Y-m-d');
+
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Layout de Pagos", [$this->swal2, $this->huellas])));
+        View::set('footer', $this->_contenedor->footer($extraFooter));
+        View::set('fecha', $fecha);
+        View::render("caja_menu_credito_layout");
+    }
+
+    public function GetLayoutPagosCredito()
+    {
+        echo json_encode(CajaAhorroDao::GetLayoutPagosCredito($_POST));
     }
 
     // Registro de solicitudes de retiros mayores de cuentas de ahorro //

@@ -662,6 +662,47 @@ class CajaAhorro extends Model
         }
     }
 
+    public static function GetLayoutPagosCredito($datos)
+    {
+        $query = <<<SQL
+        	SELECT
+                TO_CHAR(FECHA, 'DD/MM/YY') FECHA,
+                CASE
+                    WHEN (PGD.TIPO = 'P' OR PGD.TIPO = 'X') THEN 'P' || PRN.CDGNS || PRN.CDGTPC || FN_DV('P' || PRN.CDGNS || PRN.CDGTPC)
+                    WHEN PGD.TIPO = 'G' THEN '0' || PRN.CDGNS || PRN.CDGTPC || FN_DV('0' || PRN.CDGNS || PRN.CDGTPC)
+                    ELSE 'NO IDENTIFICADO'
+                END REFERENCIA,
+                PGD.MONTO,
+                'MN' MONEDA
+            FROM
+                PAGOSDIA PGD, PRN
+            WHERE
+                PGD.CDGEM = PRN.CDGEM
+                AND PGD.CDGNS = PRN.CDGNS
+                AND PGD.CICLO = PRN.CICLO
+                AND PGD.CDGEM = 'EMPFIN'
+                AND PGD.ESTATUS = 'A'
+                AND PGD.TIPO IN ('P','G', 'X')
+                AND PGD.FECHA BETWEEN TO_DATE(:fechaI, 'YYYY-MM-DD') AND TO_DATE(:fechaF, 'YYYY-MM-DD') 
+            ORDER BY
+                PGD.FECHA
+        SQL;
+
+        $parametros = [
+            'fechaI' => $datos['fechaI'],
+            'fechaF' => $datos['fechaF']
+        ];
+
+        try {
+            $db = new Database();
+            $r = $db->queryAll($query, $parametros);
+            if (count($r) > 0) return self::Responde(true, "Consulta realizada correctamente.", $r);
+            return self::Responde(false, "No se encontraron datos para el rango de fechas seleccionado.", $r);
+        } catch (\Exception $e) {
+            return self::Responde(false, "Ocurrió un error al consultar los datos.", null, $e->getMessage());
+        }
+    }
+
     public static function RegistraOperacion($datos)
     {
         $esDeposito = $datos['esDeposito'] === true || $datos['esDeposito'] === 'true';

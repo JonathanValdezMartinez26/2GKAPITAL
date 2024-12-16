@@ -10,7 +10,7 @@ class SubMenuAhorro
     public $opciones = [
         'CuentaCorriente' => 'Ahorro cuenta corriente',
         'CajaCredito' => 'Caja Crédito',
-        'CreditoPagos' => 'Caja Crédito pagos',
+        'LayoutPagosCredito' => 'Layout de pagos',
         'ContratoCuentaCorriente' => 'Nuevo contrato',
         'SolicitudRetiroCuentaCorriente' => 'Solicitud de retiro',
         'HistorialSolicitudRetiroCuentaCorriente' => 'Procesar solicitudes de retiro'
