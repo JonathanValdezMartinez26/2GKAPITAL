@@ -54,10 +54,29 @@ class PHPSpreadsheet
     {
         return [
             'titulo' => [
+                'font' => [
+                    'bold' => true,
+                    'size' => 12,
+                    'color' => ['rgb' => 'FFFFFF']
+                ],
+                'alignment' => ['horizontal' => Style\Alignment::HORIZONTAL_CENTER],
+                'borders' => [
+                    'allBorders' => ['borderStyle' => Style\Border::BORDER_THIN]
+                ],
+                'fill' => [
+                    'fillType' => Style\Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => '000000']
+                ]
+            ],
+            'encabezado' => [
                 'font' => ['bold' => true],
                 'alignment' => ['horizontal' => Style\Alignment::HORIZONTAL_CENTER],
                 'borders' => [
                     'allBorders' => ['borderStyle' => Style\Border::BORDER_THIN]
+                ],
+                'fill' => [
+                    'fillType' => Style\Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => 'A6A6A6']
                 ]
             ],
             'centrado' => [
@@ -117,7 +136,7 @@ class PHPSpreadsheet
         // Encabezados de columna
         foreach ($columnas as $key => $columna) {
             $hoja->setCellValue($columna['letra'] . '2', $columna['titulo']);
-            $hoja->getStyle($columna['letra'] . '2')->applyFromArray(self::GetEstilosExcel()['titulo']);
+            $hoja->getStyle($columna['letra'] . '2')->applyFromArray(self::GetEstilosExcel()['encabezado']);
             $hoja->getColumnDimension($columna['letra'])->setAutoSize(true);
             if ($columna['total']) array_push($totales, $columna);
         }
@@ -130,7 +149,7 @@ class PHPSpreadsheet
                     ->getFill()
                     ->setFillType(Style\Fill::FILL_SOLID)
                     ->getStartColor()
-                    ->setRGB('F0F0F0');
+                    ->setRGB('C5D9F1');
             }
 
             foreach ($columnas as $key => $columna) {
@@ -197,7 +216,11 @@ class PHPSpreadsheet
                     'left' => ['borderStyle' => Style\Border::BORDER_THIN],
                     'right' => ['borderStyle' => Style\Border::BORDER_THIN]
                 ],
-                'font' => ['bold' => true]
+                'font' => ['bold' => true],
+                'fill' => [
+                    'fillType' => Style\Fill::FILL_SOLID,
+                    'startColor' => ['rgb' => 'A6A6A6']
+                ]
             ]);
 
         // Poner fórmulas para totales
