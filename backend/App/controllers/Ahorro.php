@@ -1940,35 +1940,11 @@ HTML;
                             tr.appendChild(centrarCelda(tdTipo))
                             tr.appendChild(centrarCelda(tdEjecutivo))
 
-                            columnaEdicion(tr)
                             $("#historialPagos tbody").append(tr)
                         })
 
                         configuraTabla("historialPagos")
                     })
-                }
-
-                const columnaEdicion = (tr) => {
-                    const tdEditar = document.createElement("td")
-
-                    const btnEditar = document.createElement("button")
-                    btnEditar.type = "button"
-                    btnEditar.classList.add("btn", "btn-success", "btn-circle")
-                    btnEditar.innerHTML = '<i class="fa fa-edit"></i>'
-                    btnEditar.onclick = () => modalPago(pago)
-
-                    const btnEliminar = document.createElement("button")
-                    btnEliminar.type = "button"
-                    btnEliminar.classList.add("btn", "btn-danger", "btn-circle")
-                    btnEliminar.innerHTML = '<i class="fa fa-trash"></i>'
-                    btnEliminar.onclick = () => eliminaPago(pago)
-
-                    tdEditar.appendChild(btnEditar)
-                    tdEditar.appendChild(btnEliminar)
-
-                    if ("ADMIN" !== "{$_SESSION['perfil']}") tdEditar.classList.add("colAdmin")
-
-                    tr.appendChild(centrarCelda(tdEditar))
                 }
 
                 const modalPago = (pago = null) => {
@@ -2034,67 +2010,6 @@ HTML;
                     })
                 }
 
-                const editarPago = () => {
-                    const monto = $("#montoPago").val()
-
-                    if (parseFloat(monto) <= 0) return showError("Ingrese un monto válido.")
-                    confirmarMovimiento("¿Segúro que desea EDITAR el registro seleccionado?")
-                    .then((continuar) => {
-                        if (!continuar) return
-
-                        const datos = {}
-                        datos.credito = $("#credito").val()
-                        datos.fecha = $("#fechaPago").val()
-                        datos.fecha_aux = $("#fechaOriginalPago").val()
-                        datos.secuencia = $("#secuencia").val()
-                        datos.ciclo = $("#ciclo2").val()
-                        datos.monto = parseFloat(monto)
-                        datos.tipo = $("#tipo").val()
-                        datos.nombre = $("#nombre").val()
-                        datos.usuario = "{$_SESSION['usuario']}"
-                        datos.ejecutivo = $("#ejecutivo2").val()
-                        datos.ejecutivo_nombre = $("#ejecutivo2 :selected").text()
-
-                        consultaServidor("/Ahorro/EditarPagoCredito/", datos, (respuesta) => {
-                            if (!respuesta.success) return showError(respuesta.mensaje)
-                            showSuccess(respuesta.mensaje).then(() => {
-                                $("#modal_pago").modal("hide")
-                                $("#montoPago").val("")
-                                $("#tipo").val("")
-                                $("#historialPagos").DataTable().destroy()
-                                $("#historialPagos tbody").empty()
-                                buscaPagos()
-                            })
-                        })
-                    })
-                }
-
-                const eliminaPago = (pago) => {
-                    confirmarMovimiento("¿Segúro que desea ELIMINAR el registro seleccionado?")
-                    .then((continuar) => {
-                            if (!continuar) return
-
-                            consultaServidor(
-                                "/Ahorro/EliminaPagoCredito/",
-                                {
-                                    cdgns: pago.CDGNS,
-                                    fecha: pago.FECHA,
-                                    secuencia: pago.SECUENCIA,
-                                    usuario: "{$_SESSION['usuario']}"
-                                },
-                                (respuesta) => {
-                                    if (!respuesta.success) return showError(respuesta.mensaje)
-                                    showSuccess(respuesta.mensaje).then(() => {
-                                        $("#historialPagos").DataTable().destroy()
-                                        $("#historialPagos tbody").empty()
-                                        buscaPagos()
-                                    })
-                                }
-                            )
-                        }
-                    )
-                }
-
                 const llenaDatosCredito = () => {
                     $("#cliente").val(datosCredito.ID_CLIENTE)
                     $("#clienteNombre").val(datosCredito.CLIENTE)
@@ -2148,7 +2063,6 @@ HTML;
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Caja de Crédito", [$this->swal2, $this->huellas])));
         View::set('footer', $this->_contenedor->footer($extraFooter));
         View::set('fecha', $fecha);
-        View::set('colAdmin', $_SESSION['perfil'] !== 'ADMIN' ? 'colAdmin' : '');
         View::render("caja_menu_credito");
     }
 

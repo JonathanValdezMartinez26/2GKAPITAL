@@ -141,7 +141,6 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
                                                 <th>Monto</th>
                                                 <th>Tipo</th>
                                                 <th>Ejecutivo</th>
-                                                <th class="<?= $colAdmin ?>">Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
