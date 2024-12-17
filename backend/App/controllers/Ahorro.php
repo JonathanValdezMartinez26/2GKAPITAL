@@ -1947,23 +1947,7 @@ HTML;
                     })
                 }
 
-                const modalPago = (pago = null) => {
-                    if (pago.SECUENCIA){
-                        $("#tituloModal").text("Edición de Pago (Cajera)")
-                        $("#grpSecuencia").prop("style", "display: block;")
-                        $("#registrarPago").prop("style", "display: none;")
-                        $("#editarPago").prop("style", "display: inline-block;")
-
-                        $("#secuencia").val(pago.SECUENCIA)
-                        $("#fechaPago").val(pago.FECHA)
-                        $("#fechaOriginalPago").val(pago.FECHA)
-                        $("#montoPago").val(pago.MONTO)
-                        $("#tipo").val(pago.TIPO)
-                        $("#ejecutivo2").val(pago.CDGOCPE)
-                        $("#modal_pago").modal("show")
-                        return
-                    }
-
+                const modalPago = () => {
                     $("#tituloModal").text("Registro de Pago (Cajera)")
                     $("#grpSecuencia").prop("style", "display: none;")
                     $("#registrarPago").prop("style", "display: inline-block;")
@@ -1981,7 +1965,7 @@ HTML;
                     const monto = $("#montoPago").val()
 
                     if (parseFloat(monto) <= 0) return showError("Ingrese un monto válido.")
-                    confirmarMovimiento("¿Segúro que desea EDITAR el registro seleccionado?")
+                    confirmarMovimiento("¿Segúra que desea realizar el registro del pago?")
                     .then((continuar) => {
                         if (!continuar) return
 
