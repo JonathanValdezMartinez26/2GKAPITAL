@@ -141,7 +141,7 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
                                                 <th>Monto</th>
                                                 <th>Tipo</th>
                                                 <th>Ejecutivo</th>
-                                                <th>Acciones</th>
+                                                <th class="<?= $colAdmin ?>">Acciones</th>
                                             </tr>
                                         </thead>
                                         <tbody>
@@ -272,6 +272,10 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
     .imagen:hover {
         --escala: 1.2;
         cursor: pointer;
+    }
+
+    .colAdmin {
+        display: none;
     }
 </style>
 

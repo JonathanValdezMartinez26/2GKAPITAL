@@ -1920,7 +1920,6 @@ HTML;
                             const tdMonto = document.createElement("td")
                             const tdTipo = document.createElement("td")
                             const tdEjecutivo = document.createElement("td")
-                            const tdEditar = document.createElement("td")
 
                             tdMedio.innerHTML =
                                 '<span class="count_top" style="font-size: 30px"><i class="fa fa-female"></i></span>'
@@ -1932,21 +1931,6 @@ HTML;
                             tdTipo.innerText = pago.TIPO_OP
                             tdEjecutivo.innerText = pago.EJECUTIVO
 
-                            const btnEditar = document.createElement("button")
-                            btnEditar.type = "button"
-                            btnEditar.classList.add("btn", "btn-success", "btn-circle")
-                            btnEditar.innerHTML = '<i class="fa fa-edit"></i>'
-                            btnEditar.onclick = () => modalPago(pago)
-
-                            const btnEliminar = document.createElement("button")
-                            btnEliminar.type = "button"
-                            btnEliminar.classList.add("btn", "btn-danger", "btn-circle")
-                            btnEliminar.innerHTML = '<i class="fa fa-trash"></i>'
-                            btnEliminar.onclick = () => eliminaPago(pago)
-
-                            tdEditar.appendChild(btnEditar)
-                            tdEditar.appendChild(btnEliminar)
-
                             tr.appendChild(centrarCelda(tdMedio))
                             tr.appendChild(centrarCelda(tdSecuencia))
                             tr.appendChild(centrarCelda(tdCdgns))
@@ -1955,13 +1939,36 @@ HTML;
                             tr.appendChild(centrarCelda(tdMonto))
                             tr.appendChild(centrarCelda(tdTipo))
                             tr.appendChild(centrarCelda(tdEjecutivo))
-                            tr.appendChild(centrarCelda(tdEditar))
 
+                            columnaEdicion(tr)
                             $("#historialPagos tbody").append(tr)
                         })
 
                         configuraTabla("historialPagos")
                     })
+                }
+
+                const columnaEdicion = (tr) => {
+                    const tdEditar = document.createElement("td")
+
+                    const btnEditar = document.createElement("button")
+                    btnEditar.type = "button"
+                    btnEditar.classList.add("btn", "btn-success", "btn-circle")
+                    btnEditar.innerHTML = '<i class="fa fa-edit"></i>'
+                    btnEditar.onclick = () => modalPago(pago)
+
+                    const btnEliminar = document.createElement("button")
+                    btnEliminar.type = "button"
+                    btnEliminar.classList.add("btn", "btn-danger", "btn-circle")
+                    btnEliminar.innerHTML = '<i class="fa fa-trash"></i>'
+                    btnEliminar.onclick = () => eliminaPago(pago)
+
+                    tdEditar.appendChild(btnEditar)
+                    tdEditar.appendChild(btnEliminar)
+
+                    if ("ADMIN" !== "{$_SESSION['perfil']}") tdEditar.classList.add("colAdmin")
+
+                    tr.appendChild(centrarCelda(tdEditar))
                 }
 
                 const modalPago = (pago = null) => {
@@ -2141,6 +2148,7 @@ HTML;
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Caja de Crédito", [$this->swal2, $this->huellas])));
         View::set('footer', $this->_contenedor->footer($extraFooter));
         View::set('fecha', $fecha);
+        View::set('colAdmin', $_SESSION['perfil'] !== 'ADMIN' ? 'colAdmin' : '');
         View::render("caja_menu_credito");
     }
 
