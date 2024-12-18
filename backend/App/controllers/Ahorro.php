@@ -221,46 +221,6 @@ script;
             window.open(url, '_blank')
     }
 script;
-    private $imprimeTicket = <<<script
-    const imprimeTicket = async (ticket, sucursal = '', copia = true) => {
-        const espera = swal({ text: "Procesando la solicitud, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
-        const rutaImpresion = 'http://127.0.0.1:5005/api/impresora/ticket'
-        const host = window.location.origin
-        const titulo = 'Ticket: ' + ticket
-        const ruta = host + '/Ahorro/Ticket/?'
-        + 'ticket=' + ticket
-        + '&sucursal=' + sucursal
-        + (copia ? '&copiaCliente=true' : '')
-         
-        // muestraPDF(titulo, ruta)
-        fetch(ruta, {
-            method: 'GET'
-        })
-        .then(resp => resp.blob())
-        .then(blob => {
-            const datos = new FormData()
-            datos.append('ticket', blob)
-             
-            fetch(rutaImpresion, {
-                method: 'POST',
-                body: datos
-            })
-            .then(resp => resp.json())
-            .then(res => {
-                if (!res.success) return showError(res.mensaje)
-                showSuccess(res.mensaje)
-            })
-            .catch(error => {
-                console.error(error)
-                showError('El servicio de impresión no está disponible.')
-            })
-        })
-        .catch(error => {
-            console.error(error)
-            showError('Ocurrió un error al generar el ticket.')
-        })
-    }
-    script;
     private $valida_MCM_Complementos = 'const valida_MCM_Complementos = async () => {
         swal({ text: "Procesando la solicitud, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
         
@@ -1864,6 +1824,7 @@ HTML;
                 {$this->showHuella}
                 {$this->validaHuella}
                 {$this->validarYbuscar}
+                {$this->imprimeTicket}
 
                 let datosCredito = null
 
@@ -1970,6 +1931,7 @@ HTML;
                         if (!continuar) return
 
                         const datos = {}
+                        datos.cliente = datosCredito.ID_CLIENTE
                         datos.credito = $("#credito").val()
                         datos.fecha = $("#fechaPago").val()
                         datos.ciclo = $("#ciclo2").val()
@@ -1979,9 +1941,12 @@ HTML;
                         datos.usuario = "{$_SESSION['usuario']}"
                         datos.ejecutivo = $("#ejecutivo2").val()
                         datos.ejecutivo_nombre = $("#ejecutivo2 :selected").text()
+                        datos.sucursal = "{$_SESSION['cdgco_ahorro']}"
 
                         consultaServidor("/Ahorro/RegistrarPagoCredito/", datos, (respuesta) => {
+                            console.log(respuesta)
                             if (!respuesta.success) return showError(respuesta.mensaje)
+
                             showSuccess(respuesta.mensaje).then(() => {
                                 $("#modal_pago").modal("hide")
                                 $("#montoPago").val("")
@@ -1989,6 +1954,7 @@ HTML;
                                 $("#historialPagos").DataTable().destroy()
                                 $("#historialPagos tbody").empty()
                                 buscaPagos()
+                                imprimeTicket(respuesta.datos.CODIGO, "{$_SESSION['cdgco_ahorro']}", true, "Credito")
                             })
                         })
                     })
@@ -5225,6 +5191,121 @@ html;
         exit;
     }
 
+
+    public function Ticket_Credito()
+    {
+        $ticket = $_GET['ticket'];
+        $sucursal = $_GET['sucursal'] ?? "";
+        $datos = CajaAhorroDao::DatosTicket_Credito($_GET);
+        if (!$datos['success']) {
+            echo "No se encontró información para el ticket: " . $ticket;
+            return;
+        }
+
+        $datos = $datos['datos'];
+        $nombreArchivo = "Ticket de Crédito " . $ticket;
+        $mensajeImpresion = 'Fecha de impresión:<br>' . date('d/m/Y H:i:s');
+        if ($sucursal) {
+            $datosImpresion = CajaAhorroDao::getSucursal($sucursal);
+            $mensajeImpresion = 'Fecha y sucursal de impresión:<br>' . date('d/m/Y H:i:s') . ' - ' . $datosImpresion['NOMBRE'] . ' (' . $datosImpresion['CODIGO'] . ')';
+        }
+
+        $mpdf = new \mPDF([
+            'mode' => 'utf-8',
+            'format' => [80, 190],
+            'default_font_size' => 10,
+            'default_font' => 'Arial',
+            'margin_left' => 0,
+            'margin_right' => 0,
+            'margin_top' => 0,
+            'margin_bottom' => 0,
+            'margin_header' => 0,
+            'margin_footer' => 5,
+        ]);
+        // PIE DE PAGINA
+        $mpdf->SetHTMLFooter('<div style="text-align:center;font-size:10px;font-family:Arial;">' . $mensajeImpresion . '</div>');
+        $mpdf->SetTitle($nombreArchivo);
+        $mpdf->SetMargins(0, 0, 5);
+
+        $tktEjecutivo = $datos['EJECUTIVO'] ? '<label>Recibió: ' . $datos['NOMBRE_EJECUTIVO'] . ' (' . $datos['EJECUTIVO'] . ')</label><br>' : '';
+        $tktSucursal = $datos['SUCURSAL'] ? '<label>Sucursal: ' . $datos['NOMBRE_SUCURSAL'] . ' (' . $datos['SUCURSAL'] . ')</label>' : '';
+        $tktMontoOP = number_format($datos['MONTO'], 2, '.', ',');
+        $tktMontoLetra = self::NumeroLetras($datos['MONTO']);
+
+        $ticketHTML = <<<html
+        <body style="font-family:Helvetica; padding: 0; margin: 0">
+            <div>
+                <div style="text-align:center; font-size: 20px; font-weight: bold;">
+                    <label>2GKAPITAL</label>
+                </div>
+                <div style="text-align:center; font-size: 15px;">
+                    <label>COMPROBANTE DE PAGO DE CRÉDITO</label>
+                </div>
+                <div style="text-align:center; font-size: 14px;margin-top:5px; margin-bottom: 5px">
+                    ***********************************************
+                </div>
+                <div style="font-size: 11px;">
+                    <label>Fecha de la operación: {$datos['FECHA']}</label>
+                    <br>
+                    $tktEjecutivo
+                    $tktSucursal
+                </div>
+                <hr style="height: 2px; background-color: black;">
+                <div style="font-size: 11px;">
+                    <label>Nombre del cliente: {$datos['NOMBRE_CLIENTE']}</label>
+                    <br>
+                    <label>Código de cliente: {$datos['CLIENTE']}</label>
+                    <br>
+                    <label>Número de crédito: {$datos['CREDITO']}</label>
+                    <br>
+                    <label>Ciclo: {$datos['CICLO']}</label>
+                </div>
+                <hr style="height: 2px; background-color: black;">
+                <div style="text-align:center; font-size: 13px; font-weight: bold;">
+                    <label>PAGO PARCIAL DE CRÉDITO</label>
+                </div>
+                <div style="text-align:center; font-size: 14px;margin-top:5px; margin-bottom: 5px; height: 10px;">
+                ***********************************************
+                </div>
+                <div style="height: 120px;">
+                    <div style="text-align:center; font-size: 15px; font-weight: bold; margin-top: 40px;">
+                        <label>RECIBIMOS $ {$tktMontoOP}</label>
+                    </div>
+                    <div style="text-align:center; font-size: 11px;">
+                        <label>($tktMontoLetra)</label>
+                    </div>
+                </div>
+                <div style="text-align:center; font-size: 14px;margin-top:5px; margin-bottom: 5px; height: 10px;">
+                ***********************************************
+                </div>
+                <div style="text-align:center; font-size: 15px; margin-top:25px; font-weight: bold;">
+                    <label>Firma de conformidad del cliente</label>
+                    <div style="text-align:center; font-size: 15px; margin-top:50px; margin-bottom: 5px">
+                        ______________________
+                    </div>
+                </div>
+                <div style="text-align:center; font-size: 12px; font-weight: bold;">
+                    <label>FOLIO DE LA OPERACIÓN</label>
+                    <barcode code="$ticket-{$datos['CLIENTE']}-{$datos['MONTO']}-{$datos['EJECUTIVO']}" type="C128A" size=".60" height="1" />
+                </div>
+            </div>
+        </body>
+        html;
+
+        // Agregar contenido al PDF
+        $mpdf->WriteHTML($ticketHTML);
+
+        if ($_GET['copiaCliente']) {
+            $mpdf->WriteHTML('<div style="text-align:center; font-size: 15px;"><label><b>COPIA SUCURSAL</b></label></div>');
+            $mpdf->AddPage();
+            $mpdf->WriteHTML($ticketHTML);
+            $mpdf->WriteHTML('<div style="text-align:center; font-size: 15px;"><label><b>COPIA CLIENTE</b></label></div>');
+        }
+
+        $mpdf->Output($nombreArchivo . '.pdf', 'I');
+        exit;
+    }
+
     public function TicketArqueo()
     {
         $datos = CajaAhorroDao::DatosTicketArqueo($_GET);
@@ -5754,95 +5835,9 @@ html;
 
     public function toLetras($numero)
     {
-        $cifras = array(
-            0 => 'cero',
-            1 => 'uno',
-            2 => 'dos',
-            3 => 'tres',
-            4 => 'cuatro',
-            5 => 'cinco',
-            6 => 'seis',
-            7 => 'siete',
-            8 => 'ocho',
-            9 => 'nueve',
-            11 => 'once',
-            12 => 'doce',
-            13 => 'trece',
-            14 => 'catorce',
-            15 => 'quince',
-            16 => 'dieciséis',
-            17 => 'diecisiete',
-            18 => 'dieciocho',
-            19 => 'diecinueve',
-            21 => 'veintiuno',
-            22 => 'veintidós',
-            23 => 'veintitrés',
-            24 => 'veinticuatro',
-            25 => 'veinticinco',
-            26 => 'veintiséis',
-            27 => 'veintisiete',
-            28 => 'veintiocho',
-            29 => 'veintinueve',
-            10 => 'diez',
-            20 => 'veinte',
-            30 => 'treinta',
-            40 => 'cuarenta',
-            50 => 'cincuenta',
-            60 => 'sesenta',
-            70 => 'setenta',
-            80 => 'ochenta',
-            90 => 'noventa',
-            100 => 'cien',
-            200 => 'doscientos',
-            300 => 'trescientos',
-            400 => 'cuatrocientos',
-            500 => 'quinientos',
-            600 => 'seiscientos',
-            700 => 'setecientos',
-            800 => 'ochocientos',
-            900 => 'novecientos'
-        );
-
-        $letra = '';
-
-        if ($numero >= 1000000) {
-            $letra .= floor($numero / 1000000) == 1 ? 'un' : $cifras[floor($numero / 1000000)];
-            $numero %= 1000000;
-            $letra .= (floor($numero / 1000000) > 1 ? ' millones' : ' millón') . ($numero > 0 ? ' ' : '');
-            $letra .= $letra == 'un millón' ? ' de' : '';
-        }
-
-        if ($numero >= 100000) {
-            $letra .= floor($numero / 100000) == 1 ? ' cien' : $cifras[floor($numero / 100000) * 100];
-            $numero %= 100000;
-            $letra .= $numero > 1000 ? ' ' : ' mil ';
-        }
-
-        if ($numero >= 1000) {
-            $letra .= floor($numero / 1000) == 1 ? ' un' : $cifras[floor($numero / 1000)];
-            $numero %= 1000;
-            $letra .= ' mil' . ($numero > 0 ? ' ' : '');
-        }
-
-        if ($numero >= 100) {
-            $letra .= $cifras[floor($numero / 100) * 100];
-            $letra .= ($cifras[floor($numero / 100) * 100] === "cien" && $numero % 100 != 0) ? 'to' : '';
-            $numero %= 100;
-            $letra .= $numero > 0 ? ' ' : '';
-        }
-
-        if ($numero >= 30) {
-            $letra .= $cifras[floor($numero / 10) * 10];
-            $numero %= 10;
-            $letra .= $numero > 0 ? ' y' : '';
-        }
-
-
-        if ($numero == 1) $letra .= ' un';
-        else if ($numero == 21) $letra .= ' veintiún';
-        else if ($numero > 0) $letra .= ' ' . $cifras[$numero];
-
-        return trim($letra);
+        $formatter = new \NumberFormatter("es", \NumberFormatter::SPELLOUT);
+        $letras = $formatter->format($numero);
+        return $letras;
     }
 
     public function NumeroLetras($numero, $soloLetras = false)

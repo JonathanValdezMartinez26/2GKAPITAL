@@ -4112,16 +4112,53 @@ sql;
         $monto = $datos['monto'];
         $tipo = $datos['tipo'];
         $nombre = $datos['nombre'];
-        $user = $datos['usuario'];
+        $usuario = $datos['usuario'];
         $ejecutivo = $datos['ejecutivo'];
         $ejecutivo_nombre = $datos['ejecutivo_nombre'];
         $tipo_procedure_ = 1;
         $fecha_aux = "";
 
+        $qry = <<<SQL
+            INSERT INTO TICKETS_CREDITO
+                (FECHA, CLIENTE, CREDITO, CICLO, MONTO, CDGPE, CDG_SUCURSAL)
+            VALUES
+                (SYSDATE, :cliente, :credito, :ciclo, :monto, :usuario, :sucursal)
+        SQL;
+
+        $parametros = [
+            "cliente" => $datos["cliente"],
+            "credito" => $credito,
+            "ciclo" => $ciclo,
+            "monto" => $monto,
+            "usuario" => $usuario,
+            "sucursal" => $datos["sucursal"]
+        ];
+
+        $qryRecuperaTkt = <<<SQL
+            SELECT 
+                CODIGO
+            FROM 
+                TICKETS_CREDITO
+            WHERE 
+                CLIENTE = :cliente
+                AND CREDITO = :credito
+                AND CICLO = :ciclo
+                AND MONTO = :monto
+                AND CDGPE = :usuario
+                AND CDG_SUCURSAL = :sucursal
+            ORDER BY 
+                FECHA DESC
+            FETCH FIRST 1 ROWS ONLY
+        SQL;
+
         try {
             $db = new Database();
-            $r = $db->queryProcedurePago($credito, $ciclo, $monto, $tipo, $nombre, $user,  $ejecutivo, $ejecutivo_nombre,  $tipo_procedure_, $fecha_aux, "", $fecha);
-            if (str_starts_with($r, "1")) return self::Responde(true, "Pago registrado correctamente.");
+            $r = $db->queryProcedurePago($credito, $ciclo, $monto, $tipo, $nombre, $usuario,  $ejecutivo, $ejecutivo_nombre,  $tipo_procedure_, $fecha_aux, "", $fecha);
+            if (str_starts_with($r, "1")) {
+                $db->insertar($qry, $parametros);
+                $tkt = $db->queryOne($qryRecuperaTkt, $parametros);
+                return self::Responde(true, "Pago registrado correctamente.", $tkt);
+            }
             return self::Responde(false, "El pago no se registro.");
         } catch (\Error $e) {
             return self::Responde(false, "Error al registrar pago.", null, $e->getMessage());
@@ -4167,6 +4204,43 @@ sql;
             return self::Responde(false, "El pago no se eliminó.");
         } catch (Exception $e) {
             return self::Responde(false, "Error al eliminar pago.", null, $e->getMessage());
+        }
+    }
+
+    public static function DatosTicket_Credito($datos)
+    {
+        $qry = <<<SQL
+            SELECT
+                TO_CHAR(TC.FECHA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
+                TC.CDGPE EJECUTIVO,
+                CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS NOMBRE_EJECUTIVO,
+                TC.CDG_SUCURSAL SUCURSAL,
+                CO.NOMBRE AS NOMBRE_SUCURSAL,
+                TC.CLIENTE,
+                CONCATENA_NOMBRE(CL.NOMBRE1, CL.NOMBRE2, CL.PRIMAPE, CL.SEGAPE) AS NOMBRE_CLIENTE,
+                TC.MONTO,
+                TC.CREDITO,
+                TC.CICLO
+            FROM 
+                TICKETS_CREDITO TC
+                JOIN PE ON TC.CDGPE = PE.CODIGO AND PE.CDGEM = 'EMPFIN'
+                JOIN CO ON TC.CDG_SUCURSAL = CO.CODIGO
+                JOIN CL ON TC.CLIENTE = CL.CODIGO
+            WHERE 
+                TC.CODIGO = :codigo
+        SQL;
+
+        $parametros = [
+            "codigo" => $datos["ticket"]
+        ];
+
+        try {
+            $mysqli = new Database();
+            $res = $mysqli->queryOne($qry, $parametros);
+            if ($res) return self::Responde(true, "Datos del ticket obtenidos correctamente.", $res);
+            return self::Responde(false, "No se encontraron datos del ticket.");
+        } catch (Exception $e) {
+            return self::Responde(false, "Ocurrió un error al consultar los datos del ticket.", null, $e->getMessage());
         }
     }
 }
