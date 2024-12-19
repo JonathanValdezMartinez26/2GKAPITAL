@@ -4,25 +4,12 @@ namespace App\models;
 
 defined("APPPATH") or die("Access denied");
 
-use \Core\Database;
-use \Core\Database_cultiva;
+use Core\Database;
+use Core\Model;
 use Exception;
 
-class AdminSucursales
+class AdminSucursales extends Model
 {
-    public static function Responde($respuesta, $mensaje, $datos = null, $error = null)
-    {
-        $res = array(
-            "success" => $respuesta,
-            "mensaje" => $mensaje
-        );
-
-        if ($datos !== null) $res['datos'] = $datos;
-        if ($error !== null) $res['error'] = $error;
-
-        return json_encode($res);
-    }
-
     public static function GetSucursalesActivas()
     {
         $query = <<<sql
@@ -249,8 +236,7 @@ sql;
                     "usuario" => $datos["usuario"]
                 ]);
 
-                $fondeo = json_decode($fondeo);
-                if (!$fondeo->success) return self::Responde(false, "Error al activar sucursal", null, $fondeo->error);
+                if (!$fondeo['success']) return self::Responde(false, "Error al activar sucursal", null, $fondeo['error']);
             }
 
             return self::Responde(true, "Sucursal activada correctamente");
@@ -710,7 +696,7 @@ sql;
                 TO_CHAR(SYSDATE, 'DD/MM/YYYY') FECHA,
                 SEA.CDG_SUCURSAL SUCURSAL,
                 CO.NOMBRE,
-                TO_CHAR(SEA.SALDO, 'FM$999,999,999.00') SALDO,
+                SEA.SALDO,
                 'En operación' DIFERENCIA,
                 CASE
                     WHEN saldo_maximo = saldo_minimo THEN 0
@@ -727,7 +713,7 @@ sql;
                 TO_CHAR(A.FECHA, 'DD/MM/YYYY') FECHA,
                 SEA.CDG_SUCURSAL SUCURSAL,
                 CO.NOMBRE,
-                TO_CHAR(A.SALDO_SUCURSAL, 'FM$999,999,999.00') SALDO,
+                A.SALDO_SUCURSAL AS SALDO,
                 TO_CHAR(A.MONTO - A.SALDO_SUCURSAL, 'FM$999,999,999.00') DIFERENCIA,
                 CASE
                     WHEN saldo_maximo = saldo_minimo THEN 0
@@ -768,35 +754,35 @@ sql;
 
     public static function GetHistorialFondeosSucursal($datos)
     {
-        $qry = <<<sql
-        SELECT
-            TO_CHAR(SMA.FECHA, 'DD/MM/YYYY') AS FECHA,
-            SEA.CDG_SUCURSAL AS SUCURSAL,
-            CO.NOMBRE AS NOMBRE_SUCURSAL,
-            SMA.CDG_USUARIO AS USUARIO,
-            (
-                SELECT
-                    CONCATENA_NOMBRE(NOMBRE1, NOMBRE2, PRIMAPE, SEGAPE)
-                FROM
-                    PE
-                WHERE
-                    CODIGO = SMA.CDG_USUARIO
-                    AND CDGEM = 'EMPFIN'
-            ) AS NOMBRE_USUARIO,
-            CASE
-                WHEN SMA.CODIGO = (SELECT MIN(CODIGO) FROM SUC_MOVIMIENTOS_AHORRO WHERE CDG_ESTADO_AHORRO = SMA.CDG_ESTADO_AHORRO) THEN 'FONDEO INICIAL (APERTURA)'
-                ELSE 'FONDEO'
-            END AS MOVIMIENTO,
-            TO_CHAR(SMA.MONTO, 'FM$999,999,999.00') AS MONTO
-        FROM
-            SUC_MOVIMIENTOS_AHORRO SMA
-        JOIN
-            SUC_ESTADO_AHORRO SEA ON SEA.CODIGO = SMA.CDG_ESTADO_AHORRO
-        JOIN
-            CO ON CO.CODIGO = SEA.CDG_SUCURSAL
-        WHERE
-            SMA.MOVIMIENTO = '1'
-        sql;
+        $qry = <<<SQL
+            SELECT
+                TO_CHAR(SMA.FECHA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
+                SEA.CDG_SUCURSAL AS SUCURSAL,
+                CO.NOMBRE AS NOMBRE_SUCURSAL,
+                SMA.CDG_USUARIO AS USUARIO,
+                (
+                    SELECT
+                        CONCATENA_NOMBRE(NOMBRE1, NOMBRE2, PRIMAPE, SEGAPE)
+                    FROM
+                        PE
+                    WHERE
+                        CODIGO = SMA.CDG_USUARIO
+                        AND CDGEM = 'EMPFIN'
+                ) AS NOMBRE_USUARIO,
+                CASE
+                    WHEN SMA.CODIGO = (SELECT MIN(CODIGO) FROM SUC_MOVIMIENTOS_AHORRO WHERE CDG_ESTADO_AHORRO = SMA.CDG_ESTADO_AHORRO) THEN 'FONDEO INICIAL (APERTURA)'
+                    ELSE 'FONDEO'
+                END AS MOVIMIENTO,
+                SMA.MONTO
+            FROM
+                SUC_MOVIMIENTOS_AHORRO SMA
+            JOIN
+                SUC_ESTADO_AHORRO SEA ON SEA.CODIGO = SMA.CDG_ESTADO_AHORRO
+            JOIN
+                CO ON CO.CODIGO = SEA.CDG_SUCURSAL
+            WHERE
+                SMA.MOVIMIENTO = '1'
+        SQL;
 
 
         if ($datos['sucursal']) $qry .= " AND SEA.CDG_SUCURSAL = '{$datos['sucursal']}'";
@@ -814,32 +800,32 @@ sql;
 
     public static function GetHistorialRetirosSucursal($datos)
     {
-        $qry = <<<sql
-        SELECT
-            TO_CHAR(SMA.FECHA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
-            SEA.CDG_SUCURSAL AS SUCURSAL,
-            CO.NOMBRE AS NOMBRE_SUCURSAL,
-            SMA.CDG_USUARIO AS USUARIO,
-            (
-                SELECT
-                    CONCATENA_NOMBRE(NOMBRE1, NOMBRE2, PRIMAPE, SEGAPE)
-                FROM
-                    PE
-                WHERE
-                    CODIGO = SMA.CDG_USUARIO
-                    AND CDGEM = 'EMPFIN'
-            ) AS NOMBRE_USUARIO,
-            'RETIRO' AS MOVIMIENTO,
-            TO_CHAR(SMA.MONTO, 'FM$999,999,999.00') AS MONTO
-        FROM
-            SUC_MOVIMIENTOS_AHORRO SMA
-        JOIN
-            SUC_ESTADO_AHORRO SEA ON SEA.CODIGO = SMA.CDG_ESTADO_AHORRO
-        JOIN
-            CO ON CO.CODIGO = SEA.CDG_SUCURSAL
-        WHERE
-            SMA.MOVIMIENTO = '0'
-        sql;
+        $qry = <<<SQL
+            SELECT
+                TO_CHAR(SMA.FECHA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
+                SEA.CDG_SUCURSAL AS SUCURSAL,
+                CO.NOMBRE AS NOMBRE_SUCURSAL,
+                SMA.CDG_USUARIO AS USUARIO,
+                (
+                    SELECT
+                        CONCATENA_NOMBRE(NOMBRE1, NOMBRE2, PRIMAPE, SEGAPE)
+                    FROM
+                        PE
+                    WHERE
+                        CODIGO = SMA.CDG_USUARIO
+                        AND CDGEM = 'EMPFIN'
+                ) AS NOMBRE_USUARIO,
+                'RETIRO' AS MOVIMIENTO,
+                SMA.MONTO
+            FROM
+                SUC_MOVIMIENTOS_AHORRO SMA
+            JOIN
+                SUC_ESTADO_AHORRO SEA ON SEA.CODIGO = SMA.CDG_ESTADO_AHORRO
+            JOIN
+                CO ON CO.CODIGO = SEA.CDG_SUCURSAL
+            WHERE
+                SMA.MOVIMIENTO = '0'
+        SQL;
 
         if (isset($datos['sucursal'])) $qry .= " AND SEA.CDG_SUCURSAL = '{$datos['sucursal']}'";
         if (isset($datos['fechaI']) && isset($datos['fechaF'])) $qry .= " AND TRUNC(SMA.FECHA) BETWEEN TO_DATE('{$datos['fechaI']}', 'YYYY-MM-DD') AND TO_DATE('{$datos['fechaF']}', 'YYYY-MM-DD')";
@@ -847,7 +833,7 @@ sql;
         try {
             $mysqli = new Database();
             $res = $mysqli->queryAll($qry);
-            if (count($res) === 0) return self::Responde(false, "No se encontraron registros de retiros para los parámetros proporcionados.");
+            if (count($res) === 0) return self::Responde(false, "No se encontraron registros de retiros para los parámetros proporcionados.", []);
             return self::Responde(true, "Retiros encontrados.", $res);
         } catch (Exception $e) {
             return self::Responde(false, "Error al buscar registros de retiros.", null, $e->getMessage());

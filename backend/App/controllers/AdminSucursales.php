@@ -13,7 +13,6 @@ use \App\models\CajaAhorro as CajaAhorroDao;
 class AdminSucursales extends Controller
 {
     private $_contenedor;
-    private $XLSX = '<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>';
     private $showError = 'const showError = (mensaje) => swal({ text: mensaje, icon: "error" })';
     private $showSuccess = 'const showSuccess = (mensaje) => swal({ text: mensaje, icon: "success" })';
     private $showInfo = 'const showInfo = (mensaje) => swal({ text: mensaje, icon: "info" })';
@@ -311,7 +310,7 @@ class AdminSucursales extends Controller
         $extraFooter = <<<HTML
             <script>
                 {$this->configuraTabla}
-                {$this->exportaExcel}
+                {$this->descargaExcel}
                 {$this->consultaServidor}
                 {$this->validaFIF}
                 {$this->showError}
@@ -322,7 +321,14 @@ class AdminSucursales extends Controller
                     configuraTabla("saldos")
                 })
                 
-                const imprimeExcel = () => exportaExcel("saldos", "Saldos de sucursales")
+                const imprimeExcel = () => {
+                    const datos = {
+                        fechaI: $("#fechaI").val(),
+                        fechaF: $("#fechaF").val()
+                    }
+
+                    descargaExcel("/AdminSucursales/GetSaldosSucursalExcel/?"+$.param(datos))
+                }
                 
                 const consultaSaldos = () => {
                     const fechaI = document.querySelector("#fechaI").value
@@ -350,7 +356,7 @@ class AdminSucursales extends Controller
         $filas = self::GetSaldosSucursal();
         $filas = $filas['success'] ? $filas['datos'] : "";
 
-        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Saldos de sucursales", [$this->XLSX])));
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Saldos de sucursales")));
         View::set('footer', $this->_contenedor->footer($extraFooter));
         View::set('filas', $filas);
         View::set('fechaI', date('Y-m-d'));
@@ -390,6 +396,23 @@ class AdminSucursales extends Controller
         $r = ["success" => true, "datos" => $filas];
         if ($_SERVER['REQUEST_METHOD'] === 'POST') echo json_encode($r);
         else return $r;
+    }
+
+    public function GetSaldosSucursalExcel()
+    {
+        $estilos = \PHPSpreadsheet::GetEstilosExcel();
+
+        $columnas = [
+            \PHPSpreadsheet::ColumnaExcel('FECHA', 'Fecha', ['estilo' => $estilos['fecha']]),
+            \PHPSpreadsheet::ColumnaExcel('SUCURSAL', 'Sucursal', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE', 'Nombre'),
+            \PHPSpreadsheet::ColumnaExcel('SALDO', 'Saldo', ['estilo' => $estilos['moneda']]),
+            \PHPSpreadsheet::ColumnaExcel('DIFERENCIA', 'Diferencia', ['estilo' => $estilos['moneda']]),
+            \PHPSpreadsheet::ColumnaExcel('PORCENTAJE', 'Capacidad Operativa', ['estilo' => $estilos['porcentaje']])
+        ];
+
+        $filas = AdminSucursalesDao::GetSaldosSucursales($_GET);
+        \PHPSpreadsheet::GeneraExcel('Reporte de saldos sucursales', 'Reporte', 'Saldos Sucursales', $columnas, $filas);
     }
 
     // Validar Transacciones Día
@@ -528,8 +551,7 @@ class AdminSucursales extends Controller
 
     public function AplicarFondeo()
     {
-        $res = AdminSucursalesDao::AplicarFondeo($_POST);
-        echo $res;
+        echo json_encode(AdminSucursalesDao::AplicarFondeo($_POST));
     }
 
     // Egreso de efectivo de sucursal
@@ -655,14 +677,12 @@ class AdminSucursales extends Controller
 
     public function AplicarRetiro()
     {
-        $res = AdminSucursalesDao::AplicarRetiro($_POST);
-        echo $res;
+        echo json_encode(AdminSucursalesDao::AplicarRetiro($_POST));
     }
 
     public function GetDatos()
     {
-        $datos = AdminSucursalesDao::GetDatosFondeoRetiro($_POST);
-        echo $datos;
+        echo json_encode(AdminSucursalesDao::GetDatosFondeoRetiro($_POST));
     }
 
     //********************Log de transacciones de ahorro********************//
@@ -952,35 +972,32 @@ class AdminSucursales extends Controller
 
     public function GetMontoSucursal()
     {
-        $monto = AdminSucursalesDao::GetMontoSucursal($_POST['sucursal']);
-        echo $monto;
+        echo json_encode(AdminSucursalesDao::GetMontoSucursal($_POST['sucursal']));
     }
 
     public function GetCajeras()
     {
-        $cajeras = AdminSucursalesDao::GetCajeras($_POST['sucursal']);
-        echo $cajeras;
+        echo json_encode(AdminSucursalesDao::GetCajeras($_POST['sucursal']));
     }
 
     public function GetHorarioCajera()
     {
-        $horario = AdminSucursalesDao::GetHorarioCajera($_POST);
-        echo $horario;
+        echo json_encode(AdminSucursalesDao::GetHorarioCajera($_POST));
     }
 
     public function ActivarSucursal()
     {
-        echo AdminSucursalesDao::ActivarSucursal($_POST);
+        echo json_encode(AdminSucursalesDao::ActivarSucursal($_POST));
     }
 
     public function GetMontosApertura()
     {
-        echo AdminSucursalesDao::GetMontosApertura($_POST['sucursal']);
+        echo json_encode(AdminSucursalesDao::GetMontosApertura($_POST['sucursal']));
     }
 
     public function GuardarParametrosSucursal()
     {
-        echo AdminSucursalesDao::GuardarParametrosSucursal($_POST);
+        echo json_encode(AdminSucursalesDao::GuardarParametrosSucursal($_POST));
     }
 
     ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -2706,10 +2723,10 @@ html;
     public function ConfiguracionParametros()
     {
         $extraFooter = <<<script
-        <script>
-         
-        </script>
-script;
+            <script>
+            
+            </script>
+        script;
 
         $opcSucursales = "";
         $tabla = "";
@@ -2723,59 +2740,66 @@ script;
 
     public function HistorialFondeoSucursal()
     {
-        $extraFooter = <<<script
-        <script>
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->confirmarMovimiento}
-            {$this->consultaServidor}
-            {$this->configuraTabla}
-            {$this->noSubmit}
-            {$this->exportaExcel}
-            {$this->crearFilas}
-         
-            $(document).ready(() => {
-                configuraTabla("fondeos")
-                $("#export_excel_consulta").click(() => imprimeExcel("fondeos"))
-            })
-             
-            const imprimeExcel = (id) => exportaExcel(id, 'Historial Fondeo Sucursal')
-             
-            const validaFechas = () => {
-                const fechaI = $("#fechaI").val()
-                const fechaF = $("#fechaF").val()
-                 
-                if (fechaI === "" || fechaF === "") return showError("Debe seleccionar ambas fechas.")
-                if (fechaI > fechaF) {
-                    $("#fechaI").val(fechaF)
-                    return showError("La fecha inicial no puede ser mayor a la fecha final.")
+        $extraFooter = <<<HTML
+            <script>
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->confirmarMovimiento}
+                {$this->consultaServidor}
+                {$this->configuraTabla}
+                {$this->noSubmit}
+                {$this->descargaExcel}
+                {$this->crearFilas}
+            
+                $(document).ready(() => {
+                    configuraTabla("fondeos")
+                    $("#export_excel_consulta").click(() => imprimeExcel("fondeos"))
+                })
+                
+                const imprimeExcel = (id) => {
+                    const datos = {
+                        fechaI: $("#fechaI").val(),
+                        fechaF: $("#fechaF").val()
+                    }
+
+                    descargaExcel("/AdminSucursales/GetHistorialFondeoSucursalExcel/?"+$.param(datos))
                 }
-            }
-             
-            const buscarFondeos = () => {
-                const datos = {
-                    fechaI: $("#fechaI").val(),
-                    fechaF: $("#fechaF").val()
+                
+                const validaFechas = () => {
+                    const fechaI = $("#fechaI").val()
+                    const fechaF = $("#fechaF").val()
+                    
+                    if (fechaI === "" || fechaF === "") return showError("Debe seleccionar ambas fechas.")
+                    if (fechaI > fechaF) {
+                        $("#fechaI").val(fechaF)
+                        return showError("La fecha inicial no puede ser mayor a la fecha final.")
+                    }
                 }
-                 
-                if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
-                 
-                consultaServidor(
-                    "/AdminSucursales/GetHistorialFondeosSucursal/",
-                    $.param(datos),
-                    (resultado) => {
-                        $("#fondeos").DataTable().destroy()
-                        $("#fondeos tbody").html("")
-                         
-                        if (!resultado.success) showError(resultado.mensaje)
-                        else $("#fondeos tbody").html(creaFilas(resultado.datos))
-                        
-                        configuraTabla("fondeos")
-                    })
-            }
-        </script>
-        script;
+                
+                const buscarFondeos = () => {
+                    const datos = {
+                        fechaI: $("#fechaI").val(),
+                        fechaF: $("#fechaF").val()
+                    }
+                    
+                    if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+                    
+                    consultaServidor(
+                        "/AdminSucursales/GetHistorialFondeosSucursal/",
+                        $.param(datos),
+                        (resultado) => {
+                            $("#fondeos").DataTable().destroy()
+                            $("#fondeos tbody").html("")
+                            
+                            if (!resultado.success) showError(resultado.mensaje)
+                            else $("#fondeos tbody").html(creaFilas(resultado.datos))
+                            
+                            configuraTabla("fondeos")
+                        })
+                }
+            </script>
+        HTML;
 
         $fechaI = date('Y-m-d');
         $fechaF = date('Y-m-d');
@@ -2786,20 +2810,20 @@ script;
 
         if ($_SESSION['usuario'] !== 'AMGM') $param['sucursal'] = $_SESSION['cdgco_ahorro'];
         $datos = AdminSucursalesDao::GetHistorialFondeosSucursal($param);
-        $datos = json_decode($datos, true);
 
         $filas = "";
         if ($datos['success']) {
             foreach ($datos['datos'] as $key => $value) {
                 $filas .= "<tr>";
                 foreach ($value as $key2 => $value2) {
+                    if ($key2 === 'MONTO') $value2 = '$' . number_format($value2, 2, '.', ',');
                     $filas .= "<td>{$value2}</td>";
                 }
                 $filas .= "</tr>";
             }
         }
 
-        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Historial Fondeo Sucursal", [$this->XLSX])));
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Historial Fondeo Sucursal")));
         View::set('footer', $this->_contenedor->footer($extraFooter));
         View::set('fechaI', $fechaI);
         View::set('fechaF', $fechaF);
@@ -2808,85 +2832,132 @@ script;
         View::render("caja_admin_historial_fondeo");
     }
 
+    public function GetHistorialFondeoSucursalExcel($datos = null)
+    {
+        $estilos = \PHPSpreadsheet::GetEstilosExcel();
+
+        $columnas = [
+            \PHPSpreadsheet::ColumnaExcel('FECHA', 'Fecha', ['estilo' => $estilos['fecha_hora']]),
+            \PHPSpreadsheet::ColumnaExcel('SUCURSAL', 'Sucursal', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_SUCURSAL', 'Nombre Sucursal'),
+            \PHPSpreadsheet::ColumnaExcel('USUARIO', 'Ejecutivo', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_USUARIO', 'Nombre Ejecutivo'),
+            \PHPSpreadsheet::ColumnaExcel('MOVIMIENTO', 'Movimiento'),
+            \PHPSpreadsheet::ColumnaExcel('MONTO', 'Monto', ['estilo' => $estilos['moneda'], 'total' => true]),
+        ];
+
+        $datos = AdminSucursalesDao::GetHistorialFondeosSucursal($_GET);
+        $filas = $datos['success'] ? $datos['datos'] : [];
+
+        \PHPSpreadsheet::GeneraExcel("Reporte", 'Reporte', 'Historial Fondeo Sucursal', $columnas, $filas);
+    }
+
     public function HistorialRetiroSucursal()
     {
-        $extraFooter = <<<script
-        <script>
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->confirmarMovimiento}
-            {$this->consultaServidor}
-            {$this->configuraTabla}
-            {$this->noSubmit}
-            {$this->exportaExcel}
-            {$this->crearFilas}
-         
-            $(document).ready(() => {
-                configuraTabla("retiros")
-                $("#export_excel_consulta").click(() => imprimeExcel("retiros"))
-            })
-             
-            const imprimeExcel = (id) => exportaExcel(id, 'Historial Retiros Sucursal')
-             
-            const validaFechas = () => {
-                const fechaI = $("#fechaI").val()
-                const fechaF = $("#fechaF").val()
-                 
-                if (fechaI === "" || fechaF === "") return showError("Debe seleccionar ambas fechas.")
-                if (fechaI > fechaF) {
-                    $("#fechaI").val(fechaF)
-                    return showError("La fecha inicial no puede ser mayor a la fecha final.")
-                }
-            }
-             
-            const buscarRetirosSucursal  = () => {
-                const datos = {
-                    fechaI: $("#fechaI").val(),
-                    fechaF: $("#fechaF").val()
-                }
-                 
-                if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+        $extraFooter = <<<HTML
+            <script>
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->confirmarMovimiento}
+                {$this->consultaServidor}
+                {$this->configuraTabla}
+                {$this->noSubmit}
+                {$this->descargaExcel}
+                {$this->crearFilas}
+            
+                $(document).ready(() => {
+                    configuraTabla("retiros")
+                    $("#export_excel_consulta").click(() => imprimeExcel("retiros"))
+                })
                 
-                consultaServidor(
-                    "/AdminSucursales/GetHistorialRetirosSucursal/",
-                    $.param(datos),
-                    (resultado) => {
-                        $("#retiros").DataTable().destroy()
-                        $("#retiros tbody").html("")
-                        
-                        if (!resultado.success) showError(resultado.mensaje)
-                        else $("#retiros tbody").html(creaFilas(resultado.datos))
-                        
-                        configuraTabla("retiros")
-                    })
-            }
-        </script>
-script;
+                const imprimeExcel = (id) => {
+                    const datos = {
+                        fechaI: $("#fechaI").val(),
+                        fechaF: $("#fechaF").val()
+                    }
+
+                    descargaExcel("/AdminSucursales/GetHistorialRetirosSucursalExcel/?"+$.param(datos))
+                }
+                
+                const validaFechas = () => {
+                    const fechaI = $("#fechaI").val()
+                    const fechaF = $("#fechaF").val()
+                    
+                    if (fechaI === "" || fechaF === "") return showError("Debe seleccionar ambas fechas.")
+                    if (fechaI > fechaF) {
+                        $("#fechaI").val(fechaF)
+                        return showError("La fecha inicial no puede ser mayor a la fecha final.")
+                    }
+                }
+                
+                const buscarRetirosSucursal  = () => {
+                    const datos = {
+                        fechaI: $("#fechaI").val(),
+                        fechaF: $("#fechaF").val()
+                    }
+                    
+                    if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+                    
+                    consultaServidor(
+                        "/AdminSucursales/GetHistorialRetirosSucursal/",
+                        $.param(datos),
+                        (resultado) => {
+                            $("#retiros").DataTable().destroy()
+                            $("#retiros tbody").html("")
+                            
+                            if (!resultado.success) showError(resultado.mensaje)
+                            else $("#retiros tbody").html(creaFilas(resultado.datos))
+                            
+                            configuraTabla("retiros")
+                        })
+                }
+            </script>
+        HTML;
 
         $fechaI = date('Y-m-d');
         $fechaF = date('Y-m-d');
         $datos = AdminSucursalesDao::GetHistorialRetirosSucursal(['fechaI' => $fechaI, 'fechaF' => $fechaF, 'sucursal' => $_SESSION['cdgco_ahorro']]);
-        $datos = json_decode($datos, true);
 
         $filas = "";
         if ($datos['success']) {
             foreach ($datos['datos'] as $key => $value) {
                 $filas .= "<tr>";
                 foreach ($value as $key2 => $value2) {
+                    if ($key2 === 'MONTO') $value2 = '$' . number_format($value2, 2, '.', ',');
                     $filas .= "<td>{$value2}</td>";
                 }
                 $filas .= "</tr>";
             }
         }
 
-        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Historial Retiro Sucursal", [$this->XLSX])));
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Historial Retiro Sucursal")));
         View::set('footer', $this->_contenedor->footer($extraFooter));
         View::set('fechaI', $fechaI);
         View::set('fechaF', $fechaF);
         View::set('filas', $filas);
         View::set('opcSucursales', self::GetSucursalesReporteria());
         View::render("caja_admin_historial_retiro_sucursal");
+    }
+
+    public function GetHistorialRetirosSucursalExcel($datos = null)
+    {
+        $estilos = \PHPSpreadsheet::GetEstilosExcel();
+
+        $columnas = [
+            \PHPSpreadsheet::ColumnaExcel('FECHA', 'Fecha', ['estilo' => $estilos['fecha_hora']]),
+            \PHPSpreadsheet::ColumnaExcel('SUCURSAL', 'Sucursal', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_SUCURSAL', 'Nombre Sucursal'),
+            \PHPSpreadsheet::ColumnaExcel('USUARIO', 'Ejecutivo', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_USUARIO', 'Nombre Ejecutivo'),
+            \PHPSpreadsheet::ColumnaExcel('MOVIMIENTO', 'Movimiento'),
+            \PHPSpreadsheet::ColumnaExcel('MONTO', 'Monto', ['estilo' => $estilos['moneda'], 'total' => true]),
+        ];
+
+        $datos = AdminSucursalesDao::GetHistorialRetirosSucursal($_GET);
+        $filas = $datos['success'] ? $datos['datos'] : [];
+
+        \PHPSpreadsheet::GeneraExcel("Reporte", 'Reporte', 'Historial Retiros Sucursal', $columnas, $filas);
     }
 
     public function SituacionAhorro()
@@ -2971,10 +3042,12 @@ script;
 
     public function GetSituacionAhorro($datos = null)
     {
-        if ($_POST)
-            echo AdminSucursalesDao::GetSituacionAhorro($_POST);
+        if ($_POST) {
+            echo json_encode(AdminSucursalesDao::GetSituacionAhorro($_POST));
+            return;
+        }
 
-        return json_decode(AdminSucursalesDao::GetSituacionAhorro($datos), true);
+        return AdminSucursalesDao::GetSituacionAhorro($datos);
     }
 
     public function ExcelSituacionAhorro()
@@ -2982,29 +3055,29 @@ script;
         $estilos = \PHPSpreadsheet::GetEstilosExcel();
 
         $columnas = [
-            \PHPSpreadsheet::ColumnaExcel('A', 'ID_SOCIO', 'ID Cliente', $estilos['centrado']),
-            \PHPSpreadsheet::ColumnaExcel('B', 'NOMBRE_SOCIO', 'Nombre Cliente'),
-            \PHPSpreadsheet::ColumnaExcel('C', 'ID_PQ', 'ID Peque', $estilos['centrado']),
-            \PHPSpreadsheet::ColumnaExcel('D', 'NOMBRE_PQ', 'Nombre Peque'),
-            \PHPSpreadsheet::ColumnaExcel('E', 'SUCURSAL', 'Sucursal'),
-            \PHPSpreadsheet::ColumnaExcel('F', 'TIPO_CUENTA', 'Producto'),
-            \PHPSpreadsheet::ColumnaExcel('G', 'FECHA_INICIO', 'Fecha Inicio', $estilos['fecha']),
-            \PHPSpreadsheet::ColumnaExcel('H', 'FECHA_VENCIMIENTO', 'Fecha Vencimiento', $estilos['fecha']),
-            \PHPSpreadsheet::ColumnaExcel('I', 'PLAZO', 'Plazo', $estilos['centrado']),
-            \PHPSpreadsheet::ColumnaExcel('J', 'COMISION_APERTURA', 'Comisión', $estilos['moneda'], true),
-            \PHPSpreadsheet::ColumnaExcel('K', 'BONIFICACION', 'Bonificación', $estilos['moneda'], true),
-            \PHPSpreadsheet::ColumnaExcel('L', 'SALDO_AHORRO', 'Saldo Ahorro', $estilos['moneda'], true),
-            \PHPSpreadsheet::ColumnaExcel('M', 'FECHA_INVERSION', 'Fecha Inversión', $estilos['fecha']),
-            \PHPSpreadsheet::ColumnaExcel('N', 'SALDO_INVERSION', 'Saldo Inversión', $estilos['moneda'], true),
-            \PHPSpreadsheet::ColumnaExcel('O', 'SALDO_SOCIO', 'Saldo Total', $estilos['moneda'], true),
-            \PHPSpreadsheet::ColumnaExcel('P', 'EJECUTIVO', 'Ejecutivo'),
-            \PHPSpreadsheet::ColumnaExcel('Q', 'TASA', 'Tasa', $estilos['porcentaje']),
-            \PHPSpreadsheet::ColumnaExcel('R', 'RENDIMIENTO', 'Rendimiento Total', $estilos['moneda'], true)
+            \PHPSpreadsheet::ColumnaExcel('ID_SOCIO', 'ID Cliente', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_SOCIO', 'Nombre Cliente'),
+            \PHPSpreadsheet::ColumnaExcel('ID_PQ', 'ID Peque', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_PQ', 'Nombre Peque'),
+            \PHPSpreadsheet::ColumnaExcel('SUCURSAL', 'Sucursal'),
+            \PHPSpreadsheet::ColumnaExcel('TIPO_CUENTA', 'Producto'),
+            \PHPSpreadsheet::ColumnaExcel('FECHA_INICIO', 'Fecha Inicio', ['estilo' => $estilos['fecha']]),
+            \PHPSpreadsheet::ColumnaExcel('FECHA_VENCIMIENTO', 'Fecha Vencimiento', ['estilo' => $estilos['fecha']]),
+            \PHPSpreadsheet::ColumnaExcel('PLAZO', 'Plazo', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('COMISION_APERTURA', 'Comisión', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('BONIFICACION', 'Bonificación', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('SALDO_AHORRO', 'Saldo Ahorro', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('FECHA_INVERSION', 'Fecha Inversión', ['estilo' => $estilos['fecha']]),
+            \PHPSpreadsheet::ColumnaExcel('SALDO_INVERSION', 'Saldo Inversión', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('SALDO_SOCIO', 'Saldo Total', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('EJECUTIVO', 'Ejecutivo'),
+            \PHPSpreadsheet::ColumnaExcel('TASA', 'Tasa', ['estilo' => $estilos['porcentaje']]),
+            \PHPSpreadsheet::ColumnaExcel('RENDIMIENTO', 'Rendimiento Total', ['estilo' => $estilos['moneda'], 'total' => true])
         ];
 
-        $filas = self::GetSituacionAhorro($_GET);
-        if (!$filas['success']) $filas['datos'] = [];
-        \PHPSpreadsheet::GeneraExcel('Reporte de situación de ahorro', 'Reporte', 'Situación Ahorro', $columnas, $filas['datos']);
+        $datos = self::GetSituacionAhorro($_GET);
+        $filas = $datos['success'] ? $datos['datos'] : [];
+        \PHPSpreadsheet::GeneraExcel('Reporte de situación de ahorro', 'Reporte', 'Situación Ahorro', $columnas, $filas);
     }
 
     public function GetSucursalesReporteria()
@@ -3098,9 +3171,9 @@ script;
     public function GetDevengoAhorro($datos = null)
     {
         if ($_POST)
-            echo AdminSucursalesDao::GetDevengoAhorro($_POST);
+            echo json_encode(AdminSucursalesDao::GetDevengoAhorro($_POST));
 
-        return json_decode(AdminSucursalesDao::GetDevengoAhorro($datos), true);
+        return AdminSucursalesDao::GetDevengoAhorro($datos);
     }
 
     public function ExcelDevengoAhorro()
@@ -3108,22 +3181,22 @@ script;
         $estilos = \PHPSpreadsheet::GetEstilosExcel();
 
         $columnas = [
-            \PHPSpreadsheet::ColumnaExcel('A', 'ID_SOCIO', 'ID Cliente', $estilos['centrado']),
-            \PHPSpreadsheet::ColumnaExcel('B', 'NOMBRE_SOCIO', 'Nombre Cliente'),
-            \PHPSpreadsheet::ColumnaExcel('C', 'ID_PQ', 'ID Peque', $estilos['centrado']),
-            \PHPSpreadsheet::ColumnaExcel('D', 'NOMBRE_PQ', 'Nombre Peque'),
-            \PHPSpreadsheet::ColumnaExcel('E', 'PRODUCTO', 'Producto'),
-            \PHPSpreadsheet::ColumnaExcel('F', 'TASA', 'Tasa', $estilos['porcentaje']),
-            \PHPSpreadsheet::ColumnaExcel('G', 'ID_PROMOTOR', 'ID Promotor', $estilos['centrado']),
-            \PHPSpreadsheet::ColumnaExcel('H', 'NOMBRE_PROMOTOR', 'Nombre Promotor'),
-            \PHPSpreadsheet::ColumnaExcel('I', 'FECHA_APERTURA', 'Fecha Apertura', $estilos['fecha']),
-            \PHPSpreadsheet::ColumnaExcel('J', 'FECHA_CORTE', 'Fecha corte', $estilos['fecha']),
-            \PHPSpreadsheet::ColumnaExcel('K', 'SALDO', 'Saldo', $estilos['moneda'], true),
-            \PHPSpreadsheet::ColumnaExcel('L', 'INTERES_DEVENGADO', 'Interés devengado', $estilos['moneda'], true),
-            \PHPSpreadsheet::ColumnaExcel('M', 'INTERES_DEV_SIN_IVA', 'Interés devengado (sin IVA)', $estilos['moneda'], true),
-            \PHPSpreadsheet::ColumnaExcel('N', 'IVA', 'IVA', $estilos['moneda'], true),
-            \PHPSpreadsheet::ColumnaExcel('O', 'TASA_IVA', 'Tasa IVA', $estilos['porcentaje']),
-            \PHPSpreadsheet::ColumnaExcel('P', 'DIAS_DEVENGADOS', 'Días devengados', $estilos['centrado'])
+            \PHPSpreadsheet::ColumnaExcel('ID_SOCIO', 'ID Cliente', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_SOCIO', 'Nombre Cliente'),
+            \PHPSpreadsheet::ColumnaExcel('ID_PQ', 'ID Peque', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_PQ', 'Nombre Peque'),
+            \PHPSpreadsheet::ColumnaExcel('PRODUCTO', 'Producto'),
+            \PHPSpreadsheet::ColumnaExcel('TASA', 'Tasa', ['estilo' => $estilos['porcentaje']]),
+            \PHPSpreadsheet::ColumnaExcel('ID_PROMOTOR', 'ID Promotor', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_PROMOTOR', 'Nombre Promotor'),
+            \PHPSpreadsheet::ColumnaExcel('FECHA_APERTURA', 'Fecha Apertura', ['estilo' => $estilos['fecha']]),
+            \PHPSpreadsheet::ColumnaExcel('FECHA_CORTE', 'Fecha corte', ['estilo' => $estilos['fecha']]),
+            \PHPSpreadsheet::ColumnaExcel('SALDO', 'Saldo', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('INTERES_DEVENGADO', 'Interés devengado', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('INTERES_DEV_SIN_IVA', 'Interés devengado (sin IVA)', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('IVA', 'IVA', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('TASA_IVA', 'Tasa IVA', ['estilo' => $estilos['porcentaje']]),
+            \PHPSpreadsheet::ColumnaExcel('DIAS_DEVENGADOS', 'Días devengados', ['estilo' => $estilos['centrado']])
         ];
 
         $filas = self::GetDevengoAhorro($_GET);
@@ -3230,138 +3303,54 @@ script;
 
     public function genExcelSolsRetOrdPendiente()
     {
-        $objPHPExcel = new \PHPExcel();
-        $objPHPExcel->getProperties()->setCreator("jma");
-        $objPHPExcel->getProperties()->setLastModifiedBy("jma");
-        $objPHPExcel->getProperties()->setTitle("Reporte");
-        $objPHPExcel->getProperties()->setSubject("Reporte");
-        $objPHPExcel->getProperties()->setDescription("Descripcion");
-        $objPHPExcel->setActiveSheetIndex(0);
+        // $estilos = \PHPSpreadsheet::GetEstilosExcel();
 
+        $columnas = [
+            \PHPSpreadsheet::ColumnaExcel('ID_SOL_RETIRO_AHORRO', 'Cliente'),
+            \PHPSpreadsheet::ColumnaExcel('CONTRATO', 'Titular'),
+            \PHPSpreadsheet::ColumnaExcel('CLIENTE', 'Fecha Movimiento'),
+            \PHPSpreadsheet::ColumnaExcel('FECHA_SOLICITUD', 'Sucursal'),
+            \PHPSpreadsheet::ColumnaExcel('DAYS_SINCE_ORDER', 'Cajera'),
+            \PHPSpreadsheet::ColumnaExcel('SOLICITUD_VENCIDA', 'Monto'),
+            \PHPSpreadsheet::ColumnaExcel('CANTIDAD_SOLICITADA', 'Concepto'),
+            \PHPSpreadsheet::ColumnaExcel('CDGPE', 'Producto'),
+            \PHPSpreadsheet::ColumnaExcel('CDGPE_NOMBRE', 'Ingreso'),
+            \PHPSpreadsheet::ColumnaExcel('TIPO_RETIRO', 'Egreso'),
+            \PHPSpreadsheet::ColumnaExcel('FECHA_ENTREGA', 'Saldo'),
+            \PHPSpreadsheet::ColumnaExcel('TIPO_PRODUCTO', 'Saldo')
+        ];
 
+        $filas = CajaAhorroDao::GetSolicitudesRetiroAhorroOrdinario();
 
-        $estilo_titulo = array(
-            'font' => array('bold' => true, 'name' => 'Calibri', 'size' => 11, 'color' => array('rgb' => '060606')),
-            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
-            'type' => \PHPExcel_Style_Fill::FILL_SOLID
-        );
-
-        $estilo_encabezado = array(
-            'font' => array('bold' => true, 'name' => 'Calibri', 'size' => 11, 'color' => array('rgb' => '060606')),
-            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
-            'type' => \PHPExcel_Style_Fill::FILL_SOLID
-        );
-
-        $estilo_celda = array(
-            'font' => array('bold' => false, 'name' => 'Calibri', 'size' => 11, 'color' => array('rgb' => '060606')),
-            'alignment' => array('horizontal' => \PHPExcel_Style_Alignment::HORIZONTAL_CENTER),
-            'type' => \PHPExcel_Style_Fill::FILL_SOLID
-
-        );
-
-
-        $fila = 1;
-        $adaptarTexto = true;
-
-        $controlador = "AdminSucursales";
-        $columna = array('A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L');
-        $nombreColumna = array('ID_SOL_RETIRO_AHORRO', 'CONTRATO', 'CLIENTE', 'FECHA_SOLICITUD', 'DAYS_SINCE_ORDER', 'SOLICITUD_VENCIDA', 'CANTIDAD_SOLICITADA', 'CDGPE', 'CDGPE_NOMBRE', 'TIPO_RETIRO', 'FECHA_ENTREGA', 'TIPO_PRODUCTO');
-        $nombreCampo = array(
-            'ID_SOL_RETIRO_AHORRO',
-            'CONTRATO',
-            'CLIENTE',
-            'FECHA_SOLICITUD',
-            'DAYS_SINCE_ORDER',
-            'SOLICITUD_VENCIDA',
-            'CANTIDAD_SOLICITADA',
-            'CDGPE',
-            'CDGPE_NOMBRE',
-            'TIPO_RETIRO',
-            'FECHA_ENTREGA',
-            'TIPO_PRODUCTO'
-        );
-
-
-        $objPHPExcel->getActiveSheet()->SetCellValue('A' . $fila, 'Consulta de Solicitudes Pendientes para Retiro de Efectivo en Sucursal Para Cuentas de Ahorro');
-        $objPHPExcel->getActiveSheet()->mergeCells('A' . $fila . ':' . $columna[count($nombreColumna) - 1] . $fila);
-        $objPHPExcel->getActiveSheet()->getStyle('A' . $fila)->applyFromArray($estilo_titulo);
-        $objPHPExcel->getActiveSheet()->getStyle('A' . $fila)->getAlignment()->setWrapText($adaptarTexto);
-
-        $fila += 1;
-
-        /*COLUMNAS DE LOS DATOS DEL ARCHIVO EXCEL*/
-        foreach ($nombreColumna as $key => $value) {
-            $objPHPExcel->getActiveSheet()->SetCellValue($columna[$key] . $fila, $value);
-            $objPHPExcel->getActiveSheet()->getStyle($columna[$key] . $fila)->applyFromArray($estilo_encabezado);
-            $objPHPExcel->getActiveSheet()->getStyle($columna[$key] . $fila)->getAlignment()->setWrapText($adaptarTexto);
-            $objPHPExcel->getActiveSheet()->getColumnDimensionByColumn($key)->setAutoSize(true);
-        }
-        $fila += 1; //fila donde comenzaran a escribirse los datos
-
-        /* FILAS DEL ARCHIVO EXCEL */
-
-        $Layoutt = CajaAhorroDao::GetSolicitudesRetiroAhorroOrdinario();
-        var_dump($Layoutt);
-
-
-        foreach ($Layoutt as $key => $value) {
-            foreach ($nombreCampo as $key => $campo) {
-                $objPHPExcel->getActiveSheet()->SetCellValue($columna[$key] . $fila, html_entity_decode($value[$campo], ENT_QUOTES, "UTF-8"));
-                $objPHPExcel->getActiveSheet()->getStyle($columna[$key] . $fila)->applyFromArray($estilo_celda);
-                $objPHPExcel->getActiveSheet()->getStyle($columna[$key] . $fila)->getAlignment()->setWrapText($adaptarTexto);
-            }
-            $fila += 1;
-        }
-
-
-        $objPHPExcel->getActiveSheet()->getStyle('A1:' . $columna[count($columna) - 1] . $fila)->getAlignment()->setHorizontal(\PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-        for ($i = 0; $i < $fila; $i++) {
-            $objPHPExcel->getActiveSheet()->getRowDimension($i)->setRowHeight(20);
-        }
-
-
-        $objPHPExcel->getActiveSheet()->setTitle('Reporte');
-
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="Reporte Solicitudes Pendientes Ordinaria' . '.xlsx"');
-        header('Cache-Control: max-age=0');
-        header('Cache-Control: max-age=1');
-        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-        header('Cache-Control: cache, must-revalidate');
-        header('Pragma: public');
-
-        \PHPExcel_Settings::setZipClass(\PHPExcel_Settings::PCLZIP);
-        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-        $objWriter->save('php://output');
+        \PHPSpreadsheet::GeneraExcel('Reporte Solicitudes Pendientes Ordinaria', 'Reporte', 'Consulta de Solicitudes Pendientes para Retiro de Efectivo en Sucursal Para Cuentas de Ahorro', $columnas, $filas);
     }
 
     public function generarExcelPagosTransaccionesAll()
     {
         $fecha_inicio = $_GET['Inicial'];
-        $fecha_fin = $_GET['Final'];
+        // $fecha_fin = $_GET['Final'];
         $operacion = $_GET['Operacion'];
         $producto = $_GET['Producto'];
         $sucursal = $_GET['Sucursal'];
         $estilos = \PHPSpreadsheet::GetEstilosExcel();
 
         $columnas = [
-            \PHPSpreadsheet::ColumnaExcel('A', 'CLIENTE', 'Cliente', $estilos['centrado']),
-            \PHPSpreadsheet::ColumnaExcel('B', 'TITULAR_CUENTA_EJE', 'Titular'),
-            \PHPSpreadsheet::ColumnaExcel('C', 'FECHA_MOV', 'Fecha Movimiento', $estilos['fecha_hora']),
-            \PHPSpreadsheet::ColumnaExcel('D', 'SUCURSAL', 'Sucursal'),
-            \PHPSpreadsheet::ColumnaExcel('E', 'NOMBRE_CAJERA', 'Cajera'),
-            \PHPSpreadsheet::ColumnaExcel('F', 'MONTO', 'Monto', $estilos['moneda']),
-            \PHPSpreadsheet::ColumnaExcel('G', 'CONCEPTO', 'Concepto'),
-            \PHPSpreadsheet::ColumnaExcel('H', 'PRODUCTO', 'Producto'),
-            \PHPSpreadsheet::ColumnaExcel('I', 'INGRESO', 'Ingreso', $estilos['moneda'], true),
-            \PHPSpreadsheet::ColumnaExcel('J', 'EGRESO', 'Egreso', $estilos['moneda'], true),
-            \PHPSpreadsheet::ColumnaExcel('K', 'SALDO', 'Saldo', $estilos['moneda'])
+            \PHPSpreadsheet::ColumnaExcel('CLIENTE', 'Cliente', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('TITULAR_CUENTA_EJE', 'Titular'),
+            \PHPSpreadsheet::ColumnaExcel('FECHA_MOV', 'Fecha Movimiento', ['estilo' => $estilos['fecha_hora']]),
+            \PHPSpreadsheet::ColumnaExcel('SUCURSAL', 'Sucursal'),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_CAJERA', 'Cajera'),
+            \PHPSpreadsheet::ColumnaExcel('MONTO', 'Monto', ['estilo' => $estilos['moneda']]),
+            \PHPSpreadsheet::ColumnaExcel('CONCEPTO', 'Concepto'),
+            \PHPSpreadsheet::ColumnaExcel('PRODUCTO', 'Producto'),
+            \PHPSpreadsheet::ColumnaExcel('INGRESO', 'Ingreso', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('EGRESO', 'Egreso', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('SALDO', 'Saldo', ['estilo' => $estilos['moneda']])
         ];
 
         $filas = CajaAhorroDao::GetAllTransacciones($fecha_inicio, $fecha_inicio, $operacion, $producto, $sucursal);
 
-        \PHPSpreadsheet::GeneraExcel('Reporte Movimientos Caja AdminSucursales', 'Reporte', 'Flujo de Efectivo', $columnas, $filas);
+        \PHPSpreadsheet::GeneraExcel('Reporte Movimientos Caja', 'Reporte', 'Flujo de Efectivo', $columnas, $filas);
     }
 
 
@@ -3373,79 +3362,42 @@ script;
         $producto = $_GET['Producto'];
         $sucursal = $_GET['Sucursal'];
 
-        $estilos = self::GetEstilosExcel();
+        $estilos = \PHPSpreadsheet::GetEstilosExcel();
 
         $columnas = [
-            self::ColumnaExcel('A', 'FECHA_MOV', 'FECHA MOVIMIENTO', $estilos['fecha_hora']),
-            self::ColumnaExcel('B', 'CDGCO', 'COD SUCURSAL', $estilos['centrado']),
-            self::ColumnaExcel('C', 'SUCURSAL', 'NOM SUCURSAL', $estilos['centrado']),
-            self::ColumnaExcel('D', 'FECHA_MOV_APLICA', 'FECHA', $estilos['fecha']),
-            self::ColumnaExcel('E', 'USUARIO_CAJA', 'USUARIO', $estilos['centrado']),
-            self::ColumnaExcel('F', 'NOMBRE_CAJERA', 'NOMBRE CAJERA'),
-            self::ColumnaExcel('G', 'NOMBRE_PROMOTOR', 'PROMOTOR'),
-            self::ColumnaExcel('H', 'CLIENTE', 'CLIENTE', $estilos['centrado']),
-            self::ColumnaExcel('I', 'TITULAR_CUENTA_EJE', 'TITULAR CUENTA'),
-            self::ColumnaExcel('J', 'ID_MENOR', 'ID MENOR', $estilos['centrado']),
-            self::ColumnaExcel('K', 'NOMBRE_MENOR', 'NOMBRE MENOR'),
-            self::ColumnaExcel('L', 'MONTO', 'MONTO', $estilos['moneda']),
-            self::ColumnaExcel('M', 'CONCEPTO'),
-            self::ColumnaExcel('N', 'PLAZO_INVERSION', 'PLAZO INVERSION', $estilos['centrado']),
-            self::ColumnaExcel('O', 'FECHA_FIN_INVERSION', 'FECHA FIN INVERSION', $estilos['fecha']),
-            self::ColumnaExcel('P', 'PRODUCTO'),
-            self::ColumnaExcel('Q', 'TIPO_MOVIMIENTO', 'MOVIMIENTO', $estilos['centrado']),
-            self::ColumnaExcel('R', 'INGRESO', 'INGRESO', $estilos['moneda']),
-            self::ColumnaExcel('S', 'EGRESO', 'EGRESO', $estilos['moneda'])
+            \PHPSpreadsheet::ColumnaExcel('FECHA_MOV', 'FECHA MOVIMIENTO', ['estilo' => $estilos['fecha_hora']]),
+            \PHPSpreadsheet::ColumnaExcel('CDGCO', 'COD SUCURSAL', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('SUCURSAL', 'NOM SUCURSAL', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('FECHA_MOV_APLICA', 'FECHA', ['estilo' => $estilos['fecha']]),
+            \PHPSpreadsheet::ColumnaExcel('USUARIO_CAJA', 'USUARIO', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_CAJERA', 'NOMBRE CAJERA'),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_PROMOTOR', 'PROMOTOR'),
+            \PHPSpreadsheet::ColumnaExcel('CLIENTE', 'CLIENTE', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('TITULAR_CUENTA_EJE', 'TITULAR CUENTA'),
+            \PHPSpreadsheet::ColumnaExcel('ID_MENOR', 'ID MENOR', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('NOMBRE_MENOR', 'NOMBRE MENOR'),
+            \PHPSpreadsheet::ColumnaExcel('MONTO', 'MONTO', ['estilo' => $estilos['moneda']]),
+            \PHPSpreadsheet::ColumnaExcel('CONCEPTO'),
+            \PHPSpreadsheet::ColumnaExcel('PLAZO_INVERSION', 'PLAZO INVERSION', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('FECHA_FIN_INVERSION', 'FECHA FIN INVERSION', ['estilo' => $estilos['fecha']]),
+            \PHPSpreadsheet::ColumnaExcel('PRODUCTO'),
+            \PHPSpreadsheet::ColumnaExcel('TIPO_MOVIMIENTO', 'MOVIMIENTO', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('INGRESO', 'INGRESO', ['estilo' => $estilos['moneda'], 'total' => true]),
+            \PHPSpreadsheet::ColumnaExcel('EGRESO', 'EGRESO', ['estilo' => $estilos['moneda'], 'total' => true]),
         ];
 
-        $objPHPExcel = new \PHPExcel();
-        $objPHPExcel->getProperties()->setCreator("jma");
-        $objPHPExcel->getProperties()->setLastModifiedBy("jma");
-        $objPHPExcel->setActiveSheetIndex(0);
+        $filas = CajaAhorroDao::GetAllTransaccionesDetalle($fecha_inicio, $fecha_fin, $operacion, $producto, $sucursal);
 
-        $objPHPExcel->getActiveSheet()->SetCellValue('A1', 'Consulta de Movimientos de Ahorro a Detalle (incluye transacciones virtuales)');
-        $objPHPExcel->getActiveSheet()->mergeCells('A1:' . $columnas[count($columnas) - 1]['letra'] . '1');
-        $objPHPExcel->getActiveSheet()->getStyle('A1')->applyFromArray($estilos['titulo']);
-
-        /*COLUMNAS DE LOS DATOS DEL ARCHIVO EXCEL*/
-        foreach ($columnas as $key => $value) {
-            $objPHPExcel->getActiveSheet()->SetCellValue($value['letra'] . '2', $value['titulo']);
-            $objPHPExcel->getActiveSheet()->getStyle($value['letra'] . '2')->applyFromArray($estilos['titulo']);
-            $objPHPExcel->getActiveSheet()->getColumnDimensionByColumn($key)->setAutoSize(true);
-        }
-
-        /* FILAS DEL ARCHIVO EXCEL */
-        $datos = CajaAhorroDao::GetAllTransaccionesDetalle($fecha_inicio, $fecha_fin, $operacion, $producto, $sucursal);
-
-        $fila = 3;
-        foreach ($datos as $key => $value) {
-            foreach ($columnas as $key => $campo) {
-                $objPHPExcel->getActiveSheet()->SetCellValue($campo['letra'] . $fila, html_entity_decode($value[$campo['campo']], ENT_QUOTES, "UTF-8"));
-                $objPHPExcel->getActiveSheet()->getStyle($campo['letra'] . $fila)->applyFromArray($campo['estilo']);
-            }
-            $fila += 1;
-        }
-
-        header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-        header('Content-Disposition: attachment;filename="Reporte Movimientos Caja AdminSucursales.xlsx"');
-        header('Cache-Control: max-age=0');
-        header('Cache-Control: max-age=1');
-        header('Expires: Mon, 26 Jul 1997 05:00:00 GMT');
-        header('Last-Modified: ' . gmdate('D, d M Y H:i:s') . ' GMT');
-        header('Cache-Control: cache, must-revalidate');
-        header('Pragma: public');
-
-        \PHPExcel_Settings::setZipClass(\PHPExcel_Settings::PCLZIP);
-        $objWriter = \PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
-        $objWriter->save('php://output');
+        \PHPSpreadsheet::GeneraExcel('Reporte Movimientos Caja', 'Reporte', 'Consulta de Movimientos de Ahorro a Detalle (incluye transacciones virtuales)', $columnas, $filas);
     }
 
     public function GetHistorialFondeosSucursal()
     {
-        echo AdminSucursalesDao::GetHistorialFondeosSucursal($_POST);
+        echo json_encode(AdminSucursalesDao::GetHistorialFondeosSucursal($_POST));
     }
 
     public function GetHistorialRetirosSucursal()
     {
-        echo AdminSucursalesDao::GetHistorialRetirosSucursal($_POST);
+        echo json_encode(AdminSucursalesDao::GetHistorialRetirosSucursal($_POST));
     }
 }

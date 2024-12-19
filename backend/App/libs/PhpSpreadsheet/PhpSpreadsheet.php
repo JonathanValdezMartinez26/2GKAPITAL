@@ -5,11 +5,14 @@ require __DIR__ . '/vendor/autoload.php';
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use PhpOffice\PhpSpreadsheet\Style;
+use PhpOffice\PhpSpreadsheet\Shared\Date;
 
 class PHPSpreadsheet
 {
     private const formatoMoneda = '"$"#,##0.00';
     private const formatoPorcentaje = '0.00%';
+    private const formatoFecha = 'dd/mm/yyyy';
+    private const formatoFechaHora = 'dd/mm/yyyy hh:mm:ss';
 
     /**
      * ColumnaExcel
@@ -24,16 +27,19 @@ class PHPSpreadsheet
      *
      * @return array Un array con la configuración de la columna, incluyendo la letra, el campo, el estilo, el título y si es un total.
      */
-    public static function ColumnaExcel($letra, $campo, $titulo = '', $estilo = [], $total = false)
+    public static function ColumnaExcel($campo, $titulo = '', $configuracion = [])
     {
+        $defecto = ['letra' => '', 'estilo' => [], 'total' => false];
+        $configuracion = array_merge($defecto, $configuracion);
+
         $titulo = $titulo == '' ? $campo : $titulo;
 
         return [
-            'letra' => $letra,
             'campo' => $campo,
-            'estilo' => $estilo,
             'titulo' => $titulo,
-            'total' => $total
+            'estilo' => $configuracion['estilo'],
+            'letra' => $configuracion['letra'],
+            'total' => $configuracion['total'],
         ];
     }
 
@@ -82,17 +88,17 @@ class PHPSpreadsheet
             'centrado' => [
                 'alignment' => ['horizontal' => Style\Alignment::HORIZONTAL_CENTER]
             ],
-            'moneda' => [
-                'alignment' => ['horizontal' => Style\Alignment::HORIZONTAL_RIGHT],
-                'numberFormat' => ['formatCode' => self::formatoMoneda]
-            ],
             'fecha' => [
                 'alignment' => ['horizontal' => Style\Alignment::HORIZONTAL_CENTER],
-                'numberFormat' => ['formatCode' => Style\NumberFormat::FORMAT_DATE_DDMMYYYY]
+                'numberFormat' => ['formatCode' => self::formatoFecha]
             ],
             'fecha_hora' => [
                 'alignment' => ['horizontal' =>  Style\Alignment::HORIZONTAL_CENTER],
-                'numberFormat' => ['formatCode' => Style\NumberFormat::FORMAT_DATE_DATETIME]
+                'numberFormat' => ['formatCode' => self::formatoFechaHora]
+            ],
+            'moneda' => [
+                'alignment' => ['horizontal' => Style\Alignment::HORIZONTAL_RIGHT],
+                'numberFormat' => ['formatCode' => self::formatoMoneda]
             ],
             'porcentaje' => [
                 'alignment' => ['horizontal' => Style\Alignment::HORIZONTAL_CENTER],
@@ -128,18 +134,23 @@ class PHPSpreadsheet
         $hoja = $libro->getActiveSheet();
         $hoja->setTitle($nombre_hoja);
 
-        // Título del reporte
-        $hoja->setCellValue('A1', $titulo_reporte);
-        $hoja->mergeCells('A1:' . $columnas[count($columnas) - 1]['letra'] . '1');
-        $hoja->getStyle('A1')->applyFromArray(self::GetEstilosExcel()['titulo']);
-
         // Encabezados de columna
         foreach ($columnas as $key => $columna) {
+            if (!isset($columna['letra']) || $columna['letra'] === '') {
+                $columna['letra'] = self::getLetraColumna($key);
+                $columnas[$key]['letra'] = $columna['letra'];
+            }
+
             $hoja->setCellValue($columna['letra'] . '2', $columna['titulo']);
             $hoja->getStyle($columna['letra'] . '2')->applyFromArray(self::GetEstilosExcel()['encabezado']);
             $hoja->getColumnDimension($columna['letra'])->setAutoSize(true);
             if ($columna['total']) array_push($totales, $columna);
         }
+
+        // Título del reporte
+        $hoja->setCellValue('A1', $titulo_reporte);
+        $hoja->mergeCells('A1:' . $columnas[count($columnas) - 1]['letra'] . '1');
+        $hoja->getStyle('A1')->applyFromArray(self::GetEstilosExcel()['titulo']);
 
         // Filas de datos
         $noFila = 3;
@@ -157,7 +168,13 @@ class PHPSpreadsheet
                 $estiloCelda['borders']['left']['borderStyle'] = Style\Border::BORDER_THIN;
                 $estiloCelda['borders']['right']['borderStyle'] = Style\Border::BORDER_THIN;
 
-                $hoja->setCellValue($columna['letra'] . $noFila, html_entity_decode($fila[$columna['campo']], ENT_QUOTES, "UTF-8"));
+                if ($columna['estilo'] === self::GetEstilosExcel()['fecha'])
+                    $hoja->setCellValue($columna['letra'] . $noFila, self::convierteFecha('d/m/Y', $fila[$columna['campo']]));
+                else if ($columna['estilo'] === self::GetEstilosExcel()['fecha_hora'])
+                    $hoja->setCellValue($columna['letra'] . $noFila, self::convierteFecha('d/m/Y H:i:s', $fila[$columna['campo']]));
+                else
+                    $hoja->setCellValue($columna['letra'] . $noFila, html_entity_decode($fila[$columna['campo']], ENT_QUOTES, "UTF-8"));
+
                 $hoja->getStyle($columna['letra'] . $noFila)->applyFromArray($estiloCelda);
             }
 
@@ -179,9 +196,10 @@ class PHPSpreadsheet
         }
 
         // Seleccionar celda A1, congelar en la fila 3, aplicar filtro a las columnas
-        $hoja->setSelectedCell('A1');
+        $hoja->setSelectedCell('A3');
         $hoja->freezePane('A3');
         $hoja->setAutoFilter('A2:' . $columnas[count($columnas) - 1]['letra'] . '2');
+        $hoja->setSelectedCell('A1');
 
         // Enviar descarga
         self::EnviarDescarga($libro, $nombre_archivo);
@@ -225,7 +243,7 @@ class PHPSpreadsheet
 
         // Poner fórmulas para totales
         foreach ($totales as $key => $total) {
-            $hoja->setCellValue($total['letra'] . $noFila, '=SUBTOTAL(9,' . $total['letra'] . '3:' . $total['letra'] . ($noFila - 1) . ')');
+            $hoja->setCellValue($total['letra'] . $noFila, '=SUBTOTAL(9,' . $total['letra'] . '3:' . $total['letra'] . ($noFila - 2) . ')');
             $hoja->getStyle($total['letra'] . $noFila)->applyFromArray($total['estilo']);
         }
     }
@@ -254,5 +272,27 @@ class PHPSpreadsheet
         // Mandar la descarga del archivo
         $writer = new Xlsx($libro);
         $writer->save('php://output');
+    }
+
+    private static function getLetraColumna($indice)
+    {
+        $letra = '';
+        while ($indice >= 0) {
+            $letra = chr($indice % 26 + 65) . $letra;
+            $indice = intval($indice / 26) - 1;
+        }
+        return $letra;
+    }
+
+    private static function convierteFecha($formato, $fecha)
+    {
+        if (!$fecha || empty($fecha) || $fecha === '') return null;
+        $f = DateTime::createFromFormat($formato, $fecha);
+
+        if ($f === false) return null;
+        $f = Date::PHPToExcel($f);
+
+        if ($f === false) return null;
+        return $f;
     }
 }
