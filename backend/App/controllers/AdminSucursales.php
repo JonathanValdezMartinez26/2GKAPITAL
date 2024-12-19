@@ -9,8 +9,6 @@ use \Core\Controller;
 use \Core\MasterDom;
 use \App\models\AdminSucursales as AdminSucursalesDao;
 use \App\models\CajaAhorro as CajaAhorroDao;
-use \App\models\Operaciones as OperacionesDao;
-use Exception;
 
 class AdminSucursales extends Controller
 {
@@ -251,18 +249,6 @@ class AdminSucursales extends Controller
             const blob = new Blob([plantilla], { type: 'text/html' })
             const url = URL.createObjectURL(blob)
             window.open(url, '_blank')
-    }
-    script;
-    private $imprimeTicket = <<<script
-    const imprimeTicket = (ticket, sucursal = '', copia = true) => {
-        const host = window.location.origin
-        const titulo = 'Ticket: ' + ticket
-        const ruta = host + '/Ahorro/Ticket/?'
-        + 'ticket=' + ticket
-        + '&sucursal=' + sucursal
-        + (copia ? '&copiaCliente=true' : '')
-        
-        muestraPDF(titulo, ruta)
     }
     script;
     private $exportaExcel = 'const exportaExcel = (id, nombreArchivo, nombreHoja = "Reporte") => {

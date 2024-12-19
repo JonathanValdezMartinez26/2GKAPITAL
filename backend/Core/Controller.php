@@ -4,82 +4,84 @@ namespace Core;
 
 defined("APPPATH") or die("Access denied");
 
-use \App\models\General as GeneralDao;
 
 class Controller
 {
-    public $configuraTabla = 'const configuraTabla = (id, {noRegXvista = true} = {}) => {
-        const configuracion = {
-            lengthMenu: [
-                [10, 40, -1],
-                [10, 40, "Todos"]
-            ],
-            order: [],
-            autoWidth: false,
-            language: {
-                emptyTable: "No hay datos disponibles",
-                paginate: {
-                    previous: "Anterior",
-                    next: "Siguiente",
-                },
-                info: "Mostrando de _START_ a _END_ de _TOTAL_ registros",
-                infoEmpty: "Sin registros para mostrar",
-                zeroRecords: "No se encontraron registros",
-                lengthMenu: "Mostrar _MENU_ registros por página",
-                search: "Buscar:",
+    public $configuraTabla = <<<JAVASCRIPT
+        const configuraTabla = (id, {noRegXvista = true} = {}) => {
+            const configuracion = {
+                lengthMenu: [
+                    [10, 40, -1],
+                    [10, 40, "Todos"]
+                ],
+                order: [],
+                autoWidth: false,
+                language: {
+                    emptyTable: "No hay datos disponibles",
+                    paginate: {
+                        previous: "Anterior",
+                        next: "Siguiente",
+                    },
+                    info: "Mostrando de _START_ a _END_ de _TOTAL_ registros",
+                    infoEmpty: "Sin registros para mostrar",
+                    zeroRecords: "No se encontraron registros",
+                    lengthMenu: "Mostrar _MENU_ registros por página",
+                    search: "Buscar:",
+                }
             }
-        }
 
-        configuracion.lengthChange = noRegXvista
+            configuracion.lengthChange = noRegXvista
 
-        $("#" + id).DataTable(configuracion)
+            $("#" + id).DataTable(configuracion)
 
-        $("#"  + id + " input[type=search]").keyup(() => {
-            $("#example")
-                .DataTable()
-                .search(jQuery.fn.DataTable.ext.type.search.html(this.value))
-                .draw()
-        })
-    }';
-    public $imprimeTicket = <<<JAVASCRIPT
-    const imprimeTicket = async (ticket, sucursal = '', copia = true, otro = null) => {
-        const espera = swal({ text: "Procesando la solicitud, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
-        const rutaImpresion = 'http://127.0.0.1:5005/api/impresora/ticket'
-        const host = window.location.origin
-        const titulo = 'Ticket: ' + ticket
-        const ruta = host + '/Ahorro/Ticket' + (otro ? '_' + otro : '') + '/?'
-        + 'ticket=' + ticket
-        + '&sucursal=' + sucursal
-        + (copia ? '&copiaCliente=true' : '')
-         
-        //muestraPDF(titulo, ruta)
-        fetch(ruta, {
-            method: 'GET'
-        })
-        .then(resp => resp.blob())
-        .then(blob => {
-            const datos = new FormData()
-            datos.append('ticket', blob)
-             
-            fetch(rutaImpresion, {
-                method: 'POST',
-                body: datos
+            $("#"  + id + " input[type=search]").keyup(() => {
+                $("#example")
+                    .DataTable()
+                    .search(jQuery.fn.DataTable.ext.type.search.html(this.value))
+                    .draw()
             })
-            .then(resp => resp.json())
-            .then(res => {
-                if (!res.success) return showError(res.mensaje)
-                showSuccess(res.mensaje)
+        }
+    JAVASCRIPT;
+
+    public $imprimeTicket = <<<JAVASCRIPT
+        const imprimeTicket = async (ticket, sucursal = '', copia = true, otro = null) => {
+            const espera = swal({ text: "Procesando la solicitud, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
+            const rutaImpresion = 'http://127.0.0.1:5005/api/impresora/ticket'
+            const host = window.location.origin
+            const titulo = 'Ticket: ' + ticket
+            const ruta = host + '/Ahorro/Ticket' + (otro ? '_' + otro : '') + '/?'
+            + 'ticket=' + ticket
+            + '&sucursal=' + sucursal
+            + (copia ? '&copiaCliente=true' : '')
+            
+            //muestraPDF(titulo, ruta)
+            fetch(ruta, {
+                method: 'GET'
+            })
+            .then(resp => resp.blob())
+            .then(blob => {
+                const datos = new FormData()
+                datos.append('ticket', blob)
+                
+                fetch(rutaImpresion, {
+                    method: 'POST',
+                    body: datos
+                })
+                .then(resp => resp.json())
+                .then(res => {
+                    if (!res.success) return showError(res.mensaje)
+                    showSuccess(res.mensaje)
+                })
+                .catch(error => {
+                    console.error(error)
+                    showError('El servicio de impresión no está disponible.')
+                })
             })
             .catch(error => {
                 console.error(error)
-                showError('El servicio de impresión no está disponible.')
+                showError('Ocurrió un error al generar el ticket.')
             })
-        })
-        .catch(error => {
-            console.error(error)
-            showError('Ocurrió un error al generar el ticket.')
-        })
-    }
+        }
     JAVASCRIPT;
 
     public $__usuario = '';
