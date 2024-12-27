@@ -5,38 +5,49 @@ namespace App\models;
 defined("APPPATH") or die("Access denied");
 
 use \Core\Database;
-use Exception;
+use Core\Model;
 
-class Ahorro
+class Ahorro extends Model
 {
-    public static function ConsultaTickets($usuario)
+    public static function ConsultaTickets($datos)
     {
-        if ($usuario == 'AMGM') {
-            $query = <<<sql
-             SELECT TICKETS_AHORRO.CODIGO, TICKETS_AHORRO.CDG_CONTRATO,
-            TO_CHAR(TICKETS_AHORRO.FECHA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA_ALTA, TICKETS_AHORRO.MONTO, TICKETS_AHORRO.CDGPE, (CL.NOMBRE1 || ' ' || CL.NOMBRE2 || ' ' || CL.PRIMAPE || ' ' || CL.SEGAPE ) AS NOMBRE_CLIENTE,
-            'CUENTA AHORRO' AS TIPO_AHORRO
-            FROM TICKETS_AHORRO
-            INNER JOIN ASIGNA_PROD_AHORRO ON ASIGNA_PROD_AHORRO.CONTRATO = TICKETS_AHORRO.CDG_CONTRATO 
-            INNER JOIN CL ON CL.CODIGO = ASIGNA_PROD_AHORRO.CDGCL 
-            ORDER BY FECHA DESC
-sql;
-        } else {
-            $query = <<<sql
-             SELECT TICKETS_AHORRO.CODIGO, TICKETS_AHORRO.CDG_CONTRATO,
-            TO_CHAR(TICKETS_AHORRO.FECHA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA_ALTA, TICKETS_AHORRO.MONTO, TICKETS_AHORRO.CDGPE, (CL.NOMBRE1 || ' ' || CL.NOMBRE2 || ' ' || CL.PRIMAPE || ' ' || CL.SEGAPE ) AS NOMBRE_CLIENTE,
-              'CUENTA AHORRO' AS TIPO_AHORRO 
-            FROM TICKETS_AHORRO
-            INNER JOIN ASIGNA_PROD_AHORRO ON ASIGNA_PROD_AHORRO.CONTRATO = TICKETS_AHORRO.CDG_CONTRATO 
-            INNER JOIN CL ON CL.CODIGO = ASIGNA_PROD_AHORRO.CDGCL 
-            WHERE TICKETS_AHORRO.CDGPE = '$usuario' 
-            ORDER BY TICKETS_AHORRO.FECHA DESC
-sql;
+        $query = <<<SQL
+            SELECT
+                TA.CODIGO,
+                TA.CDG_CONTRATO,
+                TO_CHAR(TA.FECHA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA_ALTA,
+                TA.MONTO,
+                TA.CDGPE,
+                (
+                    CL.NOMBRE1 || ' ' || CL.NOMBRE2 || ' ' || CL.PRIMAPE || ' ' || CL.SEGAPE
+                ) AS NOMBRE_CLIENTE,
+                'CUENTA AHORRO' AS TIPO_AHORRO
+            FROM
+                TICKETS_AHORRO TA
+                INNER JOIN ASIGNA_PROD_AHORRO ON ASIGNA_PROD_AHORRO.CONTRATO = TA.CDG_CONTRATO
+                INNER JOIN CL ON CL.CODIGO = ASIGNA_PROD_AHORRO.CDGCL
+            WHERE
+                TRUNC(TA.FECHA) BETWEEN TO_DATE(:fechaI, 'YYYY-MM-DD') AND TO_DATE(:fechaF, 'YYYY-MM-DD')
+        SQL;
+
+        $parametros = [
+            'fechaI' => $datos['fechaI'],
+            'fechaF' => $datos['fechaF']
+        ];
+
+        if ($datos['usuario'] != 'AMGM') {
+            $query .= ' AND TA.CDGPE = :usuario';
+            $parametros['usuario'] = $datos['usuario'];
         }
+        $query .= ' ORDER BY TA.FECHA DESC';
 
-
-        $mysqli = new Database();
-        return $mysqli->queryAll($query);
+        try {
+            $db = new Database();
+            $r = $db->queryAll($query, $parametros);
+            return self::Responde(true, "Tickets obtenidos correctamente", $r);
+        } catch (\Exception $e) {
+            return self::Responde(false, "Error al consultar los tickets de ahorro.", null, $e->getMessage());
+        }
     }
 
     public static function ConsultaSolicitudesTickets($datos)

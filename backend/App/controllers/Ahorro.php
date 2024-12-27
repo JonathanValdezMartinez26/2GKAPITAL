@@ -22,10 +22,6 @@ class Ahorro extends Controller
     private $XLSX = '<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js" integrity="sha512-r22gChDnGvBylk90+2e/ycr3RVrDi8DIOkIGNhJlKfuyQM4tIRAI062MaV8sfjQKYVGjOBaZBOA87z+IhZE9DA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>';
     private $swal2 = '<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>';
     private $huellas = '<script src="/js/huellas/es6-shim.js"></script><script src="/js/huellas/fingerprint.sdk.min.js"></script><script src="/js/huellas/huellas.js"></script><script src="/js/huellas/websdk.client.bundle.min.js"></script>';
-    private $showError = 'const showError = (mensaje) => swal({ text: mensaje, icon: "error" })';
-    private $showSuccess = 'const showSuccess = (mensaje) => swal({ text: mensaje, icon: "success" })';
-    private $showInfo = 'const showInfo = (mensaje) => swal({ text: mensaje, icon: "info" })';
-    private $showWarning = 'const showWarning = (mensaje) => swal({ text: mensaje, icon: "warning" })';
     private $showBloqueo = 'const showBloqueo = (mensaje) => {
         Swal.fire({
             html: mensaje,
@@ -40,9 +36,6 @@ class Ahorro extends Controller
                 popup: "sweet-bloqueoAhorro-popup",
             }
         })
-    }';
-    private $confirmarMovimiento = 'const confirmarMovimiento = async (titulo, mensaje, html = null) => {
-        return await swal({ title: titulo, content: html, text: mensaje, icon: "warning", buttons: ["No", "Si, continuar"], dangerMode: true })
     }';
     private $validarYbuscar = 'const validarYbuscar = (e, t) => {
         if (e.keyCode < 9 || e.keyCode > 57) e.preventDefault()
@@ -305,37 +298,6 @@ script;
 script;
     private $addParametro = 'const addParametro = (parametros, newParametro, newValor) => {
         parametros.push({ name: newParametro, value: newValor })
-    }';
-    private $consultaServidor = 'const consultaServidor = (url, datos, fncOK, metodo = "POST", tipo = "JSON", tipoContenido = null) => {
-        swal({ text: "Procesando la solicitud, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
-        const configuracion = {
-            type: metodo,
-            url: url,
-            data: datos,
-            success: (res) => {
-                if (tipo === "JSON") {
-                    try {
-                        res = JSON.parse(res)
-                    } catch (error) {
-                        console.error(error)
-                        res =  {
-                            success: false,
-                            mensaje: "Ocurrió un error al procesar la respuesta del servidor."
-                        }
-                    }
-                }
-                if (tipo === "blob") res = new Blob([res], { type: "application/pdf" })
-
-                swal.close()
-                fncOK(res)
-            },
-            error: (error) => {
-                console.error(error)
-                showError("Ocurrió un error al procesar la solicitud.")
-            }
-        }
-        if (tipoContenido) configuracion.contentType = tipoContenido 
-        $.ajax(configuracion)
     }';
     private $parseaNumero = 'const parseaNumero = (numero) => parseFloat(numero.replace(/[^0-9.-]/g, "")) || 0';
     private $formatoMoneda = 'const formatoMoneda = (numero) => parseFloat(numero).toLocaleString("es-MX", { minimumFractionDigits: 2, maximumFractionDigits: 2 })';
@@ -10409,117 +10371,85 @@ html;
 
     public function ReimprimeTicket()
     {
-        $extraHeader = <<<html
-        <title>Reimprime Tickets</title>
-        <link rel="shortcut icon" href="/img/logo.png">
-        html;
+        $extraFooter = <<<HTML
+            <script>
+                {$this->showSuccess}
+                {$this->showError}
+                {$this->configuraTabla}
+                {$this->consultaServidor}
 
-        $extraFooter = <<<html
-        <script>
-           $(document).ready(function(){
-            $("#muestra-cupones").tablesorter();
-          var oTable = $('#muestra-cupones').DataTable({
-           "lengthMenu": [
-                    [10, 50, -1],
-                    [10, 50, 'Todos'],
-                ],
-                "columnDefs": [{
-                    "orderable": false,
-                    "targets": 0
-                }],
-                 "order": false
-            });
-            // Remove accented character from search input as well
-            $('#muestra-cupones input[type=search]').keyup( function () {
-                var table = $('#example').DataTable();
-                table.search(
-                    jQuery.fn.DataTable.ext.type.search.html(this.value)
-                ).draw();
-            });
-            var checkAll = 0;
-        });
-           
-            $(document).ready(function(){
-            $("#muestra-cupones1").tablesorter();
-          var oTable = $('#muestra-cupones1').DataTable({
-           "lengthMenu": [
-                    [10, 50, -1],
-                    [10, 50, 'Todos'],
-                ],
-                "columnDefs": [{
-                    "orderable": false,
-                    "targets": 0
-                }],
-                 "order": false
-            });
-            // Remove accented character from search input as well
-            $('#muestra-cupones1 input[type=search]').keyup( function () {
-                var table = $('#example').DataTable();
-                table.search(
-                    jQuery.fn.DataTable.ext.type.search.html(this.value)
-                ).draw();
-            });
-            var checkAll = 0;
-        });
-           
-        function Reimprime_ticket(folio)
-        {
-              
-              $('#modal_ticket').modal('show');
-              document.getElementById("folio").value = folio;
-             
-        }
-        
-        function enviar_add_sol()
-        {
-             const showSuccess = (mensaje) => swal(mensaje, { icon: "success" } )
-             
-             $('#modal_ticket').modal('hide');
-             swal({
-                   title: "¿Está segura de continuar?",
-                   text: "",
-                   icon: "warning",
-                   buttons: ["Cancelar", "Continuar"],
-                   dangerMode: false
-                   })
-                   .then((willDelete) => {
-                   if (willDelete) {
-                        $.ajax({
-                        type: 'POST',
-                        url: '/Ahorro/AddSolicitudReimpresion/',
-                        data: $('#Add').serialize(),
-                        success: function(respuesta) {
-                        if(respuesta=='1')
-                        {
-                           return showSuccess("Solicitud enviada a tesorería." );
-                        }
-                        else {
-                              $('#modal_encuesta_cliente').modal('hide')
-                                      swal(respuesta, {
-                                      icon: "error",
-                                     });
-                                                
-                              }
-                         }
-                            });
-                         }
-                        else {
-                                    $('#modal_ticket').modal('show');
-                              }
-                        });
-        }
-        </script>
-        html;
+                $(document).ready(() => {
+                    configuraTabla("tblTickets")
+                    $("#buscar").click(consultaTickets)
+                })
 
-        $Consulta = AhorroDao::ConsultaTickets($this->__usuario);
+                const consultaTickets = () => {
+                    const datos = {
+                        fechaI: $("#fechaI").val(),
+                        fechaF: $("#fechaF").val(),
+                        usuario: "{$_SESSION['usuario']}"
+                    }
+
+                    consultaServidor("/Ahorro/GetTablaConsultaTickets/", datos, (respuesta) => {
+                        if (!respuesta.success) return showError(respuesta.mensaje)
+
+                        $("#tblTickets").DataTable().destroy()
+                        $("#tblTickets tbody").html(respuesta.datos)
+                        configuraTabla("tblTickets")
+                    })
+                }
+
+                const Reimprime_ticket = (folio) => {
+                    $("#modal_ticket").modal("show")
+                    $("#folio").val(folio)
+                }
+
+                const enviar_add_sol = () => {
+                    confirmarMovimiento("Solicitud de reimpresion de ticket", "¿Está segura de continuar?")
+                    .then((continuar) => {
+                        if (!contnuar) return
+
+                        consultaServidor("/Ahorro/AddSolicitudReimpresion/", $("#Add").serialize(), (respuesta) => {
+                            if (respuesta == "1") return showError(respuesta)
+
+                            $("#modal_ticket").modal("hide")
+                            return showSuccess("Solicitud enviada a tesorería.")
+                        })
+                    })
+                }
+            </script>
+        HTML;
+
+        $tabla = self::GetTablaConsultaTickets();
+        $fecha_y_hora = date("Y-m-d H:i:s");
+
+        View::set('header', $this->_contenedor->header($this->GetExtraHeader('Reimprime Tickets')));
+        View::set('footer', $this->_contenedor->footer($extraFooter));
+        View::set('fecha', date('Y-m-d'));
+        View::set('tabla', $tabla['datos']);
+        View::set('fecha_actual', $fecha_y_hora);
+        View::render("caja_menu_reimprime_ticket");
+    }
+
+    public function GetTablaConsultaTickets()
+    {
+        $datos = [
+            'fechaI' => $_POST['fechaI'] ?? date('Y-m-d'),
+            'fechaF' => $_POST['fechaF'] ?? date('Y-m-d'),
+            'usuario' => $_POST['usuario'] ?? $this->__usuario
+        ];
+
+        $consulta = AhorroDao::ConsultaTickets($datos);
+        if (!$consulta['success']) return $consulta;
+
         $tabla = "";
 
-        foreach ($Consulta as $key => $value) {
+        foreach ($consulta['datos'] as $key => $value) {
             $monto = number_format($value['MONTO'], 2);
 
-            $tabla .= <<<html
+            $tabla .= <<<HTML
                 <tr style="padding: 0px !important;">
-                   <td style="padding: 0px !important;">{$value['CODIGO']} </td>
+                    <td style="padding: 0px !important;">{$value['CODIGO']} </td>
                     <td style="padding: 0px !important;" width="45" nowrap=""><span class="count_top" style="font-size: 14px"> &nbsp;&nbsp;<i class="fa fa-barcode" style="color: #787b70"></i> </span>{$value['CDG_CONTRATO']} &nbsp;</td>
                     <td style="padding: 0px !important;">{$value['FECHA_ALTA']} </td>
                     <td style="padding: 0px !important;">$ {$monto}</td>
@@ -10530,18 +10460,12 @@ html;
                          <button type="button" class="btn btn-success btn-circle" onclick="Reimprime_ticket('{$value['CODIGO']}');"><i class="fa fa-print"></i></button>
                     </td>
                 </td>
-        html;
+            HTML;
         }
 
-        $fecha_y_hora = date("Y-m-d H:i:s");
-
-
-
-        View::set('header', $this->_contenedor->header($extraHeader));
-        View::set('footer', $this->_contenedor->footer($extraFooter));
-        View::set('tabla', $tabla);
-        View::set('fecha_actual', $fecha_y_hora);
-        View::render("caja_menu_reimprime_ticket");
+        $res = ['success' => true, 'mensaje' => $consulta['mensaje'], 'datos' => $tabla];
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') echo json_encode($res);
+        else return $res;
     }
 
     public function ImprimeResponsivaApoderado()

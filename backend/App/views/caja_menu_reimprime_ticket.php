@@ -62,80 +62,83 @@
                  </a>-->
         </div>
 
-
-
         <div class="col-md-9">
-            <form id="registroInicialAhorro" name="registroInicialAhorro">
-                <div class="modal-content">
-                    <div class="modal-header" style="padding-bottom: 0px">
-                        <div class="navbar-header card col-md-12" style="background: #2b2b2b">
-                            <a class="navbar-brand">Mi espacio / Reimpresión de tickets</a>
-                            &nbsp;&nbsp;
-                        </div>
-                        <div>
-                            <ul class="nav navbar-nav">
-                                <li> <a href="">
-                                        <p style="font-size: 16px;"><b>Tickets</b></p>
-                                    </a></li>
-                                <li class="linea"><a href="/Ahorro/ReimprimeTicketSolicitudes/">
-                                        <p style="font-size: 15px;">Historial de solicitudes</p>
-                                    </a></li>
-                            </ul>
-                        </div>
+            <div class="modal-content">
+                <div class="modal-header" style="padding-bottom: 0px">
+                    <div class="navbar-header card col-md-12" style="background: #2b2b2b">
+                        <a class="navbar-brand">Mi espacio / Reimpresión de tickets</a>
+                        &nbsp;&nbsp;
                     </div>
-                    <div class="modal-body">
-                        <div class="container-fluid">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="card col-md-12">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="col-md-6">
-                                                    <p>Podrás hacer tus búsquedas por los siguientes criterios tales como fecha, numero de cliente, nombre del cliente o numero de contrato.</p>
-                                                    <hr>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12" style="text-align:center;">
-                                                <h4>Mi historial de tickets</h4>
-                                                <hr>
-                                            </div>
-                                        </div>
-
-                                        <div class="card col-md-12">
-                                            <form name="all" id="all" method="POST">
-                                                <div class="dataTable_wrapper">
-                                                    <table class="table table-striped table-bordered table-hover" id="muestra-cupones">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID</th>
-                                                                <th>Contrato</th>
-                                                                <th>Fecha cobro</th>
-                                                                <th>Monto</th>
-                                                                <th>Operación</th>
-                                                                <th>Cliente</th>
-                                                                <th>Caja</th>
-                                                                <th>Acciones</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <?= $tabla; ?>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                        </div>
+                    <div>
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="">
+                                    <p style="font-size: 16px;"><b>Tickets</b></p>
+                                </a>
+                            </li>
+                            <li class="linea">
+                                <a href="/Ahorro/ReimprimeTicketSolicitudes/">
+                                    <p style="font-size: 15px;">Historial de solicitudes</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-md-12" style="text-align:center;">
+                                    <h4>Mi historial de tickets</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="fechaI">Desde</label>
+                                        <input type="date" class="form-control" id="fechaI" value="<?= $fecha; ?>" max="<?= $fecha; ?>">
                                     </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="fechaF">Hasta</label>
+                                        <input type="date" class="form-control" id="fechaF" value="<?= $fecha; ?>" max="<?= $fecha; ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label></label>
+                                        <button type="button" class="btn btn-primary" id="buscar"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="card col-md-12">
+                                <div class="dataTable_wrapper">
+                                    <table class="table table-striped table-bordered table-hover" id="tblTickets">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Contrato</th>
+                                                <th>Fecha cobro</th>
+                                                <th>Monto</th>
+                                                <th>Operación</th>
+                                                <th>Cliente</th>
+                                                <th>Caja</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?= $tabla; ?>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </form>
+            </div>
         </div>
-
     </div>
 </div>
 
