@@ -13,12 +13,6 @@ use \App\models\CajaAhorro as CajaAhorroDao;
 class AdminSucursales extends Controller
 {
     private $_contenedor;
-    private $showError = 'const showError = (mensaje) => swal({ text: mensaje, icon: "error" })';
-    private $showSuccess = 'const showSuccess = (mensaje) => swal({ text: mensaje, icon: "success" })';
-    private $showInfo = 'const showInfo = (mensaje) => swal({ text: mensaje, icon: "info" })';
-    private $confirmarMovimiento = 'const confirmarMovimiento = async (titulo, mensaje, html = null) => {
-        return await swal({ title: titulo, content: html, text: mensaje, icon: "warning", buttons: ["No", "Si, continuar"], dangerMode: true })
-    }';
     private $noSubmit = 'const noSUBMIT = (e) => e.preventDefault()';
     private $validarYbuscar = 'const validarYbuscar = (e) => {
         if (e.keyCode < 9 || e.keyCode > 57) e.preventDefault()
@@ -135,35 +129,6 @@ class AdminSucursales extends Controller
         return primeraMayuscula(convertir(parteEntera)) + (numero == 1 ? " peso " : " pesos ") + parteDecimal + "/100 M.N."
     }';
     private $primeraMayuscula = 'const primeraMayuscula = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1)';
-    private $consultaServidor = 'const consultaServidor = (url, datos, fncOK, metodo = "POST", tipo = "json") => {
-        swal({ text: "Procesando la solicitud, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
-        $.ajax({
-            type: metodo,
-            url: url,
-            data: datos,
-            success: (res) => {
-                if (tipo === "json") {
-                    try {
-                        res = JSON.parse(res)
-                    } catch (error) {
-                        console.error(error)
-                        res =  {
-                            success: false,
-                            mensaje: "Ocurrió un error al procesar la respuesta del servidor."
-                        }
-                    }
-                } else if (tipo === "html") res = res
-
-                swal.close()
-                fncOK(res)
-            },
-            error: (error) => {
-                console.error(error)
-                showError("Ocurrió un error al procesar la solicitud.")
-                swal.close()
-            }
-        })
-    }';
     private $addParametro = 'const addParametro = (parametros, newParametro, newValor) => {
         parametros.push({ name: newParametro, value: newValor })
     }';
