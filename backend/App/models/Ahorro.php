@@ -71,36 +71,45 @@ class Ahorro extends Model
         return $mysqli->queryAll($query);
     }
 
-    public static function insertSolicitudAhorro($solicitud)
+    public static function insertSolicitudAhorro($datos)
     {
 
-        $query_consulta_existe_sol = <<<sql
-            SELECT COUNT(*) AS EXISTE
-            FROM ESIACOM.TICKETS_AHORRO_REIMPRIME
-            WHERE CDGPE_SOLICITA = '$solicitud->_cdgpe' 
-            AND CDGTICKET_AHORRO = '$solicitud->_folio'
-            AND ESTATUS = '0'
-            AND AUTORIZA = '0'
-sql;
+        $qry1 = <<<SQL
+            SELECT
+                COUNT(*) AS EXISTE
+            FROM
+                TICKETS_AHORRO_REIMPRIME
+            WHERE
+                CDGPE_SOLICITA = :cdgpe
+                AND CDGTICKET_AHORRO = :folio
+                AND ESTATUS = '0'
+                AND AUTORIZA = '0'
+        SQL;
 
-        //var_dump($query_consulta_existe_sol);
+        $param = [
+            'cdgpe' => $datos['cdgpe'],
+            'folio' => $datos['folio']
+        ];
 
-        $mysqli = new Database();
-        $res = $mysqli->queryOne($query_consulta_existe_sol);
+        try {
+            $db = new Database();
+            $res = $db->queryOne($qry1, $param);
 
+            if ($res['EXISTE'] != 0) return self::Responde(false, 'Ya solicito la reimpresión de este ticket, espere a su validación o contacte a tesorería.', $res);
+            $param['motivo'] = $datos['motivo'];
+            $param['descripcion'] = $datos['descripcion'];
 
+            $qry2 = <<<SQL
+                INSERT INTO TICKETS_AHORRO_REIMPRIME
+                    (CODIGO, CDGTICKET_AHORRO, FREGISTRO, FREIMPRESION, MOTIVO, ESTATUS, CDGPE_SOLICITA, CDGPE_AUTORIZA, AUTORIZA, DESCRIPCION_MOTIVO, FAUTORIZA, AUTORIZA_CLIENTE)
+                VALUES
+                    (SEC_TICKET_REIMPRIME.NEXTVAL, :folio, CURRENT_TIMESTAMP, '', :motivo, '0', :cdgpe, '', '0', :descripcion, NULL , '0')
+            SQL;
 
-        if ($res['EXISTE'] == 0) {
-            //Agregar un registro
-            $query = <<<sql
-        INSERT INTO ESIACOM.TICKETS_AHORRO_REIMPRIME
-        (CODIGO, CDGTICKET_AHORRO, FREGISTRO, FREIMPRESION, MOTIVO, ESTATUS, CDGPE_SOLICITA, CDGPE_AUTORIZA, AUTORIZA, DESCRIPCION_MOTIVO, FAUTORIZA, AUTORIZA_CLIENTE)
-        VALUES(SEC_TICKET_REIMPRIME.NEXTVAL, '$solicitud->_folio', CURRENT_TIMESTAMP, '', '$solicitud->_motivo', '0', '$solicitud->_cdgpe', '', '0', '$solicitud->_descripcion', NULL , '0')
-sql;
-
-            return $mysqli->insert($query);
-        } else {
-            echo "Ya solicito la reimpresión de este ticket, espere a su validacion o contacte a tesorería.";
+            $db->insertar($qry2, $param);
+            return self::Responde(true, 'Solicitud de reimpresión de ticket registrada correctamente.');
+        } catch (\Exception $e) {
+            return self::Responde(false, 'Error al solicitar la reimpresión del ticket.', null, $e->getMessage());
         }
     }
 

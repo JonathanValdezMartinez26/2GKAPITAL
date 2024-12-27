@@ -316,13 +316,6 @@ script;
         XLSX.utils.book_append_sheet(wb, ws, nombreHoja)
         XLSX.writeFile(wb, nombreArchivo + ".xlsx")
     }';
-    private $validaFIF = 'const validaFIF = (idI = "fechaI", idF = "fechaF") => {
-        const fechaI = document.getElementById(idI).value
-        const fechaF = document.getElementById(idF).value
-        if (fechaI && fechaF && fechaI > fechaF) {
-            document.getElementById(idI).value = fechaF
-        }
-    }';
     private $validaHorarioOperacion = 'const validaHorarioOperacion = (inicio, fin, sinMsj = false) => {
         if ("__PERFIL__" === "ADMIN" || "__USUARIO__" === "AMGM") return
 
@@ -10377,11 +10370,18 @@ html;
                 {$this->showError}
                 {$this->configuraTabla}
                 {$this->consultaServidor}
+                {$this->confirmarMovimiento}
+                {$this->validaFIF}
 
                 $(document).ready(() => {
                     configuraTabla("tblTickets")
                     $("#buscar").click(consultaTickets)
+                    $("#regSolicitud").click(enviar_add_sol)
+                    $("#fechaI").change(valFecha)
+                    $("#fechaF").change(valFecha)
                 })
+
+                const valFecha = () => validaFIF()
 
                 const consultaTickets = () => {
                     const datos = {
@@ -10400,20 +10400,27 @@ html;
                 }
 
                 const Reimprime_ticket = (folio) => {
-                    $("#modal_ticket").modal("show")
                     $("#folio").val(folio)
+                    $("#modal_ticket").modal("show")
                 }
 
                 const enviar_add_sol = () => {
                     confirmarMovimiento("Solicitud de reimpresion de ticket", "¿Está segura de continuar?")
                     .then((continuar) => {
-                        if (!contnuar) return
+                        if (!continuar) return
 
-                        consultaServidor("/Ahorro/AddSolicitudReimpresion/", $("#Add").serialize(), (respuesta) => {
-                            if (respuesta == "1") return showError(respuesta)
+                        const datos = {
+                            folio: $("#folio").val(),
+                            descripcion: $("#descripcion").val(),
+                            motivo: $("#motivo").val(),
+                            cdgpe: "{$_SESSION['usuario']}"
+                        }
+
+                        consultaServidor("/Ahorro/AddSolicitudReimpresion/", datos, (respuesta) => {
+                            if (!respuesta.success) return showError(respuesta.mensaje)
 
                             $("#modal_ticket").modal("hide")
-                            return showSuccess("Solicitud enviada a tesorería.")
+                            return showSuccess(respuesta.mensaje)
                         })
                     })
                 }
@@ -10505,17 +10512,7 @@ html;
 
     public function AddSolicitudReimpresion()
     {
-        $solicitud = new \stdClass();
-
-        $solicitud->_folio = MasterDom::getData('folio');
-        $solicitud->_descripcion = MasterDom::getData('descripcion');
-        $solicitud->_motivo = MasterDom::getData('motivo');
-        $solicitud->_cdgpe = $this->__usuario;
-
-
-        $id = AhorroDao::insertSolicitudAhorro($solicitud);
-
-        return $id;
+        echo json_encode(AhorroDao::insertSolicitudAhorro($_POST));
     }
 
     public function ResponsivaApoderado($datos)

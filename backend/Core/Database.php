@@ -67,6 +67,8 @@ class Database
             }
         } catch (\PDOException $e) {
             throw new \Exception("Error en insertar: " . $e->getMessage() . "\nSql : $sql \nDatos : " . print_r($datos, 1));
+        } catch (\Exception $e) {
+            throw new \Exception("Error en insertar: " . $e->getMessage());
         }
     }
 

@@ -124,6 +124,13 @@ class Controller
             })
         }
     JAVASCRIPT;
+    public $validaFIF = 'const validaFIF = (idI = "fechaI", idF = "fechaF") => {
+        const fechaI = document.getElementById(idI).value
+        const fechaF = document.getElementById(idF).value
+        if (fechaI && fechaF && fechaI > fechaF) {
+            document.getElementById(idI).value = fechaF
+        }
+    }';
 
     public $__usuario = '';
     public $__nombre = '';

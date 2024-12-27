@@ -153,54 +153,45 @@
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    <form onsubmit="enviar_add_sol(); return false" id="Add">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="fecha">Fecha de solicitud*</label>
-                                    <input onkeydown="return false" type="text" class="form-control" id="fecha" name="fecha" value="<?php echo $fecha_actual; ?>" readonly>
-                                    <small id="emailHelp" class="form-text text-muted">Fecha de registro en sistema.</small>
-                                </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="fecha">Fecha de solicitud*</label>
+                                <input onkeydown="return false" type="text" class="form-control" id="fecha" name="fecha" value="<?php echo $fecha_actual; ?>" readonly>
+                                <small id="emailHelp" class="form-text text-muted">Fecha de registro en sistema.</small>
                             </div>
-
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="folio">Folio del ticket*</label>
-                                    <input type="text" class="form-control" id="folio" name="folio" readonly>
-                                    <small id="emailHelp" class="form-text text-muted">Medio de registro del pago.</small>
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="motivo">Motivo *</label>
-                                    <select class="form-control mr-sm-3" autofocus type="select" id="motivo" name="motivo">
-                                        <option value="TICKET EXTRAVIADO">TICKET EXTRAVIADO</option>
-                                        <option value="TICKET DAÑADO">TICKET DAÑADO</option>
-                                        <option value="FALLA IMPRESION">FALLA IMPRESION</option>
-                                        <option value="AUDITORIA">AUDITORIA</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="descripcion">Escriba brevemente el motivo de la reimpresión *</label>
-                                    <textarea type="text" class="form-control" id="descripcion" name="descripcion" rows="3" cols="50"></textarea>
-                                </div>
-                            </div>
-
-
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="folio">Folio del ticket*</label>
+                                <input type="text" class="form-control" id="folio" name="folio" readonly>
+                                <small id="emailHelp" class="form-text text-muted">Medio de registro del pago.</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="motivo">Motivo *</label>
+                                <select class="form-control mr-sm-3" autofocus type="select" id="motivo" name="motivo">
+                                    <option value="TICKET EXTRAVIADO">TICKET EXTRAVIADO</option>
+                                    <option value="TICKET DAÑADO">TICKET DAÑADO</option>
+                                    <option value="FALLA IMPRESION">FALLA IMPRESION</option>
+                                    <option value="AUDITORIA">AUDITORIA</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="descripcion">Escriba brevemente el motivo de la reimpresión *</label>
+                                <textarea type="text" class="form-control" id="descripcion" name="descripcion" rows="3" cols="50"></textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancelar</button>
-                <button type="submit" name="agregar" class="btn btn-primary" value="enviar"><span class="glyphicon glyphicon-floppy-disk"></span> Terminar Solicitud</button>
-                </form>
+                <button type="button" class="btn btn-primary" id="regSolicitud"><i class="glyphicon glyphicon-floppy-disk"></i> Registrar Solicitud</button>
             </div>
-
         </div>
     </div>
 </div>
