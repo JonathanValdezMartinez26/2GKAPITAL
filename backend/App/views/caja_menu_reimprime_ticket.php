@@ -62,80 +62,83 @@
                  </a>-->
         </div>
 
-
-
         <div class="col-md-9">
-            <form id="registroInicialAhorro" name="registroInicialAhorro">
-                <div class="modal-content">
-                    <div class="modal-header" style="padding-bottom: 0px">
-                        <div class="navbar-header card col-md-12" style="background: #2b2b2b">
-                            <a class="navbar-brand">Mi espacio / Reimpresión de tickets</a>
-                            &nbsp;&nbsp;
-                        </div>
-                        <div>
-                            <ul class="nav navbar-nav">
-                                <li> <a href="">
-                                        <p style="font-size: 16px;"><b>Tickets</b></p>
-                                    </a></li>
-                                <li class="linea"><a href="/Ahorro/ReimprimeTicketSolicitudes/">
-                                        <p style="font-size: 15px;">Historial de solicitudes</p>
-                                    </a></li>
-                            </ul>
-                        </div>
+            <div class="modal-content">
+                <div class="modal-header" style="padding-bottom: 0px">
+                    <div class="navbar-header card col-md-12" style="background: #2b2b2b">
+                        <a class="navbar-brand">Mi espacio / Reimpresión de tickets</a>
+                        &nbsp;&nbsp;
                     </div>
-                    <div class="modal-body">
-                        <div class="container-fluid">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="card col-md-12">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                <div class="col-md-6">
-                                                    <p>Podrás hacer tus búsquedas por los siguientes criterios tales como fecha, numero de cliente, nombre del cliente o numero de contrato.</p>
-                                                    <hr>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-12" style="text-align:center;">
-                                                <h4>Mi historial de tickets</h4>
-                                                <hr>
-                                            </div>
-                                        </div>
-
-                                        <div class="card col-md-12">
-                                            <form name="all" id="all" method="POST">
-                                                <div class="dataTable_wrapper">
-                                                    <table class="table table-striped table-bordered table-hover" id="muestra-cupones">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>ID</th>
-                                                                <th>Contrato</th>
-                                                                <th>Fecha cobro</th>
-                                                                <th>Monto</th>
-                                                                <th>Operación</th>
-                                                                <th>Cliente</th>
-                                                                <th>Caja</th>
-                                                                <th>Acciones</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <?= $tabla; ?>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
-                                        </div>
+                    <div>
+                        <ul class="nav navbar-nav">
+                            <li>
+                                <a href="">
+                                    <p style="font-size: 16px;"><b>Tickets</b></p>
+                                </a>
+                            </li>
+                            <li class="linea">
+                                <a href="/Ahorro/ReimprimeTicketSolicitudes/">
+                                    <p style="font-size: 15px;">Historial de solicitudes</p>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="modal-body">
+                    <div class="container-fluid">
+                        <div class="row">
+                            <div class="row">
+                                <div class="col-md-12" style="text-align:center;">
+                                    <h4>Mi historial de tickets</h4>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="fechaI">Desde</label>
+                                        <input type="date" class="form-control" id="fechaI" value="<?= $fecha; ?>" max="<?= $fecha; ?>">
                                     </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label for="fechaF">Hasta</label>
+                                        <input type="date" class="form-control" id="fechaF" value="<?= $fecha; ?>" max="<?= $fecha; ?>">
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="form-group">
+                                        <label></label>
+                                        <button type="button" class="btn btn-primary" id="buscar"><i class="fa fa-search"></i> Buscar</button>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="card col-md-12">
+                                <div class="dataTable_wrapper">
+                                    <table class="table table-striped table-bordered table-hover" id="tblTickets">
+                                        <thead>
+                                            <tr>
+                                                <th>ID</th>
+                                                <th>Contrato</th>
+                                                <th>Fecha cobro</th>
+                                                <th>Monto</th>
+                                                <th>Operación</th>
+                                                <th>Cliente</th>
+                                                <th>Caja</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <?= $tabla; ?>
+                                        </tbody>
+                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
-
                 </div>
-            </form>
+            </div>
         </div>
-
     </div>
 </div>
 
@@ -150,54 +153,45 @@
             </div>
             <div class="modal-body">
                 <div class="container-fluid">
-                    <form onsubmit="enviar_add_sol(); return false" id="Add">
-                        <div class="row">
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="fecha">Fecha de solicitud*</label>
-                                    <input onkeydown="return false" type="text" class="form-control" id="fecha" name="fecha" value="<?php echo $fecha_actual; ?>" readonly>
-                                    <small id="emailHelp" class="form-text text-muted">Fecha de registro en sistema.</small>
-                                </div>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="fecha">Fecha de solicitud*</label>
+                                <input onkeydown="return false" type="text" class="form-control" id="fecha" name="fecha" value="<?php echo $fecha_actual; ?>" readonly>
+                                <small id="emailHelp" class="form-text text-muted">Fecha de registro en sistema.</small>
                             </div>
-
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="folio">Folio del ticket*</label>
-                                    <input type="text" class="form-control" id="folio" name="folio" readonly>
-                                    <small id="emailHelp" class="form-text text-muted">Medio de registro del pago.</small>
-                                </div>
-                            </div>
-
-
-                            <div class="col-md-4">
-                                <div class="form-group">
-                                    <label for="motivo">Motivo *</label>
-                                    <select class="form-control mr-sm-3" autofocus type="select" id="motivo" name="motivo">
-                                        <option value="TICKET EXTRAVIADO">TICKET EXTRAVIADO</option>
-                                        <option value="TICKET DAÑADO">TICKET DAÑADO</option>
-                                        <option value="FALLA IMPRESION">FALLA IMPRESION</option>
-                                        <option value="AUDITORIA">AUDITORIA</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-12">
-                                <div class="form-group">
-                                    <label for="descripcion">Escriba brevemente el motivo de la reimpresión *</label>
-                                    <textarea type="text" class="form-control" id="descripcion" name="descripcion" rows="3" cols="50"></textarea>
-                                </div>
-                            </div>
-
-
                         </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="folio">Folio del ticket*</label>
+                                <input type="text" class="form-control" id="folio" name="folio" readonly>
+                                <small id="emailHelp" class="form-text text-muted">Medio de registro del pago.</small>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="form-group">
+                                <label for="motivo">Motivo *</label>
+                                <select class="form-control mr-sm-3" autofocus type="select" id="motivo" name="motivo">
+                                    <option value="TICKET EXTRAVIADO">TICKET EXTRAVIADO</option>
+                                    <option value="TICKET DAÑADO">TICKET DAÑADO</option>
+                                    <option value="FALLA IMPRESION">FALLA IMPRESION</option>
+                                    <option value="AUDITORIA">AUDITORIA</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label for="descripcion">Escriba brevemente el motivo de la reimpresión *</label>
+                                <textarea type="text" class="form-control" id="descripcion" name="descripcion" rows="3" cols="50"></textarea>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancelar</button>
-                <button type="submit" name="agregar" class="btn btn-primary" value="enviar"><span class="glyphicon glyphicon-floppy-disk"></span> Terminar Solicitud</button>
-                </form>
+                <button type="button" class="btn btn-primary" id="regSolicitud"><i class="glyphicon glyphicon-floppy-disk"></i> Registrar Solicitud</button>
             </div>
-
         </div>
     </div>
 </div>

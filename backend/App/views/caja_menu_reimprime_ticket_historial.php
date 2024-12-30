@@ -142,8 +142,7 @@
                                                 </tr>
                                             </thead>
                                             <tbody>
-                                                <?= $tabla; ?>
-                                                </tr>
+                                                <?= $tabla ?>
                                             </tbody>
                                         </table>
                                     </div>

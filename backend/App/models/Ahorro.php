@@ -5,38 +5,49 @@ namespace App\models;
 defined("APPPATH") or die("Access denied");
 
 use \Core\Database;
-use Exception;
+use Core\Model;
 
-class Ahorro
+class Ahorro extends Model
 {
-    public static function ConsultaTickets($usuario)
+    public static function ConsultaTickets($datos)
     {
-        if ($usuario == 'AMGM') {
-            $query = <<<sql
-             SELECT TICKETS_AHORRO.CODIGO, TICKETS_AHORRO.CDG_CONTRATO,
-            TO_CHAR(TICKETS_AHORRO.FECHA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA_ALTA, TICKETS_AHORRO.MONTO, TICKETS_AHORRO.CDGPE, (CL.NOMBRE1 || ' ' || CL.NOMBRE2 || ' ' || CL.PRIMAPE || ' ' || CL.SEGAPE ) AS NOMBRE_CLIENTE,
-            'CUENTA AHORRO' AS TIPO_AHORRO
-            FROM TICKETS_AHORRO
-            INNER JOIN ASIGNA_PROD_AHORRO ON ASIGNA_PROD_AHORRO.CONTRATO = TICKETS_AHORRO.CDG_CONTRATO 
-            INNER JOIN CL ON CL.CODIGO = ASIGNA_PROD_AHORRO.CDGCL 
-            ORDER BY FECHA DESC
-sql;
-        } else {
-            $query = <<<sql
-             SELECT TICKETS_AHORRO.CODIGO, TICKETS_AHORRO.CDG_CONTRATO,
-            TO_CHAR(TICKETS_AHORRO.FECHA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA_ALTA, TICKETS_AHORRO.MONTO, TICKETS_AHORRO.CDGPE, (CL.NOMBRE1 || ' ' || CL.NOMBRE2 || ' ' || CL.PRIMAPE || ' ' || CL.SEGAPE ) AS NOMBRE_CLIENTE,
-              'CUENTA AHORRO' AS TIPO_AHORRO 
-            FROM TICKETS_AHORRO
-            INNER JOIN ASIGNA_PROD_AHORRO ON ASIGNA_PROD_AHORRO.CONTRATO = TICKETS_AHORRO.CDG_CONTRATO 
-            INNER JOIN CL ON CL.CODIGO = ASIGNA_PROD_AHORRO.CDGCL 
-            WHERE TICKETS_AHORRO.CDGPE = '$usuario' 
-            ORDER BY TICKETS_AHORRO.FECHA DESC
-sql;
+        $query = <<<SQL
+            SELECT
+                TA.CODIGO,
+                TA.CDG_CONTRATO,
+                TO_CHAR(TA.FECHA, 'DD/MM/YYYY HH24:MI:SS') AS FECHA_ALTA,
+                TA.MONTO,
+                TA.CDGPE,
+                (
+                    CL.NOMBRE1 || ' ' || CL.NOMBRE2 || ' ' || CL.PRIMAPE || ' ' || CL.SEGAPE
+                ) AS NOMBRE_CLIENTE,
+                'CUENTA AHORRO' AS TIPO_AHORRO
+            FROM
+                TICKETS_AHORRO TA
+                INNER JOIN ASIGNA_PROD_AHORRO ON ASIGNA_PROD_AHORRO.CONTRATO = TA.CDG_CONTRATO
+                INNER JOIN CL ON CL.CODIGO = ASIGNA_PROD_AHORRO.CDGCL
+            WHERE
+                TRUNC(TA.FECHA) BETWEEN TO_DATE(:fechaI, 'YYYY-MM-DD') AND TO_DATE(:fechaF, 'YYYY-MM-DD')
+        SQL;
+
+        $parametros = [
+            'fechaI' => $datos['fechaI'],
+            'fechaF' => $datos['fechaF']
+        ];
+
+        if ($datos['usuario'] != 'AMGM') {
+            $query .= ' AND TA.CDGPE = :usuario';
+            $parametros['usuario'] = $datos['usuario'];
         }
+        $query .= ' ORDER BY TA.FECHA DESC';
 
-
-        $mysqli = new Database();
-        return $mysqli->queryAll($query);
+        try {
+            $db = new Database();
+            $r = $db->queryAll($query, $parametros);
+            return self::Responde(true, "Tickets obtenidos correctamente", $r);
+        } catch (\Exception $e) {
+            return self::Responde(false, "Error al consultar los tickets de ahorro.", null, $e->getMessage());
+        }
     }
 
     public static function ConsultaSolicitudesTickets($datos)
@@ -60,36 +71,45 @@ sql;
         return $mysqli->queryAll($query);
     }
 
-    public static function insertSolicitudAhorro($solicitud)
+    public static function insertSolicitudAhorro($datos)
     {
 
-        $query_consulta_existe_sol = <<<sql
-            SELECT COUNT(*) AS EXISTE
-            FROM ESIACOM.TICKETS_AHORRO_REIMPRIME
-            WHERE CDGPE_SOLICITA = '$solicitud->_cdgpe' 
-            AND CDGTICKET_AHORRO = '$solicitud->_folio'
-            AND ESTATUS = '0'
-            AND AUTORIZA = '0'
-sql;
+        $qry1 = <<<SQL
+            SELECT
+                COUNT(*) AS EXISTE
+            FROM
+                TICKETS_AHORRO_REIMPRIME
+            WHERE
+                CDGPE_SOLICITA = :cdgpe
+                AND CDGTICKET_AHORRO = :folio
+                AND ESTATUS = '0'
+                AND AUTORIZA = '0'
+        SQL;
 
-        //var_dump($query_consulta_existe_sol);
+        $param = [
+            'cdgpe' => $datos['cdgpe'],
+            'folio' => $datos['folio']
+        ];
 
-        $mysqli = new Database();
-        $res = $mysqli->queryOne($query_consulta_existe_sol);
+        try {
+            $db = new Database();
+            $res = $db->queryOne($qry1, $param);
 
+            if ($res['EXISTE'] != 0) return self::Responde(false, 'Ya solicito la reimpresión de este ticket, espere a su validación o contacte a tesorería.', $res);
+            $param['motivo'] = $datos['motivo'];
+            $param['descripcion'] = $datos['descripcion'];
 
+            $qry2 = <<<SQL
+                INSERT INTO TICKETS_AHORRO_REIMPRIME
+                    (CODIGO, CDGTICKET_AHORRO, FREGISTRO, FREIMPRESION, MOTIVO, ESTATUS, CDGPE_SOLICITA, CDGPE_AUTORIZA, AUTORIZA, DESCRIPCION_MOTIVO, FAUTORIZA, AUTORIZA_CLIENTE)
+                VALUES
+                    (SEC_TICKET_REIMPRIME.NEXTVAL, :folio, CURRENT_TIMESTAMP, '', :motivo, '0', :cdgpe, '', '0', :descripcion, NULL , '0')
+            SQL;
 
-        if ($res['EXISTE'] == 0) {
-            //Agregar un registro
-            $query = <<<sql
-        INSERT INTO ESIACOM.TICKETS_AHORRO_REIMPRIME
-        (CODIGO, CDGTICKET_AHORRO, FREGISTRO, FREIMPRESION, MOTIVO, ESTATUS, CDGPE_SOLICITA, CDGPE_AUTORIZA, AUTORIZA, DESCRIPCION_MOTIVO, FAUTORIZA, AUTORIZA_CLIENTE)
-        VALUES(SEC_TICKET_REIMPRIME.NEXTVAL, '$solicitud->_folio', CURRENT_TIMESTAMP, '', '$solicitud->_motivo', '0', '$solicitud->_cdgpe', '', '0', '$solicitud->_descripcion', NULL , '0')
-sql;
-
-            return $mysqli->insert($query);
-        } else {
-            echo "Ya solicito la reimpresión de este ticket, espere a su validacion o contacte a tesorería.";
+            $db->insertar($qry2, $param);
+            return self::Responde(true, 'Solicitud de reimpresión de ticket registrada correctamente.');
+        } catch (\Exception $e) {
+            return self::Responde(false, 'Error al solicitar la reimpresión del ticket.', null, $e->getMessage());
         }
     }
 
