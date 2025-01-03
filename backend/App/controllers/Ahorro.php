@@ -41,37 +41,37 @@ class Ahorro extends Controller
         if (e.keyCode < 9 || e.keyCode > 57) e.preventDefault()
         if (e.keyCode === 13) buscaCliente(t)
     }';
-    private $buscaCliente = <<<script
-    const buscaCliente = (t) => {
-        document.querySelector("#btnBskClnt").disabled = true
-        const noCliente = document.querySelector("#clienteBuscado").value
-         
-        if (!noCliente) {
-            limpiaDatosCliente()
-            document.querySelector("#btnBskClnt").disabled = false
-            return showError("Ingrese un número de cliente a buscar.")
-        }
-        
-        consultaServidor("/Ahorro/BuscaContratoAhorro/", { cliente: noCliente }, (respuesta) => {
+    private $buscaCliente = <<<JAVASCRIPT
+        const buscaCliente = (t) => {
+            document.querySelector("#btnBskClnt").disabled = true
+            const noCliente = document.querySelector("#clienteBuscado").value
+            
+            if (!noCliente) {
                 limpiaDatosCliente()
-                if (!respuesta.success) {
-                    if (respuesta.datos && !sinContrato(respuesta.datos)) return
-                     
+                document.querySelector("#btnBskClnt").disabled = false
+                return showError("Ingrese un número de cliente a buscar.")
+            }
+            
+            consultaServidor("/Ahorro/BuscaContratoAhorro/", { cliente: noCliente }, (respuesta) => {
                     limpiaDatosCliente()
-                    return showError(respuesta.mensaje)
-                }
-                 
-                if (respuesta.datos.SUCURSAL !== noSucursal) {
-                    limpiaDatosCliente()
-                    return showError("El cliente " + noCliente + " no puede realizar transacciones en esta sucursal, su contrato esta asignado a la sucursal " + respuesta.datos.NOMBRE_SUCURSAL + ", contacte a la gerencia de Administración.")
-                }
-                 
-                llenaDatosCliente(respuesta.datos)
-            })
-        
-        document.querySelector("#btnBskClnt").disabled = false
-    }
-script;
+                    if (!respuesta.success) {
+                        if (respuesta.datos && !sinContrato(respuesta.datos)) return
+                        
+                        limpiaDatosCliente()
+                        return showError(respuesta.mensaje)
+                    }
+                    
+                    if (respuesta.datos.SUCURSAL !== noSucursal) {
+                        limpiaDatosCliente()
+                        return showError("El cliente " + noCliente + " no puede realizar transacciones en esta sucursal, su contrato esta asignado a la sucursal " + respuesta.datos.NOMBRE_SUCURSAL + ", contacte a la gerencia de Administración.")
+                    }
+                    
+                    llenaDatosCliente(respuesta.datos)
+                })
+            
+            document.querySelector("#btnBskClnt").disabled = false
+        }
+    JAVASCRIPT;
     private $getHoy = 'const getHoy = (completo = true) => {
         const hoy = new Date()
         const dd = String(hoy.getDate()).padStart(2, "0")
@@ -193,27 +193,27 @@ script;
         return primeraMayuscula(convertir(parteEntera)) + (numero == 1 ? " peso " : " pesos ") + parteDecimal + "/100 M.N."
     }';
     private $primeraMayuscula = 'const primeraMayuscula = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1)';
-    private $muestraPDF = <<<script
-    const muestraPDF = (titulo, ruta) => {
-        const host = window.location.origin
-        let plantilla = '<!DOCTYPE html>'
-            plantilla += '<html lang="es">'
-            plantilla += '<head>'
-            plantilla += '<meta charset="UTF-8">'
-            plantilla += '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
-            plantilla += '<link rel="shortcut icon" href="' + host + '/img/logo_ico.png">'
-            plantilla += '<title>' + titulo + '</title>'
-            plantilla += '</head>'
-            plantilla += '<body style="margin: 0; padding: 0; background-color: #333333;">'
-            plantilla += '<iframe src="' + ruta + '" style="width: 100%; height: 99vh; border: none; margin: 0; padding: 0;"></iframe>'
-            plantilla += '</body>'
-            plantilla += '</html>'
-        
-            const blob = new Blob([plantilla], { type: 'text/html' })
-            const url = URL.createObjectURL(blob)
-            window.open(url, '_blank')
-    }
-script;
+    private $muestraPDF = <<<JAVASCRIPT
+        const muestraPDF = (titulo, ruta) => {
+            const host = window.location.origin
+            let plantilla = '<!DOCTYPE html>'
+                plantilla += '<html lang="es">'
+                plantilla += '<head>'
+                plantilla += '<meta charset="UTF-8">'
+                plantilla += '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+                plantilla += '<link rel="shortcut icon" href="' + host + '/img/logo_ico.png">'
+                plantilla += '<title>' + titulo + '</title>'
+                plantilla += '</head>'
+                plantilla += '<body style="margin: 0; padding: 0; background-color: #333333;">'
+                plantilla += '<iframe src="' + ruta + '" style="width: 100%; height: 99vh; border: none; margin: 0; padding: 0;"></iframe>'
+                plantilla += '</body>'
+                plantilla += '</html>'
+            
+                const blob = new Blob([plantilla], { type: 'text/html' })
+                const url = URL.createObjectURL(blob)
+                window.open(url, '_blank')
+        }
+    JAVASCRIPT;
     private $valida_MCM_Complementos = 'const valida_MCM_Complementos = async () => {
         swal({ text: "Procesando la solicitud, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
         
@@ -233,69 +233,69 @@ script;
 
         return resultado
     }';
-    private $imprimeContrato = <<<script
-    const imprimeContrato = (numero_contrato, producto = 1) => {
-        if (!numero_contrato) return
-        const host = window.location.origin
-        const titulo = 'Contrato ' + numero_contrato
-        const ruta = host
-            + '/Ahorro/Contrato/?'
-            + 'contrato=' + numero_contrato
-            + '&producto=' + producto
-         
-        muestraPDF(titulo, ruta)
-    }
-script;
-    private $imprimeResponsivaApoderado = <<<script
-    const imprimeResponsivaApoderado = (numero_contrato, curp) => {
-        if (!numero_contrato) return
-        const host = window.location.origin
-        const titulo = 'Responsiva Apoderado'
-        const ruta = host
-            + '/Ahorro/ImprimeResponsivaApoderado/?'
-            + 'contrato=' + numero_contrato
-            + '&curp=' + curp
-         
-        muestraPDF(titulo, ruta)
-    }
-script;
-    private $sinContrato = <<<script
-    const sinContrato = (datosCliente) => {
-        if (datosCliente["NO_CONTRATOS"] == 0) {
-            swal({
-                title: "Cuenta de ahorro corriente",
-                text: "El cliente " + datosCliente['CDGCL'] + " no tiene una cuenta de ahorro.\\n¿Desea aperturar una cuenta de ahorro en este momento?",
-                icon: "info",
-                buttons: ["No", "Sí"],
-                dangerMode: true
-            }).then((abreCta) => {
-                if (abreCta) {
-                    window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + datosCliente['CDGCL']
-                    return
-                }
-            })
-            return false
+    private $imprimeContrato = <<<JAVASCRIPT
+        const imprimeContrato = (numero_contrato, producto = 1) => {
+            if (!numero_contrato) return
+            const host = window.location.origin
+            const titulo = 'Contrato ' + numero_contrato
+            const ruta = host
+                + '/Ahorro/Contrato/?'
+                + 'contrato=' + numero_contrato
+                + '&producto=' + producto
+            
+            muestraPDF(titulo, ruta)
         }
-        const msj2 = (typeof mEdoCta !== 'undefined') ? "No podemos generar un estado de cuenta para el cliente  " + datosCliente['CDGCL'] + ", porque este no ha concluido con su proceso de apertura de la cuenta de ahorro corriente.\\n¿Desea completar el proceso en este momento?" 
-        : "El cliente " + datosCliente['CDGCL'] + " no ha completado el proceso de apertura de la cuenta de ahorro.\\n¿Desea completar el proceso en este momento?"
-        if (datosCliente["NO_CONTRATOS"] == 1 && datosCliente["CONTRATO_COMPLETO"] == 0) {
-            swal({
-                title: "Cuenta de ahorro corriente",
-                text: msj2,
-                icon: "info",
-                buttons: ["No", "Sí"],
-                dangerMode: true
-            }).then((abreCta) => {
-                if (abreCta) {
-                    window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + datosCliente['CDGCL']
-                    return
-                }
-            })
-            return false
+    JAVASCRIPT;
+    private $imprimeResponsivaApoderado = <<<JAVASCRIPT
+        const imprimeResponsivaApoderado = (numero_contrato, curp) => {
+            if (!numero_contrato) return
+            const host = window.location.origin
+            const titulo = 'Responsiva Apoderado'
+            const ruta = host
+                + '/Ahorro/ImprimeResponsivaApoderado/?'
+                + 'contrato=' + numero_contrato
+                + '&curp=' + curp
+            
+            muestraPDF(titulo, ruta)
         }
-        return true
-    }
-script;
+    JAVASCRIPT;
+    private $sinContrato = <<<JAVASCRIPT
+        const sinContrato = (datosCliente) => {
+            if (datosCliente["NO_CONTRATOS"] == 0) {
+                swal({
+                    title: "Cuenta de ahorro corriente",
+                    text: "El cliente " + datosCliente['CDGCL'] + " no tiene una cuenta de ahorro.\\n¿Desea aperturar una cuenta de ahorro en este momento?",
+                    icon: "info",
+                    buttons: ["No", "Sí"],
+                    dangerMode: true
+                }).then((abreCta) => {
+                    if (abreCta) {
+                        window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + datosCliente['CDGCL']
+                        return
+                    }
+                })
+                return false
+            }
+            const msj2 = (typeof mEdoCta !== 'undefined') ? "No podemos generar un estado de cuenta para el cliente  " + datosCliente['CDGCL'] + ", porque este no ha concluido con su proceso de apertura de la cuenta de ahorro corriente.\\n¿Desea completar el proceso en este momento?" 
+            : "El cliente " + datosCliente['CDGCL'] + " no ha completado el proceso de apertura de la cuenta de ahorro.\\n¿Desea completar el proceso en este momento?"
+            if (datosCliente["NO_CONTRATOS"] == 1 && datosCliente["CONTRATO_COMPLETO"] == 0) {
+                swal({
+                    title: "Cuenta de ahorro corriente",
+                    text: msj2,
+                    icon: "info",
+                    buttons: ["No", "Sí"],
+                    dangerMode: true
+                }).then((abreCta) => {
+                    if (abreCta) {
+                        window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + datosCliente['CDGCL']
+                        return
+                    }
+                })
+                return false
+            }
+            return true
+        }
+    JAVASCRIPT;
     private $addParametro = 'const addParametro = (parametros, newParametro, newValor) => {
         parametros.push({ name: newParametro, value: newValor })
     }';
