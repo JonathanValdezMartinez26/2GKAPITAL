@@ -1316,7 +1316,7 @@ script;
     public function BuscaCliente()
     {
         if (self::ValidaHorario()) {
-            echo CajaAhorroDao::BuscaClienteNvoContrato($_POST);
+            echo json_encode(CajaAhorroDao::BuscaClienteNvoContrato($_POST));
             return;
         }
         echo self::FueraHorario();
