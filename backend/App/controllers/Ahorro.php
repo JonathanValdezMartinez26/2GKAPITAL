@@ -10254,45 +10254,46 @@ html;
     //////////////////////////////////////////////////
     public function ReimprimeTicketSolicitudes()
     {
-        $extraFooter = <<<html
-        <script>
-            {$this->showError}
-            {$this->configuraTabla}
-            {$this->muestraPDF}
-            {$this->imprimeTicket}
-            {$this->addParametro}
-            {$this->validaFIF}
-            {$this->consultaServidor}
-            {$this->valida_MCM_Complementos}
-         
-            $(document).ready(() => {
-                configuraTabla("solicitudes");
-            })
-             
-            const buscar = () => {
-                const datos = []
-                addParametro(datos, "usuario", "{$_SESSION['usuario']}")
-                addParametro(datos, "fechaI", document.querySelector("#fechaI").value)
-                addParametro(datos, "fechaF", document.querySelector("#fechaF").value)
-                addParametro(datos, "estatus", document.querySelector("#estatus").value)
-                 
-                consultaServidor("/Ahorro/GetSolicitudesTickets/", $.param(datos), (respuesta) => {
-                    $("#solicitudes").DataTable().destroy()
-                     
-                    if (respuesta.datos == "") showError("No se encontraron solicitudes de retiro en el rango de fechas seleccionado.")
-                     
-                    $("#solicitudes tbody").html(respuesta.datos)
-                    configuraTabla("solicitudes")
+        $extraFooter = <<<HTML
+            <script>
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->configuraTabla}
+                {$this->muestraPDF}
+                {$this->imprimeTicket}
+                {$this->addParametro}
+                {$this->validaFIF}
+                {$this->consultaServidor}
+                {$this->valida_MCM_Complementos}
+            
+                $(document).ready(() => {
+                    configuraTabla("solicitudes");
                 })
-            }
-             
-            const impTkt = async (tkt) => {
-                if (!await valida_MCM_Complementos()) return
-                 
-                imprimeTicket(tkt)
-            }
-        </script>
-        html;
+                
+                const buscar = () => {
+                    const datos = []
+                    addParametro(datos, "usuario", "{$_SESSION['usuario']}")
+                    addParametro(datos, "fechaI", document.querySelector("#fechaI").value)
+                    addParametro(datos, "fechaF", document.querySelector("#fechaF").value)
+                    addParametro(datos, "estatus", document.querySelector("#estatus").value)
+                    
+                    consultaServidor("/Ahorro/GetSolicitudesTickets/", $.param(datos), (respuesta) => {
+                        $("#solicitudes").DataTable().destroy()
+                        
+                        if (respuesta.datos == "") showError("No se encontraron solicitudes de retiro en el rango de fechas seleccionado.")
+                        
+                        $("#solicitudes tbody").html(respuesta.datos)
+                        configuraTabla("solicitudes")
+                    })
+                }
+                
+                const impTkt = async (tkt) => {
+                    if (!await valida_MCM_Complementos()) return
+                    
+                    imprimeTicket(tkt)
+                }
+            </script>
+        HTML;
 
         $tabla = self::GetSolicitudesTickets();
         $tabla = $tabla['success'] ? $tabla['datos'] : "";
