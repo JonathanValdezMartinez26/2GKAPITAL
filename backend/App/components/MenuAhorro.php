@@ -26,7 +26,7 @@ class MenuAhorro
 
         foreach ($this->opciones as $opcion) {
             $oma = new OpcionMenuAhorro($opcion);
-            if ($opcion['ruta'] == $this->activa) $oma->toogleICONO();
+            if ($opcion['etiqueta'] == $this->activa) $oma->toogleICONO();
             $opcionesHTML .= $oma->mostrar();
         }
 
