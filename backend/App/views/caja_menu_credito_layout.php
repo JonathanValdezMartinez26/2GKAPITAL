@@ -1,111 +1,59 @@
-<?php echo $header; ?>
+<?= $header; ?>
 
 <?php
 
-use App\components\SubMenuAhorro;
+use App\components\AhorroMenus_MiEspacio;
 
-$subMenuAhorro = new SubMenuAhorro('LayoutPagosCredito');
+[$menu, $submenu] = AhorroMenus_MiEspacio::mostrar();
 
 ?>
 
 <div class="right_col">
-    <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
-        <div class="col-md-3 panel panel-body" style="margin-bottom: 0px;">
-            <a id="link" href="/Ahorro/CuentaCorriente/">
-                <div class="col-md-5" style="margin-top: 5px; margin-left: 10px; margin-right: 30px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/5575/5575939.png" style="border-radius: 3px; padding-top: 5px;" width="110" height="110">
-                    <p style="font-size: 12px; padding-top: 5px; color: #000000"><b>Ahorro y Crédito </b></p>
-                    <! -- https://cdn-icons-png.flaticon.com/512/5575/5575938.png -->
-                </div>
-            </a>
+    <?= $menu; ?>
 
-            <a id="link" href="/Ahorro/ContratoInversion/">
-                <div class="col-md-5 imagen" style="margin-top: 5px; margin-left: 0px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/5836/5836503.png" style="border-radius: 3px; padding-top: 5px;" width="110" height="110">
-                    <p style="font-size: 12px; padding-top: 5px; color: #000000"><b>Inversión </b></p>
-                    <! -- https://cdn-icons-png.flaticon.com/512/5836/5836477.png -->
+    <div class="col-md-9" id="bloqueoAhorro">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-bottom: 0px">
+                <div class="navbar-header card col-md-12" style="background: #2b2b2b">
+                    <a class="navbar-brand">Mi espacio / Cuentas de ahorro corriente</a>
                 </div>
-            </a>
 
-            <a id="link" href="/Ahorro/CuentaPeque/">
-                <div class="col-md-5 imagen" style="margin-top: 20px; margin-left: 10px; margin-right: 30px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2995/2995390.png" style="border-radius: 3px; padding-top: 5px;" width="110" height="110">
-                    <p style="font-size: 12px; padding-top: 6px; color: #000000"><b>Ahorro Peque </b></p>
-                    <! -- https://cdn-icons-png.flaticon.com/512/2995/2995467.png -->
-                </div>
-            </a>
-
-            <a id="link" href="/Ahorro/EstadoCuenta/">
-                <div class="col-md-5 imagen" style="margin-top: 20px; margin-left: 0px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/12202/12202939.png" style="border-radius: 3px; padding-top: 5px;" width="110" height="110">
-                    <p style="font-size: 12px; padding-top: 6px; color: #000000"><b>Resumen Movimientos </b></p>
-                    <! -- https://cdn-icons-png.flaticon.com/512/12202/12202918.png -->
-                </div>
-            </a>
-
-            <a id="link" href="/Ahorro/SaldosDia/">
-                <div class="col-md-5 imagen" style="margin-top: 20px; margin-left: 10px; margin-right: 30px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/5833/5833855.png" style="border-radius: 3px; padding-top: 5px;" width="100" height="110">
-                    <p style="font-size: 12px; padding-top: 6px; color: #000000"><b>Arqueo </b></p>
-                    <! -- https://cdn-icons-png.flaticon.com/512/5833/5833897.png -->
-                </div>
-            </a>
-
-            <a id="link" href="/Ahorro/ReimprimeTicket/">
-                <div class="col-md-5 imagen" style="margin-top: 20px; margin-left: 0px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/7325/7325275.png" style="border-radius: 3px; padding-top: 5px;" width="110" height="110">
-                    <p style="font-size: 12px; padding-top: 6px; color: #000000"><b>Reimprime Ticket </b></p>
-                    <! -- https://cdn-icons-png.flaticon.com/512/942/942752.png -->
-                </div>
-            </a>
-        </div>
-
-        <div class="col-md-9" id="bloqueoAhorro">
-            <div class="modal-content">
-                <div class="modal-header" style="padding-bottom: 0px">
-                    <div class="navbar-header card col-md-12" style="background: #2b2b2b">
-                        <a class="navbar-brand">Mi espacio / Cuentas de ahorro corriente</a>
-                        &nbsp;&nbsp;
-                    </div>
-                    <div>
-                        <?= $subMenuAhorro->mostrar(); ?>
-                    </div>
-                </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="card">
-                            <div class="card-header">
-                                <h5 class="card-title">Especifique el rango de fechas</h5>
+                <?= $submenu; ?>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="card-title">Especifique el rango de fechas</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <input class="form-control" type="date" id="fechaI" value="<?= $fecha; ?>" max="<?= $fecha; ?>">
+                                    <span id="availability1">Desde</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <input class="form-control" type="date" id="fechaF" value="<?= $fecha; ?>" max="<?= $fecha; ?>">
+                                    <span id="availability1">Hasta</span>
+                                </div>
+                                <div class="col-md-3">
+                                    <button class="btn btn-primary" type="button" id="buscar"><i class="fa fa-search"></i> Buscar</button>
+                                </div>
                             </div>
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <input class="form-control" type="date" id="fechaI" value="<?= $fecha; ?>" max="<?= $fecha; ?>">
-                                        <span id="availability1">Desde</span>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <input class="form-control" type="date" id="fechaF" value="<?= $fecha; ?>" max="<?= $fecha; ?>">
-                                            <span id="availability1">Hasta</span>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <button class="btn btn-primary" type="button" id="buscar"><i class="fa fa-search"></i> Buscar</button>
-                                    </div>
-                                </div>
-                                <hr>
-                                <div class="dataTable_wrapper">
-                                    <table class="table table-striped table-bordered table-hover" id="historialPagos">
-                                        <thead>
-                                            <tr>
-                                                <th>Fecha</th>
-                                                <th>Referencia</th>
-                                                <th>Monto</th>
-                                                <th>Moneda</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
-                                    </table>
-                                </div>
+                            <hr>
+                            <div class="dataTable_wrapper">
+                                <table class="table table-striped table-bordered table-hover" id="historialPagos">
+                                    <thead>
+                                        <tr>
+                                            <th>Fecha</th>
+                                            <th>Referencia</th>
+                                            <th>Monto</th>
+                                            <th>Moneda</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
                     </div>
@@ -221,16 +169,4 @@ $subMenuAhorro = new SubMenuAhorro('LayoutPagosCredito');
     </div>
 </div>
 
-<style>
-    .imagen {
-        transform: scale(var(--escala, 1));
-        transition: transform 0.25s;
-    }
-
-    .imagen:hover {
-        --escala: 1.2;
-        cursor: pointer;
-    }
-</style>
-
-<?php echo $footer; ?>
+<?= $footer; ?>

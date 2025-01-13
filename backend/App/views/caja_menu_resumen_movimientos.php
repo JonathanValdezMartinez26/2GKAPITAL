@@ -1,108 +1,61 @@
-<?php echo $header; ?>
+<?= $header; ?>
+
+<?php
+
+use App\components\AhorroMenus_MiEspacio;
+
+[$menu, $submenu] = AhorroMenus_MiEspacio::mostrar();
+
+?>
 
 <div class="right_col">
-    <div class="col-md-12 col-sm-12 col-xs-12 col-lg-12">
-        <div class="col-md-3 panel panel-body" sstyle="margin-top: 20px; margin-left: 10px; margin-right: 30px; border: 1px solid #dfdfdf; border-radius: 10px;">
-            <a id="link" href="/Ahorro/CuentaCorriente/">
-                <div class="col-md-5 imagen" style="margin-top: 5px; margin-left: 10px; margin-right: 30px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/5575/5575938.png" style="border-radius: 3px; padding-top: 5px;" width="110" height="110">
-                    <p style="font-size: 12px; padding-top: 5px; color: #000000"><b>Ahorro </b></p>
-                    <! -- https://cdn-icons-png.flaticon.com/512/5575/5575939.png -->
-                </div>
-            </a>
-            <a id="link" href="/Ahorro/ContratoInversion/">
-                <div class="col-md-5 imagen" style="margin-top: 5px; margin-left: 0px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/5836/5836503.png" style="border-radius: 3px; padding-top: 5px;" width="110" height="110">
-                    <p style="font-size: 12px; padding-top: 5px; color: #000000"><b>Inversión </b></p>
-                    <! -- https://cdn-icons-png.flaticon.com/512/5836/5836477.png -->
-                </div>
-            </a>
-            <a id="link" href="/Ahorro/CuentaPeque/">
-                <div class="col-md-5 imagen" style="margin-top: 20px; margin-left: 10px; margin-right: 30px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2995/2995390.png" style="border-radius: 3px; padding-top: 5px;" width="110" height="110">
-                    <p style="font-size: 12px; padding-top: 6px; color: #000000"><b>Ahorro Peque </b></p>
-                    <! -- https://cdn-icons-png.flaticon.com/512/2995/2995467.png -->
-                </div>
-            </a>
-            <div class="col-md-5" style="margin-top: 20px; margin-left: 0px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                <img src="https://cdn-icons-png.flaticon.com/512/12202/12202918.png" style="border-radius: 3px; padding-top: 5px;" width="110" height="110">
-                <p style="font-size: 12px; padding-top: 6px; color: #000000"><b>Resumen Movimientos </b></p>
-                <! -- https://cdn-icons-png.flaticon.com/512/12202/12202939.png -->
-            </div>
-            <a id="link" href="/Ahorro/SaldosDia/">
-                <div class="col-md-5 imagen" style="margin-top: 20px; margin-left: 10px; margin-right: 30px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/5833/5833855.png" style="border-radius: 3px; padding-top: 5px;" width="100" height="110">
-                    <p style="font-size: 12px; padding-top: 6px; color: #000000"><b>Arqueo</b></p>
-                    <! -- https://cdn-icons-png.flaticon.com/512/5833/5833897.png -->
-                </div>
-            </a>
-            <a id="link" href="/Ahorro/ReimprimeTicket/">
-                <div class="col-md-5 imagen" style="margin-top: 20px; margin-left: 0px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                    <img src="https://cdn-icons-png.flaticon.com/512/7325/7325275.png" style="border-radius: 3px; padding-top: 5px;" width="110" height="110">
-                    <p style="font-size: 12px; padding-top: 6px; color: #000000"><b>Reimprime Ticket </b></p>
-                    <! -- https://cdn-icons-png.flaticon.com/512/942/942752.png -->
-                </div>
-            </a>
-            <!--<a id="link" href="/Ahorro/Calculadora/">
-                     <div class="col-md-5" style="margin-top: 20px; margin-left: 0px; border: 1px solid #dfdfdf; border-radius: 10px;">
-                         <img src="https://cdn-icons-png.flaticon.com/512/5833/5833832.png" style="border-radius: 3px; padding-top: 5px;" width="98" height="110">
-                         <p style="font-size: 12px; padding-top: 6px; color: #000000"><b>Calculadora  </b></p>
+    <?= $menu; ?>
 
-                     </div>
-                 </a>-->
-        </div>
-        <div class="col-md-9">
-            <div class="modal-content">
-                <div class="modal-header" style="padding-bottom: 0px">
-                    <div class="navbar-header card col-md-12" style="background: #2b2b2b">
-                        <a class="navbar-brand">Mi espacio / Resumen de movimientos</a>
-                        &nbsp;&nbsp;
-                    </div>
-                    <div>
-                        <ul class="nav navbar-nav">
-                            <li><a href="/Ahorro/EstadoCuenta/">
-                                    <p style="font-size: 16px;"><b>Resumen de mis movimientos del día</b></p>
-                                </a></li>
-                        </ul>
-                    </div>
+    <div class="col-md-9">
+        <div class="modal-content">
+            <div class="modal-header" style="padding-bottom: 0px">
+                <div class="navbar-header card col-md-12" style="background: #2b2b2b">
+                    <a class="navbar-brand">Mi espacio / Resumen de movimientos</a>
                 </div>
-                <div class="modal-body">
-                    <div class="container-fluid">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="card col-md-12">
-                                    <div class="row">
-                                        <div class="col-md-12">
-                                            <div class="col-md-6">
-                                                <p>Podrás hacer tus búsquedas por los siguientes criterios tales como fecha, numero de cliente, nombre del cliente o numero de contrato.</p>
-                                                <hr>
-                                            </div>
+
+                <?= $submenu; ?>
+            </div>
+            <div class="modal-body">
+                <div class="container-fluid">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="card col-md-12">
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div class="col-md-6">
+                                            <p>Podrás hacer tus búsquedas por los siguientes criterios tales como fecha, numero de cliente, nombre del cliente o numero de contrato.</p>
+                                            <hr>
                                         </div>
                                     </div>
+                                </div>
 
-                                    <div class="card col-md-12">
-                                        <form name="all" id="all" method="POST">
-                                            <div class="dataTable_wrapper">
-                                                <table class="table table-striped table-bordered table-hover" id="muestra-cupones">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Fecha movimiento</th>
-                                                            <th>Contrato</th>
-                                                            <th>Concepto</th>
-                                                            <th>Monto</th>
-                                                            <th>Operación</th>
-                                                            <th>Cliente</th>
-                                                            <th>Acciones</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <?= $tabla; ?>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </form>
-                                    </div>
+                                <div class="card col-md-12">
+                                    <form name="all" id="all" method="POST">
+                                        <div class="dataTable_wrapper">
+                                            <table class="table table-striped table-bordered table-hover" id="muestra-cupones">
+                                                <thead>
+                                                    <tr>
+                                                        <th>Fecha movimiento</th>
+                                                        <th>Contrato</th>
+                                                        <th>Concepto</th>
+                                                        <th>Monto</th>
+                                                        <th>Operación</th>
+                                                        <th>Cliente</th>
+                                                        <th>Acciones</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <?= $tabla; ?>
+                                                    </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -129,12 +82,10 @@
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="fecha">Fecha de solicitud*</label>
-                                    <input onkeydown="return false" type="text" class="form-control" id="fecha" name="fecha" value="<?php echo $fecha_actual; ?>" readonly>
+                                    <input onkeydown="return false" type="text" class="form-control" id="fecha" name="fecha" value="<?= $fecha_actual; ?>" readonly>
                                     <small id="emailHelp" class="form-text text-muted">Fecha de registro en sistema.</small>
                                 </div>
                             </div>
-
-
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="folio">Folio del ticket*</label>
@@ -142,8 +93,6 @@
                                     <small id="emailHelp" class="form-text text-muted">Medio de registro del pago.</small>
                                 </div>
                             </div>
-
-
                             <div class="col-md-4">
                                 <div class="form-group">
                                     <label for="motivo">Motivo *</label>
@@ -161,39 +110,16 @@
                                     <textarea type="text" class="form-control" id="descripcion" name="descripcion" rows="3" cols="50"></textarea>
                                 </div>
                             </div>
-
-
                         </div>
+                    </form>
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal"><span class="glyphicon glyphicon-remove"></span> Cancelar</button>
                 <button type="submit" name="agregar" class="btn btn-primary" value="enviar"><span class="glyphicon glyphicon-floppy-disk"></span> Terminar Solicitud</button>
-                </form>
             </div>
-
         </div>
     </div>
 </div>
 
-
-<style>
-    .imagen {
-        transform: scale(var(--escala, 1));
-        transition: transform 0.25s;
-    }
-
-    .imagen:hover {
-        --escala: 1.2;
-        cursor: pointer;
-    }
-
-    .linea:hover {
-        --escala: 1.2;
-        cursor: pointer;
-        text-decoration: underline;
-    }
-</style>
-
-
-<?php echo $footer; ?>
+<?= $footer; ?>

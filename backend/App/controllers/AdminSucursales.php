@@ -14,237 +14,253 @@ class AdminSucursales extends Controller
 {
     private $_contenedor;
     private $noSubmit = 'const noSUBMIT = (e) => e.preventDefault()';
-    private $validarYbuscar = 'const validarYbuscar = (e) => {
-        if (e.keyCode < 9 || e.keyCode > 57) e.preventDefault()
-        if (e.keyCode === 13) buscar()
-    }';
-    private $soloNumeros = 'const soloNumeros = (e) => {
-        valKD = false
-        if (
-            !(e.key >= "0" && e.key <= "9") &&
-            e.key !== "." &&
-            e.key !== "Backspace" &&
-            e.key !== "Delete" &&
-            e.key !== "ArrowLeft" &&
-            e.key !== "ArrowRight" &&
-            e.key !== "Tab"
-        ) e.preventDefault()
-        if (e.key === "." && e.target.value.includes(".")) e.preventDefault()
-        valKD = true
-    }';
-    private $numeroLetras = 'const numeroLetras = (numero) => {
-        if (!numero) return ""
-        const unidades = ["", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"]
-        const especiales = [
-            "",
-            "once",
-            "doce",
-            "trece",
-            "catorce",
-            "quince",
-            "dieciséis",
-            "diecisiete",
-            "dieciocho",
-            "diecinueve",
-            "veinte",
-            "veintiún",
-            "veintidós",
-            "veintitrés",
-            "veinticuatro",
-            "veinticinco",
-            "veintiséis",
-            "veintisiete",
-            "veintiocho",
-            "veintinueve"
-        ]
-        const decenas = [
-            "",
-            "diez",
-            "veinte",
-            "treinta",
-            "cuarenta",
-            "cincuenta",
-            "sesenta",
-            "setenta",
-            "ochenta",
-            "noventa"
-        ]
-        const centenas = [
-            "cien",
-            "ciento",
-            "doscientos",
-            "trescientos",
-            "cuatrocientos",
-            "quinientos",
-            "seiscientos",
-            "setecientos",
-            "ochocientos",
-            "novecientos"
-        ]
-    
-        const convertirMenorA1000 = (numero) => {
-            let letra = ""
-            if (numero >= 100) {
-                letra += centenas[(numero === 100 ? 0 : Math.floor(numero / 100))] + " "
-                numero %= 100
-            }
-            if (numero === 10 || numero === 20 || (numero > 29 && numero < 100)) {
-                letra += decenas[Math.floor(numero / 10)]
-                numero %= 10
-                letra += numero > 0 ? " y " : " "
-            }
-            if (numero != 20 && numero >= 11 && numero <= 29) {
-                letra += especiales[numero % 10 + (numero > 20 ? 10 : 0)] + " "
-                numero = 0
-            }
-            if (numero > 0) {
-                letra += unidades[numero] + " "
-            }
-            return letra.trim()
-        }
-    
-        const convertir = (numero) => {
-            if (numero === 0) {
-                return "cero"
-            }
-        
-            let letra = ""
-        
-            if (numero >= 1000000) {
-                letra += convertirMenorA1000(Math.floor(numero / 1000000)) + (numero === 1000000 ? " millón " : " millones ")
-                numero %= 1000000
-            }
-        
-            if (numero >= 1000) {
-                letra += (numero === 1000 ? "" : convertirMenorA1000(Math.floor(numero / 1000))) + " mil "
-                numero %= 1000
-            }
-        
-            letra += convertirMenorA1000(numero)
-            return letra.trim()
-        }
-    
-        const parteEntera = Math.floor(numero)
-        const parteDecimal = Math.round((numero - parteEntera) * 100).toString().padStart(2, "0")
-        return primeraMayuscula(convertir(parteEntera)) + (numero == 1 ? " peso " : " pesos ") + parteDecimal + "/100 M.N."
-    }';
-    private $primeraMayuscula = 'const primeraMayuscula = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1)';
-    private $addParametro = 'const addParametro = (parametros, newParametro, newValor) => {
-        parametros.push({ name: newParametro, value: newValor })
-    }';
-    private $sinContrato = <<<script
-    const sinContrato = (datosCliente) => {
-        if (datosCliente["NO_CONTRATOS"] == 0) {
-            swal({
-                title: "Cuenta de ahorro corriente",
-                text: "El cliente " + datosCliente['CDGCL'] + " no tiene una cuenta de ahorro.\\n¿Desea aperturar una cuenta de ahorro en este momento?",
-                icon: "info",
-                buttons: ["No", "Sí"],
-                dangerMode: true
-            }).then((abreCta) => {
-                if (abreCta) {
-                    window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + datosCliente['CDGCL']
-                    return
-                }
-            })
-            return false
-        }
-        const msj2 = (typeof mEdoCta !== 'undefined') ? "No podemos generar un estado de cuenta para el cliente  " + datosCliente['CDGCL'] + ", porque este no ha concluido con su proceso de apertura de la cuenta de ahorro corriente.\\n¿Desea completar el proceso en este momento?" 
-        : "El cliente " + datosCliente['CDGCL'] + " no ha completado el proceso de apertura de la cuenta de ahorro.\\n¿Desea completar el proceso en este momento?"
-        if (datosCliente["NO_CONTRATOS"] == 1 && datosCliente["CONTRATO_COMPLETO"] == 0) {
-            swal({
-                title: "Cuenta de ahorro corriente",
-                text: msj2,
-                icon: "info",
-                buttons: ["No", "Sí"],
-                dangerMode: true
-            }).then((abreCta) => {
-                if (abreCta) {
-                    window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + datosCliente['CDGCL']
-                    return
-                }
-            })
-            return false
-        }
-        return true
-    }
-    script;
-    private $buscaCliente = 'const buscaCliente = (t) => {
-        document.querySelector("#btnBskClnt").disabled = true
-        const noCliente = document.querySelector("#clienteBuscado").value
-         
-        if (!noCliente) {
-            limpiaDatosCliente()
-            document.querySelector("#btnBskClnt").disabled = false
-            return showError("Ingrese un número de cliente a buscar.")
-        }
-        
-        consultaServidor("/Ahorro/BuscaContratoAhorro/", { cliente: noCliente }, (respuesta) => {
-                limpiaDatosCliente()
-                if (!respuesta.success) {
-                    if (respuesta.datos && !sinContrato(respuesta.datos)) return
-                     
-                    limpiaDatosCliente()
-                    return showError(respuesta.mensaje)
-                }
-                 
-                llenaDatosCliente(respuesta.datos)
-            })
-        
-        document.querySelector("#btnBskClnt").disabled = false
-    }';
     private $parseaNumero = 'const parseaNumero = (numero) => parseFloat(numero.replace(/-[^0-9.]/g, "")) || 0';
     private $formatoMoneda = 'const formatoMoneda = (numero) => parseFloat(numero).toLocaleString("es-MX", { style: "currency", currency: "MXN" })';
-    private $muestraPDF = <<<script
-    const muestraPDF = (titulo, ruta) => {
-        let plantilla = '<!DOCTYPE html>'
-            plantilla += '<html lang="es">'
-            plantilla += '<head>'
-            plantilla += '<meta charset="UTF-8">'
-            plantilla += '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
-            plantilla += '<link rel="shortcut icon" href="" + host + "/img/logo.png">'
-            plantilla += '<title>' + titulo + '</title>'
-            plantilla += '</head>'
-            plantilla += '<body style="margin: 0; padding: 0; background-color: #333333;">'
-            plantilla += '<iframe src="' + ruta + '" style="width: 100%; height: 99vh; border: none; margin: 0; padding: 0;"></iframe>'
-            plantilla += '</body>'
-            plantilla += '</html>'
+    private $primeraMayuscula = 'const primeraMayuscula = (texto) => texto.charAt(0).toUpperCase() + texto.slice(1)';
+    private $validarYbuscar = <<<JAVASCRIPT
+        const validarYbuscar = (e) => {
+            if (e.keyCode < 9 || e.keyCode > 57) e.preventDefault()
+            if (e.keyCode === 13) buscar()
+        }
+    JAVASCRIPT;
+    private $soloNumeros = <<<JAVASCRIPT
+        const soloNumeros = (e) => {
+            valKD = false
+            if (
+                !(e.key >= "0" && e.key <= "9") &&
+                e.key !== "." &&
+                e.key !== "Backspace" &&
+                e.key !== "Delete" &&
+                e.key !== "ArrowLeft" &&
+                e.key !== "ArrowRight" &&
+                e.key !== "Tab"
+            ) e.preventDefault()
+            if (e.key === "." && e.target.value.includes(".")) e.preventDefault()
+            valKD = true
+        }
+    JAVASCRIPT;
+    private $numeroLetras = <<<JAVASCRIPT
+        const numeroLetras = (numero) => {
+            if (!numero) return ""
+            const unidades = ["", "un", "dos", "tres", "cuatro", "cinco", "seis", "siete", "ocho", "nueve"]
+            const especiales = [
+                "",
+                "once",
+                "doce",
+                "trece",
+                "catorce",
+                "quince",
+                "dieciséis",
+                "diecisiete",
+                "dieciocho",
+                "diecinueve",
+                "veinte",
+                "veintiún",
+                "veintidós",
+                "veintitrés",
+                "veinticuatro",
+                "veinticinco",
+                "veintiséis",
+                "veintisiete",
+                "veintiocho",
+                "veintinueve"
+            ]
+            const decenas = [
+                "",
+                "diez",
+                "veinte",
+                "treinta",
+                "cuarenta",
+                "cincuenta",
+                "sesenta",
+                "setenta",
+                "ochenta",
+                "noventa"
+            ]
+            const centenas = [
+                "cien",
+                "ciento",
+                "doscientos",
+                "trescientos",
+                "cuatrocientos",
+                "quinientos",
+                "seiscientos",
+                "setecientos",
+                "ochocientos",
+                "novecientos"
+            ]
         
-            const blob = new Blob([plantilla], { type: 'text/html' })
-            const url = URL.createObjectURL(blob)
-            window.open(url, '_blank')
-    }
-    script;
-    private $crearFilas = 'const creaFilas = (datos) => {
-        const filas = document.createDocumentFragment()
-        datos.forEach((dato) => {
-            const fila = document.createElement("tr")
-            Object.keys(dato).forEach((key) => {
-                const celda = document.createElement("td")
-                celda.style.verticalAlign = "middle"
-                celda.innerText = dato[key]
-                fila.appendChild(celda)
-            })
-            filas.appendChild(fila)
-        })
-        return filas
-    }';
-    private $getFecha = 'const getFecha = (fecha) => {
-        const f = new Date(fecha + "T06:00:00Z")
-        return f.toLocaleString("es-MX", { year: "numeric", month:"2-digit", day:"2-digit" })
-    }';
-    private $descargaExcel = 'const descargaExcel = (url) => {
-        swal({ text: "Generando archivo, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
-        
-        const ventana = window.open(url, "_blank")
-
-        const intervalo = setInterval(() => {
-            if (ventana.closed) {
-                clearInterval(intervalo)
-                swal.close()
+            const convertirMenorA1000 = (numero) => {
+                let letra = ""
+                if (numero >= 100) {
+                    letra += centenas[(numero === 100 ? 0 : Math.floor(numero / 100))] + " "
+                    numero %= 100
+                }
+                if (numero === 10 || numero === 20 || (numero > 29 && numero < 100)) {
+                    letra += decenas[Math.floor(numero / 10)]
+                    numero %= 10
+                    letra += numero > 0 ? " y " : " "
+                }
+                if (numero != 20 && numero >= 11 && numero <= 29) {
+                    letra += especiales[numero % 10 + (numero > 20 ? 10 : 0)] + " "
+                    numero = 0
+                }
+                if (numero > 0) {
+                    letra += unidades[numero] + " "
+                }
+                return letra.trim()
             }
-        }, 1000)
-    }';
+        
+            const convertir = (numero) => {
+                if (numero === 0) {
+                    return "cero"
+                }
+            
+                let letra = ""
+            
+                if (numero >= 1000000) {
+                    letra += convertirMenorA1000(Math.floor(numero / 1000000)) + (numero === 1000000 ? " millón " : " millones ")
+                    numero %= 1000000
+                }
+            
+                if (numero >= 1000) {
+                    letra += (numero === 1000 ? "" : convertirMenorA1000(Math.floor(numero / 1000))) + " mil "
+                    numero %= 1000
+                }
+            
+                letra += convertirMenorA1000(numero)
+                return letra.trim()
+            }
+        
+            const parteEntera = Math.floor(numero)
+            const parteDecimal = Math.round((numero - parteEntera) * 100).toString().padStart(2, "0")
+            return primeraMayuscula(convertir(parteEntera)) + (numero == 1 ? " peso " : " pesos ") + parteDecimal + "/100 M.N."
+        }
+    JAVASCRIPT;
+    private $addParametro = <<<JAVASCRIPT
+        const addParametro = (parametros, newParametro, newValor) => {
+            parametros.push({ name: newParametro, value: newValor })
+        }
+    JAVASCRIPT;
+    private $sinContrato = <<<JAVASCRIPT
+        const sinContrato = (datosCliente) => {
+            if (datosCliente["NO_CONTRATOS"] == 0) {
+                swal({
+                    title: "Cuenta de ahorro corriente",
+                    text: "El cliente " + datosCliente['CDGCL'] + " no tiene una cuenta de ahorro.\\n¿Desea aperturar una cuenta de ahorro en este momento?",
+                    icon: "info",
+                    buttons: ["No", "Sí"],
+                    dangerMode: true
+                }).then((abreCta) => {
+                    if (abreCta) {
+                        window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + datosCliente['CDGCL']
+                        return
+                    }
+                })
+                return false
+            }
+            const msj2 = (typeof mEdoCta !== 'undefined') ? "No podemos generar un estado de cuenta para el cliente  " + datosCliente['CDGCL'] + ", porque este no ha concluido con su proceso de apertura de la cuenta de ahorro corriente.\\n¿Desea completar el proceso en este momento?" 
+            : "El cliente " + datosCliente['CDGCL'] + " no ha completado el proceso de apertura de la cuenta de ahorro.\\n¿Desea completar el proceso en este momento?"
+            if (datosCliente["NO_CONTRATOS"] == 1 && datosCliente["CONTRATO_COMPLETO"] == 0) {
+                swal({
+                    title: "Cuenta de ahorro corriente",
+                    text: msj2,
+                    icon: "info",
+                    buttons: ["No", "Sí"],
+                    dangerMode: true
+                }).then((abreCta) => {
+                    if (abreCta) {
+                        window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + datosCliente['CDGCL']
+                        return
+                    }
+                })
+                return false
+            }
+            return true
+        }
+    JAVASCRIPT;
+    private $buscaCliente = <<<JAVASCRIPT
+        const buscaCliente = (t) => {
+            document.querySelector("#btnBskClnt").disabled = true
+            const noCliente = document.querySelector("#clienteBuscado").value
+            
+            if (!noCliente) {
+                limpiaDatosCliente()
+                document.querySelector("#btnBskClnt").disabled = false
+                return showError("Ingrese un número de cliente a buscar.")
+            }
+            
+            consultaServidor("/Ahorro/BuscaContratoAhorro/", { cliente: noCliente }, (respuesta) => {
+                    limpiaDatosCliente()
+                    if (!respuesta.success) {
+                        if (respuesta.datos && !sinContrato(respuesta.datos)) return
+                        
+                        limpiaDatosCliente()
+                        return showError(respuesta.mensaje)
+                    }
+                    
+                    llenaDatosCliente(respuesta.datos)
+                })
+            
+            document.querySelector("#btnBskClnt").disabled = false
+        }
+    JAVASCRIPT;
+    private $muestraPDF = <<<JAVASCRIPT
+        const muestraPDF = (titulo, ruta) => {
+            let plantilla = '<!DOCTYPE html>'
+                plantilla += '<html lang="es">'
+                plantilla += '<head>'
+                plantilla += '<meta charset="UTF-8">'
+                plantilla += '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+                plantilla += '<link rel="shortcut icon" href="" + host + "/img/logo.png">'
+                plantilla += '<title>' + titulo + '</title>'
+                plantilla += '</head>'
+                plantilla += '<body style="margin: 0; padding: 0; background-color: #333333;">'
+                plantilla += '<iframe src="' + ruta + '" style="width: 100%; height: 99vh; border: none; margin: 0; padding: 0;"></iframe>'
+                plantilla += '</body>'
+                plantilla += '</html>'
+            
+                const blob = new Blob([plantilla], { type: 'text/html' })
+                const url = URL.createObjectURL(blob)
+                window.open(url, '_blank')
+        }
+    JAVASCRIPT;
+    private $crearFilas = <<<JAVASCRIPT
+        const creaFilas = (datos) => {
+            const filas = document.createDocumentFragment()
+            datos.forEach((dato) => {
+                const fila = document.createElement("tr")
+                Object.keys(dato).forEach((key) => {
+                    const celda = document.createElement("td")
+                    celda.style.verticalAlign = "middle"
+                    celda.innerText = dato[key]
+                    fila.appendChild(celda)
+                })
+                filas.appendChild(fila)
+            })
+            return filas
+        }
+    JAVASCRIPT;
+    private $getFecha = <<<JAVASCRIPT
+        const getFecha = (fecha) => {
+            const f = new Date(fecha + "T06:00:00Z")
+            return f.toLocaleString("es-MX", { year: "numeric", month:"2-digit", day:"2-digit" })
+        }
+    JAVASCRIPT;
+    private $descargaExcel = <<<JAVASCRIPT
+        const descargaExcel = (url) => {
+            swal({ text: "Generando archivo, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
+            
+            const ventana = window.open(url, "_blank")
+
+            const intervalo = setInterval(() => {
+                if (ventana.closed) {
+                    clearInterval(intervalo)
+                    swal.close()
+                }
+            }, 1000)
+        }
+    JAVASCRIPT;
 
     function __construct()
     {
@@ -382,117 +398,117 @@ class AdminSucursales extends Controller
     // Ingreso de efectivo a sucursal
     public function FondearSucursal()
     {
-        $extraFooter = <<<script
-        <script>
-            let montoMaximo = 0
-            let montoMinimo = 0
-            let valKD = false
-            let codigoSEA = 0
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->noSubmit}
-            {$this->soloNumeros}
-            {$this->validarYbuscar}
-            {$this->consultaServidor}
-            {$this->numeroLetras}
-            {$this->primeraMayuscula}
-            {$this->addParametro}
-         
-            const buscar = () => {
-                const sucursal = document.querySelector("#sucursalBuscada").value
-                if (sucursal === "0") return showError("Seleccione una sucursal")
-                consultaServidor(
-                    "/AdminSucursales/GetDatos/",
-                    { sucursal },
-                    (res) => {
-                        if (!res.success) return showError(res.mensaje)
-                        if (parseFloat(res.datos.SALDO) >= parseFloat(res.datos.MONTO_MAX)) return showError("La sucursal " + sucursal + " cuenta con el saldo máximo permitido (" + parseFloat(res.datos.MONTO_MAX).toLocaleString("es-MX", { style: "currency", currency: "MXN" }) + ") para su operación.")
-                        document.querySelector("#sucursalBuscada").value = ""
-                        document.querySelector("#codigoSuc").value = res.datos.CODIGO_SUCURSAL
-                        document.querySelector("#nombreSuc").value = res.datos.NOMBRE_SUCURSAL
-                        document.querySelector("#codigoCajera").value = res.datos.CODIGO_CAJERA
-                        document.querySelector("#nombreCajera").value = res.datos.NOMBRE_CAJERA
-                        document.querySelector("#fechaCierre").value = res.datos.FECHA_CIERRE
-                        document.querySelector("#saldoActual").value = parseFloat(res.datos.SALDO).toFixed(2)
-                        document.querySelector("#montoOperacion").value = "0.00"
-                        document.querySelector("#saldoFinal").value = parseFloat(res.datos.SALDO).toFixed(2)
-                        document.querySelector("#monto").disabled = false
-                        document.querySelector("#monto").focus()
-                        montoMinimo = parseFloat(res.datos.MONTO_MIN)
-                        montoMaximo = parseFloat(res.datos.MONTO_MAX)
-                        codigoSEA = res.datos.CODIGO
-                    }
-                )
-            }
-             
-            const limpiarCampos = () => {
-                document.querySelector("#codigoSuc").value = ""
-                document.querySelector("#nombreSuc").value = ""
-                document.querySelector("#codigoCajera").value = ""
-                document.querySelector("#nombreCajera").value = ""
-                document.querySelector("#fechaCierre").value = ""
-                document.querySelector("#saldoActual").value = "0.00"
-                document.querySelector("#montoOperacion").value = "0.00"
-                document.querySelector("#saldoFinal").value = "0.00"
-                document.querySelector("#monto").value = ""
-                document.querySelector("#monto").disabled = true
-            }
-             
-            const validaMonto = () => {
-                const montoIngresado = document.querySelector("#monto")
-                if (!parseFloat(montoIngresado.value)) {
-                    document.querySelector("#btnFondear").disabled = true
-                    document.querySelector("#saldoFinal").value = document.querySelector("#saldoActual").value
-                    document.querySelector("#montoOperacion").value = "0.00"
-                    return
+        $extraFooter = <<<HTML
+            <script>
+                let montoMaximo = 0
+                let montoMinimo = 0
+                let valKD = false
+                let codigoSEA = 0
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->noSubmit}
+                {$this->soloNumeros}
+                {$this->validarYbuscar}
+                {$this->consultaServidor}
+                {$this->numeroLetras}
+                {$this->primeraMayuscula}
+                {$this->addParametro}
+            
+                const buscar = () => {
+                    const sucursal = document.querySelector("#sucursalBuscada").value
+                    if (sucursal === "0") return showError("Seleccione una sucursal")
+                    consultaServidor(
+                        "/AdminSucursales/GetDatos/",
+                        { sucursal },
+                        (res) => {
+                            if (!res.success) return showError(res.mensaje)
+                            if (parseFloat(res.datos.SALDO) >= parseFloat(res.datos.MONTO_MAX)) return showError("La sucursal " + sucursal + " cuenta con el saldo máximo permitido (" + parseFloat(res.datos.MONTO_MAX).toLocaleString("es-MX", { style: "currency", currency: "MXN" }) + ") para su operación.")
+                            document.querySelector("#sucursalBuscada").value = ""
+                            document.querySelector("#codigoSuc").value = res.datos.CODIGO_SUCURSAL
+                            document.querySelector("#nombreSuc").value = res.datos.NOMBRE_SUCURSAL
+                            document.querySelector("#codigoCajera").value = res.datos.CODIGO_CAJERA
+                            document.querySelector("#nombreCajera").value = res.datos.NOMBRE_CAJERA
+                            document.querySelector("#fechaCierre").value = res.datos.FECHA_CIERRE
+                            document.querySelector("#saldoActual").value = parseFloat(res.datos.SALDO).toFixed(2)
+                            document.querySelector("#montoOperacion").value = "0.00"
+                            document.querySelector("#saldoFinal").value = parseFloat(res.datos.SALDO).toFixed(2)
+                            document.querySelector("#monto").disabled = false
+                            document.querySelector("#monto").focus()
+                            montoMinimo = parseFloat(res.datos.MONTO_MIN)
+                            montoMaximo = parseFloat(res.datos.MONTO_MAX)
+                            codigoSEA = res.datos.CODIGO
+                        }
+                    )
                 }
-                 
-                let monto = parseFloat(montoIngresado.value) || 0
-                let disponible = montoMaximo - parseFloat(document.querySelector("#saldoActual").value)
-                 
-                if (monto > disponible) {
-                    monto = disponible
-                    showError("La sucursal no puede tener un saldo mayor a " + montoMaximo.toLocaleString("es-MX", { style: "currency", currency: "MXN" }) + ", si requiere un monto mayor comuníquese con el administrador.")
-                    montoIngresado.value = monto
-                }
-                 
-                const valor = montoIngresado.value.split(".")
-                if (valor[1] && valor[1].length > 2) {
-                    montoIngresado.value = parseFloat(valor[0] + "." + valor[1].substring(0, 2))
-                }
-                 
-                document.querySelector("#montoOperacion").value = monto.toFixed(2)
-                const nuevoSaldo = (monto + parseFloat(document.querySelector("#saldoActual").value)).toFixed(2)
-                document.querySelector("#saldoFinal").value = nuevoSaldo > 0 ? nuevoSaldo : "0.00"
-                document.querySelector("#monto_letra").value = numeroLetras(parseFloat(montoIngresado.value))
-                document.querySelector("#btnFondear").disabled = !(nuevoSaldo <= montoMaximo && nuevoSaldo >= montoMinimo)
-                document.querySelector("#tipSaldo").innerText = ""
-                if (nuevoSaldo > montoMaximo) document.querySelector("#tipSaldo").innerText = "El saldo final no puede ser mayor a " + montoMaximo.toLocaleString("es-MX", { style: "currency", currency: "MXN" })
-                if (nuevoSaldo < montoMinimo) document.querySelector("#tipSaldo").innerText = "El saldo final no puede ser menor a " + montoMinimo.toLocaleString("es-MX", { style: "currency", currency: "MXN" })
-            }
-             
-            const fondear = () => {
-                const monto = parseFloat(document.querySelector("#saldoFinal").value)
-                if (monto < montoMinimo) return showError("El saldo final debe ser mayor o igual a " + montoMinimo.toLocaleString("es-MX", { style: "currency", currency: "MXN" }))
                 
-                let datos = $("#datos").serializeArray()
-                addParametro(datos, "codigoSEA", codigoSEA)
-                addParametro(datos, "usuario", '{$_SESSION["usuario"]}')
-                 
-                consultaServidor(
-                    "/AdminSucursales/AplicarFondeo/",
-                    datos,
-                    (res) => {
-                        if (!res.success) return showError(res.mensaje)
-                        showSuccess(res.mensaje).then(() => {
-                            window.location.reload()
-                        })
+                const limpiarCampos = () => {
+                    document.querySelector("#codigoSuc").value = ""
+                    document.querySelector("#nombreSuc").value = ""
+                    document.querySelector("#codigoCajera").value = ""
+                    document.querySelector("#nombreCajera").value = ""
+                    document.querySelector("#fechaCierre").value = ""
+                    document.querySelector("#saldoActual").value = "0.00"
+                    document.querySelector("#montoOperacion").value = "0.00"
+                    document.querySelector("#saldoFinal").value = "0.00"
+                    document.querySelector("#monto").value = ""
+                    document.querySelector("#monto").disabled = true
+                }
+                
+                const validaMonto = () => {
+                    const montoIngresado = document.querySelector("#monto")
+                    if (!parseFloat(montoIngresado.value)) {
+                        document.querySelector("#btnFondear").disabled = true
+                        document.querySelector("#saldoFinal").value = document.querySelector("#saldoActual").value
+                        document.querySelector("#montoOperacion").value = "0.00"
+                        return
                     }
-                )
-            }
-        </script>
-        script;
+                    
+                    let monto = parseFloat(montoIngresado.value) || 0
+                    let disponible = montoMaximo - parseFloat(document.querySelector("#saldoActual").value)
+                    
+                    if (monto > disponible) {
+                        monto = disponible
+                        showError("La sucursal no puede tener un saldo mayor a " + montoMaximo.toLocaleString("es-MX", { style: "currency", currency: "MXN" }) + ", si requiere un monto mayor comuníquese con el administrador.")
+                        montoIngresado.value = monto
+                    }
+                    
+                    const valor = montoIngresado.value.split(".")
+                    if (valor[1] && valor[1].length > 2) {
+                        montoIngresado.value = parseFloat(valor[0] + "." + valor[1].substring(0, 2))
+                    }
+                    
+                    document.querySelector("#montoOperacion").value = monto.toFixed(2)
+                    const nuevoSaldo = (monto + parseFloat(document.querySelector("#saldoActual").value)).toFixed(2)
+                    document.querySelector("#saldoFinal").value = nuevoSaldo > 0 ? nuevoSaldo : "0.00"
+                    document.querySelector("#monto_letra").value = numeroLetras(parseFloat(montoIngresado.value))
+                    document.querySelector("#btnFondear").disabled = !(nuevoSaldo <= montoMaximo && nuevoSaldo >= montoMinimo)
+                    document.querySelector("#tipSaldo").innerText = ""
+                    if (nuevoSaldo > montoMaximo) document.querySelector("#tipSaldo").innerText = "El saldo final no puede ser mayor a " + montoMaximo.toLocaleString("es-MX", { style: "currency", currency: "MXN" })
+                    if (nuevoSaldo < montoMinimo) document.querySelector("#tipSaldo").innerText = "El saldo final no puede ser menor a " + montoMinimo.toLocaleString("es-MX", { style: "currency", currency: "MXN" })
+                }
+                
+                const fondear = () => {
+                    const monto = parseFloat(document.querySelector("#saldoFinal").value)
+                    if (monto < montoMinimo) return showError("El saldo final debe ser mayor o igual a " + montoMinimo.toLocaleString("es-MX", { style: "currency", currency: "MXN" }))
+                    
+                    let datos = $("#datos").serializeArray()
+                    addParametro(datos, "codigoSEA", codigoSEA)
+                    addParametro(datos, "usuario", '{$_SESSION["usuario"]}')
+                    
+                    consultaServidor(
+                        "/AdminSucursales/AplicarFondeo/",
+                        datos,
+                        (res) => {
+                            if (!res.success) return showError(res.mensaje)
+                            showSuccess(res.mensaje).then(() => {
+                                window.location.reload()
+                            })
+                        }
+                    )
+                }
+            </script>
+        HTML;
 
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Arqueo de Caja")));
         View::set('footer', $this->_contenedor->footer($extraFooter));
@@ -508,117 +524,117 @@ class AdminSucursales extends Controller
     // Egreso de efectivo de sucursal
     public function RetiroSucursal()
     {
-        $extraFooter = <<<script
-        <script>
-            let montoMaximo = 0
-            let montoMinimo = 0
-            let valKD = false
-            let codigoSEA = 0
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->noSubmit}
-            {$this->soloNumeros}
-            {$this->validarYbuscar}
-            {$this->consultaServidor}
-            {$this->numeroLetras}
-            {$this->primeraMayuscula}
-            {$this->addParametro}
-         
-            const buscar = () => {
-                const sucursal = document.querySelector("#sucursalBuscada").value
-                if (sucursal === "0") return showError("Seleccione una sucursal")
-                consultaServidor(
-                    "/AdminSucursales/GetDatos/",
-                    { sucursal },
-                    (res) => {
-                        if (!res.success) return showError(res.mensaje)
-                        document.querySelector("#sucursalBuscada").value = ""
-                        document.querySelector("#codigoSuc").value = res.datos.CODIGO_SUCURSAL
-                        document.querySelector("#nombreSuc").value = res.datos.NOMBRE_SUCURSAL
-                        document.querySelector("#codigoCajera").value = res.datos.CODIGO_CAJERA
-                        document.querySelector("#nombreCajera").value = res.datos.NOMBRE_CAJERA
-                        document.querySelector("#fechaCierre").value = res.datos.FECHA_CIERRE
-                        document.querySelector("#saldoActual").value = parseFloat(res.datos.SALDO).toFixed(2)
-                        document.querySelector("#montoOperacion").value = "0.00"
-                        document.querySelector("#saldoFinal").value = parseFloat(res.datos.SALDO).toFixed(2)
-                        document.querySelector("#monto").disabled = false
-                        document.querySelector("#monto").focus()
-                        montoMinimo = parseFloat(res.datos.MONTO_MIN)
-                        montoMaximo = parseFloat(res.datos.MONTO_MAX)
-                        codigoSEA = res.datos.CODIGO
-                    }
-                )
-            }
-             
-            const limpiarCampos = () => {
-                document.querySelector("#codigoSuc").value = ""
-                document.querySelector("#nombreSuc").value = ""
-                document.querySelector("#codigoCajera").value = ""
-                document.querySelector("#nombreCajera").value = ""
-                document.querySelector("#fechaCierre").value = ""
-                document.querySelector("#saldoActual").value = "0.00"
-                document.querySelector("#montoOperacion").value = "0.00"
-                document.querySelector("#saldoFinal").value = "0.00"
-                document.querySelector("#monto").value = ""
-                document.querySelector("#monto").disabled = true
-                document.querySelector("#tipSaldo").innerText = ""
-            }
-             
-            const validaMonto = () => {
-                const montoIngresado = document.querySelector("#monto")
-                if (!parseFloat(montoIngresado.value)) {
-                    document.querySelector("#btnFondear").disabled = true
+        $extraFooter = <<<HTML
+            <script>
+                let montoMaximo = 0
+                let montoMinimo = 0
+                let valKD = false
+                let codigoSEA = 0
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->noSubmit}
+                {$this->soloNumeros}
+                {$this->validarYbuscar}
+                {$this->consultaServidor}
+                {$this->numeroLetras}
+                {$this->primeraMayuscula}
+                {$this->addParametro}
+            
+                const buscar = () => {
+                    const sucursal = document.querySelector("#sucursalBuscada").value
+                    if (sucursal === "0") return showError("Seleccione una sucursal")
+                    consultaServidor(
+                        "/AdminSucursales/GetDatos/",
+                        { sucursal },
+                        (res) => {
+                            if (!res.success) return showError(res.mensaje)
+                            document.querySelector("#sucursalBuscada").value = ""
+                            document.querySelector("#codigoSuc").value = res.datos.CODIGO_SUCURSAL
+                            document.querySelector("#nombreSuc").value = res.datos.NOMBRE_SUCURSAL
+                            document.querySelector("#codigoCajera").value = res.datos.CODIGO_CAJERA
+                            document.querySelector("#nombreCajera").value = res.datos.NOMBRE_CAJERA
+                            document.querySelector("#fechaCierre").value = res.datos.FECHA_CIERRE
+                            document.querySelector("#saldoActual").value = parseFloat(res.datos.SALDO).toFixed(2)
+                            document.querySelector("#montoOperacion").value = "0.00"
+                            document.querySelector("#saldoFinal").value = parseFloat(res.datos.SALDO).toFixed(2)
+                            document.querySelector("#monto").disabled = false
+                            document.querySelector("#monto").focus()
+                            montoMinimo = parseFloat(res.datos.MONTO_MIN)
+                            montoMaximo = parseFloat(res.datos.MONTO_MAX)
+                            codigoSEA = res.datos.CODIGO
+                        }
+                    )
+                }
+                
+                const limpiarCampos = () => {
+                    document.querySelector("#codigoSuc").value = ""
+                    document.querySelector("#nombreSuc").value = ""
+                    document.querySelector("#codigoCajera").value = ""
+                    document.querySelector("#nombreCajera").value = ""
+                    document.querySelector("#fechaCierre").value = ""
+                    document.querySelector("#saldoActual").value = "0.00"
                     document.querySelector("#montoOperacion").value = "0.00"
-                    return
+                    document.querySelector("#saldoFinal").value = "0.00"
+                    document.querySelector("#monto").value = ""
+                    document.querySelector("#monto").disabled = true
+                    document.querySelector("#tipSaldo").innerText = ""
                 }
                 
-                let monto = parseFloat(montoIngresado.value) || 0
-                const saldoActual = parseFloat(document.querySelector("#saldoActual").value)
-                let nuevoSaldo = saldoActual - monto
-                 
-                if (nuevoSaldo < montoMinimo) {
-                    monto = saldoActual - montoMinimo
-                    nuevoSaldo = saldoActual - monto
-                    showError("La sucursal no puede tener un saldo menor a " + montoMinimo.toLocaleString("es-MX", { style: "currency", currency: "MXN" }) + ", si requiere que la sucursal tenga un monto menor comuníquese con el administrador.")
-                    montoIngresado.value = monto
-                }
-                 
-                const valor = montoIngresado.value.split(".")
-                if (valor[1] && valor[1].length > 2) {
-                    montoIngresado.value = parseFloat(valor[0] + "." + valor[1].substring(0, 2))
-                }
-                 
-                document.querySelector("#montoOperacion").value = monto.toFixed(2)
-                document.querySelector("#saldoFinal").value = nuevoSaldo > 0 ? nuevoSaldo.toFixed(2) : "0.00"
-                document.querySelector("#monto_letra").value = numeroLetras(parseFloat(montoIngresado.value))
-                document.querySelector("#btnFondear").disabled = !(nuevoSaldo <= montoMaximo && nuevoSaldo >= montoMinimo)
-                document.querySelector("#tipSaldo").innerText = ""
-                if (nuevoSaldo > montoMaximo) document.querySelector("#tipSaldo").innerText = "El saldo final no puede ser mayor a " + montoMaximo.toLocaleString("es-MX", { style: "currency", currency: "MXN" })
-                if (nuevoSaldo < montoMinimo) document.querySelector("#tipSaldo").innerText = "El saldo final no puede ser menor a " + montoMinimo.toLocaleString("es-MX", { style: "currency", currency: "MXN" })
-            }
-             
-            const retirar = () => {
-                const monto = parseFloat(document.querySelector("#saldoFinal").value)
-                if (monto < montoMinimo) return showError("El saldo final debe ser mayor o igual a " + montoMinimo.toLocaleString("es-MX", { style: "currency", currency: "MXN" }))
-                
-                let datos = $("#datos").serializeArray()
-                addParametro(datos, "codigoSEA", codigoSEA)
-                addParametro(datos, "usuario", '{$_SESSION["usuario"]}')
-                 
-                consultaServidor(
-                    "/AdminSucursales/AplicarRetiro/",
-                    datos,
-                    (res) => {
-                        if (!res.success) return showError(res.mensaje)
-                        showSuccess(res.mensaje).then(() => {
-                            window.location.reload()
-                        })
+                const validaMonto = () => {
+                    const montoIngresado = document.querySelector("#monto")
+                    if (!parseFloat(montoIngresado.value)) {
+                        document.querySelector("#btnFondear").disabled = true
+                        document.querySelector("#montoOperacion").value = "0.00"
+                        return
                     }
-                )
-            }
-        </script>
-        script;
+                    
+                    let monto = parseFloat(montoIngresado.value) || 0
+                    const saldoActual = parseFloat(document.querySelector("#saldoActual").value)
+                    let nuevoSaldo = saldoActual - monto
+                    
+                    if (nuevoSaldo < montoMinimo) {
+                        monto = saldoActual - montoMinimo
+                        nuevoSaldo = saldoActual - monto
+                        showError("La sucursal no puede tener un saldo menor a " + montoMinimo.toLocaleString("es-MX", { style: "currency", currency: "MXN" }) + ", si requiere que la sucursal tenga un monto menor comuníquese con el administrador.")
+                        montoIngresado.value = monto
+                    }
+                    
+                    const valor = montoIngresado.value.split(".")
+                    if (valor[1] && valor[1].length > 2) {
+                        montoIngresado.value = parseFloat(valor[0] + "." + valor[1].substring(0, 2))
+                    }
+                    
+                    document.querySelector("#montoOperacion").value = monto.toFixed(2)
+                    document.querySelector("#saldoFinal").value = nuevoSaldo > 0 ? nuevoSaldo.toFixed(2) : "0.00"
+                    document.querySelector("#monto_letra").value = numeroLetras(parseFloat(montoIngresado.value))
+                    document.querySelector("#btnFondear").disabled = !(nuevoSaldo <= montoMaximo && nuevoSaldo >= montoMinimo)
+                    document.querySelector("#tipSaldo").innerText = ""
+                    if (nuevoSaldo > montoMaximo) document.querySelector("#tipSaldo").innerText = "El saldo final no puede ser mayor a " + montoMaximo.toLocaleString("es-MX", { style: "currency", currency: "MXN" })
+                    if (nuevoSaldo < montoMinimo) document.querySelector("#tipSaldo").innerText = "El saldo final no puede ser menor a " + montoMinimo.toLocaleString("es-MX", { style: "currency", currency: "MXN" })
+                }
+                
+                const retirar = () => {
+                    const monto = parseFloat(document.querySelector("#saldoFinal").value)
+                    if (monto < montoMinimo) return showError("El saldo final debe ser mayor o igual a " + montoMinimo.toLocaleString("es-MX", { style: "currency", currency: "MXN" }))
+                    
+                    let datos = $("#datos").serializeArray()
+                    addParametro(datos, "codigoSEA", codigoSEA)
+                    addParametro(datos, "usuario", '{$_SESSION["usuario"]}')
+                    
+                    consultaServidor(
+                        "/AdminSucursales/AplicarRetiro/",
+                        datos,
+                        (res) => {
+                            if (!res.success) return showError(res.mensaje)
+                            showSuccess(res.mensaje).then(() => {
+                                window.location.reload()
+                            })
+                        }
+                    )
+                }
+            </script>
+        HTML;
 
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Retiro de Caja")));
         View::set('footer', $this->_contenedor->footer($extraFooter));
@@ -640,69 +656,69 @@ class AdminSucursales extends Controller
     // Reporte de trnasacciones 
     public function Log()
     {
-        $extraFooter = <<<script
-        <script>
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->crearFilas}
-         
-            const getLog = () => {
-                const datos = {
-                    fecha_inicio: $("#fInicio").val(),
-                    fecha_fin: $("#fFin").val()
-                }
-                 
-                const op = document.querySelector("#operacion")
-                const us = document.querySelector("#usuario")
-                
-                if (op.value !== "0") datos.operacion = op.options[op.selectedIndex].text
-                if (us.value !== "0") datos.usuario = us.options[us.selectedIndex].text
-                 
-                $.ajax({
-                    type: "POST",
-                    url: "/Ahorro/GetLogTransacciones/",
-                    data: datos,
-                    success: (log) => {
-                        $("#log").DataTable().destroy()
-                         
-                        log = JSON.parse(log)
-                        let datos = log.datos
-                         
-                        if (!log.success) {
-                            showError(log.mensaje)
-                            datos = []
-                        }
-                        
-                        $("#log tbody").html(creaFilas(datos))
-                        $("#log").DataTable({
-                            lengthMenu: [
-                                [10, 40, -1],
-                                [10, 40, "Todos"]
-                            ],
-                            columnDefs: [
-                                {
-                                    orderable: false,
-                                    targets: 0
-                                }
-                            ],
-                            order: false
-                        })
-                    },
-                    error: (error) => {
-                        console.error(error)
-                        showError("Ocurrió un error al buscar el log de transacciones.")
+        $extraFooter = <<<HTML
+            <script>
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->crearFilas}
+            
+                const getLog = () => {
+                    const datos = {
+                        fecha_inicio: $("#fInicio").val(),
+                        fecha_fin: $("#fFin").val()
                     }
+                    
+                    const op = document.querySelector("#operacion")
+                    const us = document.querySelector("#usuario")
+                    
+                    if (op.value !== "0") datos.operacion = op.options[op.selectedIndex].text
+                    if (us.value !== "0") datos.usuario = us.options[us.selectedIndex].text
+                    
+                    $.ajax({
+                        type: "POST",
+                        url: "/Ahorro/GetLogTransacciones/",
+                        data: datos,
+                        success: (log) => {
+                            $("#log").DataTable().destroy()
+                            
+                            log = JSON.parse(log)
+                            let datos = log.datos
+                            
+                            if (!log.success) {
+                                showError(log.mensaje)
+                                datos = []
+                            }
+                            
+                            $("#log tbody").html(creaFilas(datos))
+                            $("#log").DataTable({
+                                lengthMenu: [
+                                    [10, 40, -1],
+                                    [10, 40, "Todos"]
+                                ],
+                                columnDefs: [
+                                    {
+                                        orderable: false,
+                                        targets: 0
+                                    }
+                                ],
+                                order: false
+                            })
+                        },
+                        error: (error) => {
+                            console.error(error)
+                            showError("Ocurrió un error al buscar el log de transacciones.")
+                        }
+                    })
+                    
+                    return false
+                }
+                
+                $(document).ready(() => {
+                    getLog()
                 })
-                 
-                return false
-            }
-             
-            $(document).ready(() => {
-                getLog()
-            })
-        </script>
-        script;
+            </script>
+        HTML;
 
         $operaciones = CajaAhorroDao::GetOperacionesLog();
         $usuarios = CajaAhorroDao::GetUsuariosLog();
@@ -745,153 +761,153 @@ class AdminSucursales extends Controller
     // Permite activar una sucursal y configurar los horarios de cajeras
     public function Configuracion()
     {
-        $extraFooter = <<<script
-        <script>
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->noSubmit}
-            {$this->soloNumeros}
-            {$this->consultaServidor}
-            {$this->configuraTabla}
-            {$this->parseaNumero}
-            {$this->addParametro}
-         
-            $(document).ready(configuraTabla("sucursalesActivas"))
-         
-            const cambioSucursal = () => {
-                consultaServidor(
-                    "/AdminSucursales/GetCajeras/",
-                    { sucursal: $("#sucursal").val() },
-                    (datos) => {
-                        if (!datos.success) return showError(datos.mensaje)
-                        if (datos.datos.length === 0) {
-                            $("#cajera").html("<option value='0' disabled selected>No hay cajeras en esta sucursal</option>")
-                            $("#cajera").prop("disabled", true)
-                        } else {
-                            let opciones = "<option value='0' disabled selected>Seleccione una cajera</option>"
-                            datos.datos.forEach((cajera) => {
-                                opciones += "<option value='" + cajera.CODIGO + "'>" + cajera.NOMBRE + "</option>"
-                            })
-                            $("#cajera").html(opciones)
-                            $("#cajera").prop("disabled", false)
+        $extraFooter = <<<HTML
+            <script>
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->noSubmit}
+                {$this->soloNumeros}
+                {$this->consultaServidor}
+                {$this->configuraTabla}
+                {$this->parseaNumero}
+                {$this->addParametro}
+            
+                $(document).ready(configuraTabla("sucursalesActivas"))
+            
+                const cambioSucursal = () => {
+                    consultaServidor(
+                        "/AdminSucursales/GetCajeras/",
+                        { sucursal: $("#sucursal").val() },
+                        (datos) => {
+                            if (!datos.success) return showError(datos.mensaje)
+                            if (datos.datos.length === 0) {
+                                $("#cajera").html("<option value='0' disabled selected>No hay cajeras en esta sucursal</option>")
+                                $("#cajera").prop("disabled", true)
+                            } else {
+                                let opciones = "<option value='0' disabled selected>Seleccione una cajera</option>"
+                                datos.datos.forEach((cajera) => {
+                                    opciones += "<option value='" + cajera.CODIGO + "'>" + cajera.NOMBRE + "</option>"
+                                })
+                                $("#cajera").html(opciones)
+                                $("#cajera").prop("disabled", false)
+                            }
                         }
-                    }
-                )
-                     
-                consultaServidor(
-                    "/AdminSucursales/GetMontoSucursal/",
-                    { sucursal: $("#sucursal").val() },
-                    (datos) => {
-                        if (!datos.success) return
-                        if (datos.datos.length === 0) {
-                            $("#montoMin").val("")
-                            $("#montoMax").val("")
-                        } else {
-                            $("#montoMin").val(datos.datos[0].MONTO_MIN)
-                            $("#montoMax").val(datos.datos[0].MONTO_MAX)
+                    )
+                        
+                    consultaServidor(
+                        "/AdminSucursales/GetMontoSucursal/",
+                        { sucursal: $("#sucursal").val() },
+                        (datos) => {
+                            if (!datos.success) return
+                            if (datos.datos.length === 0) {
+                                $("#montoMin").val("")
+                                $("#montoMax").val("")
+                            } else {
+                                $("#montoMin").val(datos.datos[0].MONTO_MIN)
+                                $("#montoMax").val(datos.datos[0].MONTO_MAX)
+                            }
                         }
-                    }
-                )
-            }
-             
-            const cambioCajera = () => {
-                consultaServidor(
-                    "/AdminSucursales/GetHorarioCajera/",
-                    { cajera: $("#cajera").val() },
-                    (datos) => {
-                        if (datos.datos && datos.datos.length === 0) {
-                            $("#horaA").val(datos.datos[0].HORA_APERTURA)
-                            $("#horaC").val(datos.datos[0].HORA_CIERRE)
-                            $("#montoMin").val(datos.datos[0].MONTO_MIN)
-                            $("#montoMax").val(datos.datos[0].MONTO_MAX)
-                        } else {
-                            $("#horaA").select(0)
-                            $("#horaC").select(0)
-                            $("#montoMin").val("")
-                            $("#montoMax").val("")
-                        }
-                    }
-                )
+                    )
+                }
                 
-                $("#horaA").prop("disabled", false)
-                $("#horaC").prop("disabled", false)
-                $("#montoMin").prop("disabled", false)
-                $("#montoMax").prop("disabled", false)
-                $("#saldo").prop("disabled", false)
-            }
-             
-            const cambioMonto = () => {
-                const min = parseFloat(document.querySelector("#montoMin").value) || 0
-                const max = parseFloat(document.querySelector("#montoMax").value) || 0
-                const inicial = parseFloat(document.querySelector("#saldo").value) || 0
-                document.querySelector("#guardar").disabled = !(min > 0 && max > 0 && max >= min && inicial <= max)
-            }
-             
-            const validaMaxMin = () => {
-                const min = parseFloat(document.querySelector("#montoMin").value) || 0
-                const max = parseFloat(document.querySelector("#montoMax").value) || 0
-                if (min > max) document.querySelector("#montoMax").value = min
-            }
-             
-            const activarSucursal = () => {
-                const datos = $("#datos").serializeArray()
-                addParametro(datos, "usuario", '{$_SESSION["usuario"]}')
-                 
-                consultaServidor(
-                        "/AdminSucursales/ActivarSucursal/",
-                        datos,
+                const cambioCajera = () => {
+                    consultaServidor(
+                        "/AdminSucursales/GetHorarioCajera/",
+                        { cajera: $("#cajera").val() },
+                        (datos) => {
+                            if (datos.datos && datos.datos.length === 0) {
+                                $("#horaA").val(datos.datos[0].HORA_APERTURA)
+                                $("#horaC").val(datos.datos[0].HORA_CIERRE)
+                                $("#montoMin").val(datos.datos[0].MONTO_MIN)
+                                $("#montoMax").val(datos.datos[0].MONTO_MAX)
+                            } else {
+                                $("#horaA").select(0)
+                                $("#horaC").select(0)
+                                $("#montoMin").val("")
+                                $("#montoMax").val("")
+                            }
+                        }
+                    )
+                    
+                    $("#horaA").prop("disabled", false)
+                    $("#horaC").prop("disabled", false)
+                    $("#montoMin").prop("disabled", false)
+                    $("#montoMax").prop("disabled", false)
+                    $("#saldo").prop("disabled", false)
+                }
+                
+                const cambioMonto = () => {
+                    const min = parseFloat(document.querySelector("#montoMin").value) || 0
+                    const max = parseFloat(document.querySelector("#montoMax").value) || 0
+                    const inicial = parseFloat(document.querySelector("#saldo").value) || 0
+                    document.querySelector("#guardar").disabled = !(min > 0 && max > 0 && max >= min && inicial <= max)
+                }
+                
+                const validaMaxMin = () => {
+                    const min = parseFloat(document.querySelector("#montoMin").value) || 0
+                    const max = parseFloat(document.querySelector("#montoMax").value) || 0
+                    if (min > max) document.querySelector("#montoMax").value = min
+                }
+                
+                const activarSucursal = () => {
+                    const datos = $("#datos").serializeArray()
+                    addParametro(datos, "usuario", '{$_SESSION["usuario"]}')
+                    
+                    consultaServidor(
+                            "/AdminSucursales/ActivarSucursal/",
+                            datos,
+                            (res) => {
+                                if (!res.success) return showError(res.mensaje)                            
+                                showSuccess(res.mensaje).then(() => {
+                                    swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
+                                    window.location.reload()
+                                })
+                            }
+                        )
+                }
+                
+                const llenarModal = () => {
+                    document.querySelector("#configMontos").reset()
+                    const fila = event.target.parentElement.parentElement
+                    document.querySelector("#codSucMontos").value = fila.children[1].innerText
+                    document.querySelector("#nomSucMontos").value = fila.children[2].innerText
+                    consultaServidor(
+                        "/AdminSucursales/GetMontosApertura/",
+                        { sucursal: fila.children[1].innerText },
+                        (datos) => {
+                            if (!datos.success) return
+                            document.querySelector("#codigo").value = datos.datos.CODIGO
+                            document.querySelector("#minimoApertura").value = datos.datos.MONTO_MINIMO
+                            document.querySelector("#maximoApertura").value = datos.datos.MONTO_MAXIMO
+                        }
+                    )
+                }
+                
+                const validaMontoMinMax = (e) => {
+                    const m = parseFloat(e.target.value)
+                    if (m < 0) e.target.value = ""
+                    if (m > 1000000) e.target.value = "1000000.00"
+                    const valor = e.target.value.split(".")
+                    valor[1] = valor[1] || "00"
+                    if (valor[1] && valor[1].length > 2) e.target.value = parseFloat(valor[0] + "." + valor[1].substring(0, 2))
+                }
+                
+                const guardarMontos = () => {
+                    consultaServidor(
+                        "/AdminSucursales/GuardarParametrosSucursal/",
+                        $("#configMontos").serialize(),
                         (res) => {
-                            if (!res.success) return showError(res.mensaje)                            
+                            if (!res.success) return showError(res.mensaje)
                             showSuccess(res.mensaje).then(() => {
                                 swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
                                 window.location.reload()
                             })
                         }
                     )
-            }
-             
-            const llenarModal = () => {
-                document.querySelector("#configMontos").reset()
-                const fila = event.target.parentElement.parentElement
-                document.querySelector("#codSucMontos").value = fila.children[1].innerText
-                document.querySelector("#nomSucMontos").value = fila.children[2].innerText
-                consultaServidor(
-                    "/AdminSucursales/GetMontosApertura/",
-                    { sucursal: fila.children[1].innerText },
-                    (datos) => {
-                        if (!datos.success) return
-                        document.querySelector("#codigo").value = datos.datos.CODIGO
-                        document.querySelector("#minimoApertura").value = datos.datos.MONTO_MINIMO
-                        document.querySelector("#maximoApertura").value = datos.datos.MONTO_MAXIMO
-                    }
-                )
-            }
-             
-            const validaMontoMinMax = (e) => {
-                const m = parseFloat(e.target.value)
-                if (m < 0) e.target.value = ""
-                if (m > 1000000) e.target.value = "1000000.00"
-                const valor = e.target.value.split(".")
-                valor[1] = valor[1] || "00"
-                if (valor[1] && valor[1].length > 2) e.target.value = parseFloat(valor[0] + "." + valor[1].substring(0, 2))
-            }
-             
-            const guardarMontos = () => {
-                consultaServidor(
-                    "/AdminSucursales/GuardarParametrosSucursal/",
-                    $("#configMontos").serialize(),
-                    (res) => {
-                        if (!res.success) return showError(res.mensaje)
-                        showSuccess(res.mensaje).then(() => {
-                            swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
-                            window.location.reload()
-                        })
-                    }
-                )
-            }
-        </script>
-        script;
+                }
+            </script>
+        HTML;
 
         $sucursales = AdminSucursalesDao::GetSucursales();
         $opcSucursales = "<option value='0' disabled selected>Seleccione una sucursal</option>";
@@ -1225,68 +1241,61 @@ class AdminSucursales extends Controller
         echo json_encode(["success" => true, "datos" => $filas]);
     }
 
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    ///
     public function Reporteria()
     {
-        $extraFooter = <<<script
-        <script>
-        
-        function getParameterByName(name) {
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(location.search);
-            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        }
-             
-         $(document).ready(function(){
-            $("#muestra-cupones").tablesorter();
-          var oTable = $('#muestra-cupones').DataTable({
-                  "lengthMenu": [
-                    [10, 50, -1],
-                    [10, 50, 'Todos'],
-                ],
-                "columnDefs": [{
-                    "orderable": false,
-                    "targets": 0,
-                }],
-                 "order": false
-            });
-            // Remove accented character from search input as well
-            $('#muestra-cupones input[type=search]').keyup( function () {
-                var table = $('#example').DataTable();
-                table.search(
-                    jQuery.fn.DataTable.ext.type.search.html(this.value)
-                ).draw();
-            });
-            var checkAll = 0;
-            
-            fecha1 = getParameterByName('Inicial');
-            fecha2 = getParameterByName('Final');
-            operacion = getParameterByName('Operacion');
-            producto = getParameterByName('Producto');
-            sucursal = getParameterByName('Sucursal');
-            
-             $("#export_excel_consulta").click(function(){
-              $('#all').attr('action', '/AdminSucursales/generarExcelPagosTransaccionesAll/?Inicial='+fecha1+'&Final='+fecha2+'&Operacion='+operacion+'&Producto='+producto+'&Sucursal='+sucursal);
-              $('#all').attr('target', '_blank');
-              $("#all").submit();
-            });
-             
-             
-        });
-        
-          
-        </script>
-script;
+        $extraFooter = <<<HTML
+            <script>
+                function getParameterByName(name) {
+                    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(location.search);
+                    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+                }
+                    
+                $(document).ready(function(){
+                    $("#muestra-cupones").tablesorter();
+                var oTable = $('#muestra-cupones').DataTable({
+                        "lengthMenu": [
+                            [10, 50, -1],
+                            [10, 50, 'Todos'],
+                        ],
+                        "columnDefs": [{
+                            "orderable": false,
+                            "targets": 0,
+                        }],
+                        "order": false
+                    });
+                    // Remove accented character from search input as well
+                    $('#muestra-cupones input[type=search]').keyup( function () {
+                        var table = $('#example').DataTable();
+                        table.search(
+                            jQuery.fn.DataTable.ext.type.search.html(this.value)
+                        ).draw();
+                    });
+                    var checkAll = 0;
+                    
+                    fecha1 = getParameterByName('Inicial');
+                    fecha2 = getParameterByName('Final');
+                    operacion = getParameterByName('Operacion');
+                    producto = getParameterByName('Producto');
+                    sucursal = getParameterByName('Sucursal');
+                    
+                    $("#export_excel_consulta").click(function(){
+                    $('#all').attr('action', '/AdminSucursales/generarExcelPagosTransaccionesAll/?Inicial='+fecha1+'&Final='+fecha2+'&Operacion='+operacion+'&Producto='+producto+'&Sucursal='+sucursal);
+                    $('#all').attr('target', '_blank');
+                    $("#all").submit();
+                    });
+                    
+                    
+                });
+            </script>
+        HTML;
 
         $fechaActual = date('Y-m-d');
         $Inicial = $_GET['Inicial'];
-        //$Final = $_GET['Final'];
         $Operacion = $_GET['Operacion'];
         $Producto = $_GET['Producto'];
         $Sucursal = $_GET['Sucursal'];
-
 
         $sucursales = CajaAhorroDao::GetSucursalAsignadaCajeraAhorro('');
         $opcSucursales = "";
@@ -1299,9 +1308,6 @@ script;
             $opcSucursales .= "<option value='{$sucursales['CODIGO']}' $sel_suc>{$sucursales['NOMBRE']} ({$sucursales['CODIGO']})</option>";
         }
 
-
-
-        //////////////////////////////////////////////////////
         if ($Operacion == 0 || $Operacion == '') {
             $sel_op0 = 'Selected';
         } else if ($Operacion == 1) {
@@ -1326,19 +1332,13 @@ script;
             $sel_op10 = 'Selected';
         }
 
-
-        $opcOperaciones = <<<html
+        $opcOperaciones = <<<HTML
             <option value="0" $sel_op0>TODAS LAS OPERACIONES CON EFECTIVO</option>
-            
-            
             <option value="1" $sel_op1>APERTURA DE CUENTA - INSCRIPCIÓN</option>
             <option value="2" $sel_op2>CAPITAL INICIAL - CUENTA CORRIENTE</option>
             <option value="3" $sel_op3>DEPOSITO</option>
             <option value="4" $sel_op4>RETIRO</option>
-html;
-
-
-        //////////////////////////////////////////////////////
+        HTML;
 
         if ($Producto == 0 || $Producto == '') {
             $sel_pro0 = 'Selected';
@@ -1350,19 +1350,16 @@ html;
             $sel_pro3 = 'Selected';
         }
 
-
-        $opcProductos = <<<html
+        $opcProductos = <<<HTML
             <option value="0" $sel_pro0>TODOS LOS PRODUCTOS QUE MANEJAN EFECTIVO</option>
             <option value="1" $sel_pro1>AHORRO CUENTA - CORRIENTE</option>
             <option value="2" $sel_pro2>AHORRO CUENTA - PEQUES</option>
-html;
-
+        HTML;
 
         if ($Inicial == '') {
             $Inicial = $fechaActual;
             $Final = $fechaActual;
         }
-        //$Transacciones = CajaAhorroDao::GetAllTransacciones($Inicial, $Final, $Operacion, $Producto, $Sucursal);
         $Transacciones = CajaAhorroDao::GetAllTransacciones($Inicial, $Inicial, $Operacion, $Producto, $Sucursal);
 
         $tabla = "";
@@ -1383,7 +1380,7 @@ html;
             } else {
                 $concepto = '<i class="fa fa-arrow-down" style="color: #00ac00;"></i>';
             }
-            $tabla .= <<<html
+            $tabla .= <<<HTML
                 <tr style="padding: 0px !important;">
                 
                     <td style="padding: 10px !important;">
@@ -1410,9 +1407,8 @@ html;
                     <td style="padding: 10px !important;">$ {$egreso} </td>
                     <td style="padding: 10px !important;">$ {$saldo} </td>
                 </tr>
-html;
+            HTML;
         }
-
 
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Historial de Transacciones")));
         View::set('footer', $this->_contenedor->footer($extraFooter));
@@ -1428,37 +1424,35 @@ html;
 
     public function Transacciones()
     {
-        $extraFooter = <<<script
-        <script>
-            {$this->configuraTabla}
-        
-        function getParameterByName(name) {
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(location.search);
-            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        }
-             
-         $(document).ready(function(){
-            configuraTabla("muestra-cupones")
-            var checkAll = 0;
-            
-            fecha1 = getParameterByName('Inicial');
-            fecha2 = getParameterByName('Final');
-            operacion = getParameterByName('Operacion');
-            producto = getParameterByName('Producto');
-            sucursal = getParameterByName('Sucursal');
-            
-             $("#export_excel_con_transacciones").click(function(){
-              $('#all').attr('action', '/AdminSucursales/generarExcelPagosTransaccionesDetalleAll/?Inicial='+fecha1+'&Final='+fecha2+'&Operacion='+operacion+'&Producto='+producto+'&Sucursal='+sucursal);
-              $('#all').attr('target', '_blank');
-              $("#all").submit();
-            });
-        });
-        
-          
-        </script>
-script;
+        $extraFooter = <<<HTML
+            <script>
+                {$this->configuraTabla}
+                
+                function getParameterByName(name) {
+                    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(location.search);
+                    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+                }
+                    
+                $(document).ready(function(){
+                    configuraTabla("muestra-cupones")
+                    var checkAll = 0;
+                    
+                    fecha1 = getParameterByName('Inicial');
+                    fecha2 = getParameterByName('Final');
+                    operacion = getParameterByName('Operacion');
+                    producto = getParameterByName('Producto');
+                    sucursal = getParameterByName('Sucursal');
+                    
+                    $("#export_excel_con_transacciones").click(function(){
+                    $('#all').attr('action', '/AdminSucursales/generarExcelPagosTransaccionesDetalleAll/?Inicial='+fecha1+'&Final='+fecha2+'&Operacion='+operacion+'&Producto='+producto+'&Sucursal='+sucursal);
+                    $('#all').attr('target', '_blank');
+                    $("#all").submit();
+                    });
+                });
+            </script>
+        HTML;
 
         $fechaActual = date('Y-m-d');
         $Inicial = $_GET['Inicial'];
@@ -1466,7 +1460,6 @@ script;
         $Operacion = $_GET['Operacion'];
         $Producto = $_GET['Producto'];
         $Sucursal = $_GET['Sucursal'];
-
 
         $sucursales = CajaAhorroDao::GetSucursalAsignadaCajeraAhorro('');
         $opcSucursales = "";
@@ -1479,9 +1472,6 @@ script;
             $opcSucursales .= "<option value='{$sucursales['CODIGO']}' $sel_suc>{$sucursales['NOMBRE']} ({$sucursales['CODIGO']})</option>";
         }
 
-
-
-        //////////////////////////////////////////////////////
         if ($Operacion == 0 || $Operacion == '') {
             $sel_op0 = 'Selected';
         } else if ($Operacion == 1) {
@@ -1507,16 +1497,13 @@ script;
         }
 
 
-        $opcOperaciones = <<<html
+        $opcOperaciones = <<<HTML
             <option value="0" $sel_op0>TODAS LAS OPERACIONES CON EFECTIVO</option>
             <option value="1" $sel_op1>APERTURA DE CUENTA - INSCRIPCIÓN</option>
             <option value="2" $sel_op2>CAPITAL INICIAL - CUENTA CORRIENTE</option>
             <option value="3" $sel_op3>DEPOSITO</option>
             <option value="4" $sel_op4>RETIRO</option>
-html;
-
-
-        //////////////////////////////////////////////////////
+        HTML;
 
         if ($Producto == 0 || $Producto == '') {
             $sel_pro0 = 'Selected';
@@ -1528,13 +1515,11 @@ html;
             $sel_pro3 = 'Selected';
         }
 
-
-        $opcProductos = <<<html
+        $opcProductos = <<<HTML
             <option value="0" $sel_pro0>TODOS LOS PRODUCTOS QUE MANEJAN EFECTIVO</option>
             <option value="1" $sel_pro1>AHORRO CUENTA - CORRIENTE</option>
             <option value="2" $sel_pro2>AHORRO CUENTA - PEQUES</option>
-html;
-
+        HTML;
 
         if ($Inicial == '' || $Final == '') {
             $Inicial = $fechaActual;
@@ -1565,7 +1550,8 @@ html;
             } else {
                 $concepto = '<i class="fa fa-arrow-down" style="color: #00ac00;"></i>';
             }
-            $tabla .= <<<html
+
+            $tabla .= <<<HTML
                 <tr style="padding: 0px !important;">
                 
                    <td style="padding: 10px !important;">
@@ -1597,9 +1583,8 @@ html;
                     <td style="padding: 10px !important;">$ {$ingreso} </td>
                     <td style="padding: 10px !important;">$ {$egreso} </td>
                 </tr>
-html;
+            HTML;
         }
-
 
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Historial de Transacciones")));
         View::set('footer', $this->_contenedor->footer($extraFooter));
@@ -1872,106 +1857,97 @@ html;
 
     public function SolicitudResumenMovimientos()
     {
-        $extraFooter = <<<script
-        <script>
-        
-        function getParameterByName(name) {
-            name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-            var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-            results = regex.exec(location.search);
-            return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-        }
-             
-         $(document).ready(function(){
-            $("#muestra-cupones").tablesorter();
-          var oTable = $('#muestra-cupones').DataTable({
-                  "lengthMenu": [
-                    [6, 50, -1],
-                    [6, 50, 'Todos'],
-                ],
-                "columnDefs": [{
-                    "orderable": false,
-                    "targets": 0,
-                }],
-                 "order": false
-            });
-            // Remove accented character from search input as well
-            $('#muestra-cupones input[type=search]').keyup( function () {
-                var table = $('#example').DataTable();
-                table.search(
-                    jQuery.fn.DataTable.ext.type.search.html(this.value)
-                ).draw();
-            });
-            var checkAll = 0;
-            
-            fecha1 = getParameterByName('Inicial');
-            fecha2 = getParameterByName('Final');
-            
-             $("#export_excel_consulta").click(function(){
-              $('#all').attr('action', '/Operaciones/generarExcelPagos/?Inicial='+fecha1+'&Final='+fecha2);
-              $('#all').attr('target', '_blank');
-              $("#all").submit();
-            });
-             
-               $("#muestra-cupones1").tablesorter();
-          var oTable = $('#muestra-cupones1').DataTable({
-                  "lengthMenu": [
-                    [6, 50, -1],
-                    [6, 50, 'Todos'],
-                ],
-                "columnDefs": [{
-                    "orderable": false,
-                    "targets": 0,
-                }],
-                 "order": false
-            });
-            // Remove accented character from search input as well
-            $('#muestra-cupones1 input[type=search]').keyup( function () {
-                var table = $('#example').DataTable();
-                table.search(
-                    jQuery.fn.DataTable.ext.type.search.html(this.value)
-                ).draw();
-            });
-            var checkAll = 0;
-            
-            fecha1 = getParameterByName('Inicial');
-            fecha2 = getParameterByName('Final');
-            
-        
-        });
-        
-        
-        
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->noSubmit}
-            {$this->soloNumeros}
-            {$this->consultaServidor}
-            {$this->numeroLetras}
-            {$this->primeraMayuscula}
-            {$this->addParametro}
-            {$this->buscaCliente}
-            
-            
-        </script>
-script;
+        $extraFooter = <<<HTML
+            <script>
+                function getParameterByName(name) {
+                    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(location.search);
+                    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+                }
+                    
+                $(document).ready(function(){
+                    $("#muestra-cupones").tablesorter();
+                var oTable = $('#muestra-cupones').DataTable({
+                        "lengthMenu": [
+                            [6, 50, -1],
+                            [6, 50, 'Todos'],
+                        ],
+                        "columnDefs": [{
+                            "orderable": false,
+                            "targets": 0,
+                        }],
+                        "order": false
+                    });
+                    // Remove accented character from search input as well
+                    $('#muestra-cupones input[type=search]').keyup( function () {
+                        var table = $('#example').DataTable();
+                        table.search(
+                            jQuery.fn.DataTable.ext.type.search.html(this.value)
+                        ).draw();
+                    });
+                    var checkAll = 0;
+                    
+                    fecha1 = getParameterByName('Inicial');
+                    fecha2 = getParameterByName('Final');
+                    
+                    $("#export_excel_consulta").click(function(){
+                    $('#all').attr('action', '/Operaciones/generarExcelPagos/?Inicial='+fecha1+'&Final='+fecha2);
+                    $('#all').attr('target', '_blank');
+                    $("#all").submit();
+                    });
+                    
+                    $("#muestra-cupones1").tablesorter();
+                var oTable = $('#muestra-cupones1').DataTable({
+                        "lengthMenu": [
+                            [6, 50, -1],
+                            [6, 50, 'Todos'],
+                        ],
+                        "columnDefs": [{
+                            "orderable": false,
+                            "targets": 0,
+                        }],
+                        "order": false
+                    });
+                    // Remove accented character from search input as well
+                    $('#muestra-cupones1 input[type=search]').keyup( function () {
+                        var table = $('#example').DataTable();
+                        table.search(
+                            jQuery.fn.DataTable.ext.type.search.html(this.value)
+                        ).draw();
+                    });
+                    var checkAll = 0;
+                    
+                    fecha1 = getParameterByName('Inicial');
+                    fecha2 = getParameterByName('Final');
+                    
+                
+                });
+                
+                
+                
+                    {$this->showError}
+                    {$this->showSuccess}
+                    {$this->showInfo}
+                    {$this->noSubmit}
+                    {$this->soloNumeros}
+                    {$this->consultaServidor}
+                    {$this->numeroLetras}
+                    {$this->primeraMayuscula}
+                    {$this->addParametro}
+                    {$this->buscaCliente}
+                    
+                    
+            </script>
+        HTML;
 
-
-        $fechaActual = date('Y-m-d');
-        $Inicial = $_GET['Inicial'];
-        $Final = $_GET['Final'];
-        $Operacion = $_GET['Operacion'];
-        $Producto = $_GET['Producto'];
-        $Sucursal = $_GET['Sucursal'];
         $opcSucursales = "";
         $situacion_credito = 0;
 
         $Transacciones = CajaAhorroDao::GetSolicitudesPendientesAdminAll();
         $tabla = "";
         foreach ($Transacciones as $key => $value) {
-
-            $tabla .= <<<html
+            $tabla .= <<<HTML
                 <tr style="padding: 0px !important;">
                     <td style="padding: 0px !important;">{$value['CDGTICKET_AHORRO']} </td>
                     <td style="padding: 0px !important;">
@@ -1989,9 +1965,8 @@ script;
                         <button type="button" class="btn btn-danger btn-circle" onclick="FunDelete_Pago('{$value['SECUENCIA']}', '{$value['FECHA']}', '{$this->__usuario}');"><i class="fa fa-trash"></i></button>
                     </td>
                 </tr>
-html;
+            HTML;
         }
-
 
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Reporteria")));
         View::set('footer', $this->_contenedor->footer($extraFooter));
@@ -2003,138 +1978,136 @@ html;
 
     public function SolicitudRetiroOrdinario()
     {
-        $maxFecha = date('Y-m-d', strtotime('+15 day'));
-
-        $extraFooter = <<<script
-        <script>         
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->confirmarMovimiento}
-            {$this->consultaServidor}
-            {$this->configuraTabla}
-            {$this->muestraPDF}
-            {$this->imprimeTicket}
-            
-            const getParameterByName = (name) => {
-                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                results = regex.exec(location.search);
-                return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-            }
+        $extraFooter = <<<HTML
+            <script>         
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->confirmarMovimiento}
+                {$this->consultaServidor}
+                {$this->configuraTabla}
+                {$this->muestraPDF}
+                {$this->imprimeTicket}
                 
-            $(document).ready(() => {
-                configuraTabla("muestra-cupones", 2)
-                var checkAll = 0
-                fecha1 = getParameterByName('Inicial')
-                fecha2 = getParameterByName('Final')
-                
-                $("#export_excel_consulta").click(() => {
-                    $('#all').attr('action', '/Operaciones/generarExcelPagos/?Inicial='+fecha1+'&Final='+fecha2)
-                    $('#all').attr('target', '_blank')
-                    $("#all").submit()
-                })
-                
-                configuraTabla("muestra-cupones1", 2)
-                var checkAll = 0
-                fecha1 = getParameterByName('Inicial')
-                fecha2 = getParameterByName('Final')
-            })
-             
-            const actualizaSolicitud = (valor, idSolicitud, fa = null) => {
-                if (valor === 3) return modificarSolicitud(idSolicitud, fa)
-                const accion = valor === 1 ?  "AUTORIZAR" : "RECHAZAR"
-                const mensaje = document.createElement("div")
-                mensaje.style.color = "black"
-                mensaje.style.fontSize = "15px"
-                mensaje.innerHTML = "<p>¿Está seguro de <b>" + accion + "</b> la solicitud de retiro programado?</p><p style='font-weight: bold'>Esta acción no se puede deshacer.</p>"
-                 
-                confirmarMovimiento("Solicitudes de retiro Programado", null, mensaje)
-                    .then((confirmacion) => {
-                        if (!confirmacion) return
-                         
-                        consultaServidor(
-                            "/AdminSucursales/ActualizaSolicitudRetiro/",
-                            { idSolicitud, estatus: valor, ejecutivo: "{$_SESSION['usuario']}" },
-                            (respuesta) => {
-                                if (!respuesta.success) return showError(respuesta.mensaje)
-                                showSuccess(respuesta.mensaje).then(() => {
-                                    if (valor === 2) {
-                                        return consultaServidor("/Ahorro/ResumenEntregaRetiro", $.param({id: idSolicitud}), (respuesta) => {
-                                            if (respuesta.success) return devuelveRetiro(respuesta.datos)
-                                             
-                                            console.log(respuesta.error)
-                                            showError(respuesta.mensaje)
-                                        })
-                                    }
-                                    swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
-                                    window.location.reload()
-                                })
-                            })
-                    })
-            }
-             
-            const devuelveRetiro = (datos) => {
-                const datosDev = {
-                    cliente: datos.CLIENTE,
-                    contrato: datos.CONTRATO,
-                    monto: datos.MONTO,
-                    ejecutivo: "{$_SESSION['usuario']}",
-                    sucursal: "{$_SESSION['cdgco_ahorro']}",
-                    tipo: datos.TIPO_RETIRO
+                const getParameterByName = (name) => {
+                    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(location.search);
+                    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
                 }
-                 
-                consultaServidor("/Ahorro/DevolucionRetiro/", $.param(datosDev), (respuesta) => {
-                    if (!respuesta.success) {
-                        console.log(respuesta.error)
-                        return showError(respuesta.mensaje)
-                    }
-                     
-                    showSuccess(respuesta.mensaje).then(() => {
-                        // imprimeTicket(respuesta.datos.ticket, "{$_SESSION['cdgco_ahorro']}", false)
-                        swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
-                        window.location.reload()
+                    
+                $(document).ready(() => {
+                    configuraTabla("muestra-cupones", 2)
+                    var checkAll = 0
+                    fecha1 = getParameterByName('Inicial')
+                    fecha2 = getParameterByName('Final')
+                    
+                    $("#export_excel_consulta").click(() => {
+                        $('#all').attr('action', '/Operaciones/generarExcelPagos/?Inicial='+fecha1+'&Final='+fecha2)
+                        $('#all').attr('target', '_blank')
+                        $("#all").submit()
                     })
+                    
+                    configuraTabla("muestra-cupones1", 2)
+                    var checkAll = 0
+                    fecha1 = getParameterByName('Inicial')
+                    fecha2 = getParameterByName('Final')
                 })
-            }
-             
-            const modificarSolicitud = (idSolicitud, fechaAnterior) => {
-                const fa = fechaAnterior.split("/")
-                const fn = new Date(fa[2], fa[1] - 1, fa[0], 0, 0, 0, 0)
-                 
-                document.querySelector("#id_solicitud").value = idSolicitud
-                document.querySelector("#fecha_anterior").value = fa[2] + "-" + fa[1] + "-" + fa[0]
-                 
-                const nuevaFecha = document.querySelector("#fecha_nueva")
-                nuevaFecha.value = fa[2] + "-" + fa[1] + "-" + fa[0]
-                nuevaFecha.min = fa[2] + "-" + fa[1] + "-" + fa[0]
-                nuevaFecha.max = new Date(fn.setDate(fn.getDate() + 15)).toISOString().split("T")[0]
-                $("#modal_cambio_fecha").modal("show")
-            }
-             
-            const cambiaFecha = () => {
-                const fechaNueva = document.querySelector("#fecha_nueva").valueAsDate.toISOString().split("T")[0]
-                const fechaAnterior = document.querySelector("#fecha_anterior").value
-                const idSolicitud = document.querySelector("#id_solicitud").value                 
-                if (fechaNueva === "") return showError("Debe seleccionar una fecha")
-                if (fechaNueva === fechaAnterior) return showError("La fecha seleccionada es igual a la anterior")
-                if (new Date(fechaNueva) < new Date(fechaAnterior)) return showError("La fecha seleccionada no puede ser menor a la anterior")
-                if (new Date(fechaNueva).getDay() === 0) return showError("La nueva fecha fecha de entrega no se puede agendar para un domingo")
-                if (new Date(fechaNueva).getDay() === 6) return showError("La nueva fecha fecha de entrega no se puede agendar para un sábado")
-                 
-                consultaServidor(
-                    "/AdminSucursales/ModificaSolicitudRetiro/",
-                    $.param({ idSolicitud, fechaNueva, fechaAnterior }),
-                    (respuesta) => {
-                        if (!respuesta.success) return showError(respuesta.mensaje)
+                
+                const actualizaSolicitud = (valor, idSolicitud, fa = null) => {
+                    if (valor === 3) return modificarSolicitud(idSolicitud, fa)
+                    const accion = valor === 1 ?  "AUTORIZAR" : "RECHAZAR"
+                    const mensaje = document.createElement("div")
+                    mensaje.style.color = "black"
+                    mensaje.style.fontSize = "15px"
+                    mensaje.innerHTML = "<p>¿Está seguro de <b>" + accion + "</b> la solicitud de retiro programado?</p><p style='font-weight: bold'>Esta acción no se puede deshacer.</p>"
+                    
+                    confirmarMovimiento("Solicitudes de retiro Programado", null, mensaje)
+                        .then((confirmacion) => {
+                            if (!confirmacion) return
+                            
+                            consultaServidor(
+                                "/AdminSucursales/ActualizaSolicitudRetiro/",
+                                { idSolicitud, estatus: valor, ejecutivo: "{$_SESSION['usuario']}" },
+                                (respuesta) => {
+                                    if (!respuesta.success) return showError(respuesta.mensaje)
+                                    showSuccess(respuesta.mensaje).then(() => {
+                                        if (valor === 2) {
+                                            return consultaServidor("/Ahorro/ResumenEntregaRetiro", $.param({id: idSolicitud}), (respuesta) => {
+                                                if (respuesta.success) return devuelveRetiro(respuesta.datos)
+                                                
+                                                console.log(respuesta.error)
+                                                showError(respuesta.mensaje)
+                                            })
+                                        }
+                                        swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
+                                        window.location.reload()
+                                    })
+                                })
+                        })
+                }
+                
+                const devuelveRetiro = (datos) => {
+                    const datosDev = {
+                        cliente: datos.CLIENTE,
+                        contrato: datos.CONTRATO,
+                        monto: datos.MONTO,
+                        ejecutivo: "{$_SESSION['usuario']}",
+                        sucursal: "{$_SESSION['cdgco_ahorro']}",
+                        tipo: datos.TIPO_RETIRO
+                    }
+                    
+                    consultaServidor("/Ahorro/DevolucionRetiro/", $.param(datosDev), (respuesta) => {
+                        if (!respuesta.success) {
+                            console.log(respuesta.error)
+                            return showError(respuesta.mensaje)
+                        }
+                        
                         showSuccess(respuesta.mensaje).then(() => {
+                            // imprimeTicket(respuesta.datos.ticket, "{$_SESSION['cdgco_ahorro']}", false)
                             swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
                             window.location.reload()
                         })
                     })
-            }
-        </script>
-        script;
+                }
+                
+                const modificarSolicitud = (idSolicitud, fechaAnterior) => {
+                    const fa = fechaAnterior.split("/")
+                    const fn = new Date(fa[2], fa[1] - 1, fa[0], 0, 0, 0, 0)
+                    
+                    document.querySelector("#id_solicitud").value = idSolicitud
+                    document.querySelector("#fecha_anterior").value = fa[2] + "-" + fa[1] + "-" + fa[0]
+                    
+                    const nuevaFecha = document.querySelector("#fecha_nueva")
+                    nuevaFecha.value = fa[2] + "-" + fa[1] + "-" + fa[0]
+                    nuevaFecha.min = fa[2] + "-" + fa[1] + "-" + fa[0]
+                    nuevaFecha.max = new Date(fn.setDate(fn.getDate() + 15)).toISOString().split("T")[0]
+                    $("#modal_cambio_fecha").modal("show")
+                }
+                
+                const cambiaFecha = () => {
+                    const fechaNueva = document.querySelector("#fecha_nueva").valueAsDate.toISOString().split("T")[0]
+                    const fechaAnterior = document.querySelector("#fecha_anterior").value
+                    const idSolicitud = document.querySelector("#id_solicitud").value                 
+                    if (fechaNueva === "") return showError("Debe seleccionar una fecha")
+                    if (fechaNueva === fechaAnterior) return showError("La fecha seleccionada es igual a la anterior")
+                    if (new Date(fechaNueva) < new Date(fechaAnterior)) return showError("La fecha seleccionada no puede ser menor a la anterior")
+                    if (new Date(fechaNueva).getDay() === 0) return showError("La nueva fecha fecha de entrega no se puede agendar para un domingo")
+                    if (new Date(fechaNueva).getDay() === 6) return showError("La nueva fecha fecha de entrega no se puede agendar para un sábado")
+                    
+                    consultaServidor(
+                        "/AdminSucursales/ModificaSolicitudRetiro/",
+                        $.param({ idSolicitud, fechaNueva, fechaAnterior }),
+                        (respuesta) => {
+                            if (!respuesta.success) return showError(respuesta.mensaje)
+                            showSuccess(respuesta.mensaje).then(() => {
+                                swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
+                                window.location.reload()
+                            })
+                        })
+                }
+            </script>
+        HTML;
 
         $tabla =  "";
         $SolicitudesOrdinarias = CajaAhorroDao::GetSolicitudesRetiroAhorroOrdinario();
@@ -2143,7 +2116,7 @@ html;
             $cantidad_formateada = number_format($value['CANTIDAD_SOLICITADA'], 2, '.', ',');
             $img =  '<img src="https://cdn-icons-png.flaticon.com/512' . ($value['TIPO_PRODUCTO'] == 'AHORRO CUENTA CORRIENTE' ? '/5575/5575939' : '/2995/2995467') . '.png" style="border-radius: 3px; padding-top: 5px;" width="33" height="35">';
 
-            $tabla .= <<<html
+            $tabla .= <<<HTML
                 <tr style="padding: 15px!important;">
                     <td style="padding: 15px!important;">
                         <div>
@@ -2180,7 +2153,7 @@ html;
                         <button type="button" class="btn btn-info btn-circle" onclick="actualizaSolicitud(3,{$value['ID_SOL_RETIRO_AHORRO']},'{$value['FECHA_SOLICITUD_EXCEL']}');"=><i class="fa fa-edit"></i></button>
                     </td>
                 </tr>
-            html;
+            HTML;
         }
 
 
@@ -2192,7 +2165,7 @@ html;
             $cantidad_formateada = number_format($value_historial['CANTIDAD_SOLICITADA'], 2, '.', ',');
             $img =  '<img src="https://cdn-icons-png.flaticon.com/512' . ($value['TIPO_PRODUCTO'] == 'AHORRO CUENTA CORRIENTE' ? '/5575/5575939' : '/2995/2995467') . '.png" style="border-radius: 3px; padding-top: 5px;" width="33" height="35">';
 
-            $tabla_historial .= <<<html
+            $tabla_historial .= <<<HTML
                 <tr style="padding: 15px!important;">
                     <td style="padding: 15px!important;">
                         <div>
@@ -2224,7 +2197,7 @@ html;
                         </div>
                      </td>
                 </tr>
-            html;
+            HTML;
         }
 
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Solicitudes Pendientes Retiros Programados")));
@@ -2247,100 +2220,100 @@ html;
 
     public function SolicitudRetiroExpress()
     {
-        $extraFooter = <<<script
-        <script>
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->confirmarMovimiento}
-            {$this->consultaServidor}
-            {$this->configuraTabla}
-            {$this->muestraPDF}
-            {$this->imprimeTicket}
-            
-            const getParameterByName = (name) => {
-                name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
-                var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
-                results = regex.exec(location.search);
-                return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
-            }
+        $extraFooter = <<<HTML
+            <script>
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->confirmarMovimiento}
+                {$this->consultaServidor}
+                {$this->configuraTabla}
+                {$this->muestraPDF}
+                {$this->imprimeTicket}
                 
-            $(document).ready(() => {
-                configuraTabla("muestra-cupones", 2)
-                var checkAll = 0
-                fecha1 = getParameterByName('Inicial')
-                fecha2 = getParameterByName('Final')
-                
-                $("#export_excel_consulta").click(() => {
-                    $('#all').attr('action', '/Operaciones/generarExcelPagos/?Inicial='+fecha1+'&Final='+fecha2)
-                    $('#all').attr('target', '_blank')
-                    $("#all").submit()
-                })
-                
-                configuraTabla("muestra-cupones1", 2)
-                var checkAll = 0
-                fecha1 = getParameterByName('Inicial')
-                fecha2 = getParameterByName('Final')
-            })
-             
-            const actualizaSolicitud = (valor, idSolicitud) => {
-                const accion = valor === 1 ?  'AUTORIZAR' : 'RECHAZAR'
-                const mensaje = document.createElement("div")
-                mensaje.style.color = "black"
-                mensaje.style.fontSize = "15px"
-                mensaje.innerHTML = "<p>¿Está seguro de <b>" + accion + "</b> la solicitud de retiro Express?</p><p style='font-weight: bold'>Esta acción no se puede deshacer.</p>"
-                 
-                confirmarMovimiento("Solicitudes de retiro Express", null, mensaje)
-                    .then((confirmacion) => {
-                        if (!confirmacion) return
-                        
-                        consultaServidor(
-                            "/AdminSucursales/ActualizaSolicitudRetiro/",
-                            { idSolicitud, estatus: valor, ejecutivo: "{$_SESSION['usuario']}" },
-                            (respuesta) => {
-                                if (!respuesta.success) return showError(respuesta.mensaje)
-                                showSuccess(respuesta.mensaje).then(() => {
-                                    if (valor === 2) {
-                                        return consultaServidor("/Ahorro/ResumenEntregaRetiro", $.param({id: idSolicitud}), (respuesta) => {
-                                            if (respuesta.success) return devuelveRetiro(respuesta.datos)
-                                             
-                                            console.log(respuesta.error)
-                                            return showError(respuesta.mensaje)
-                                        })
-                                    }
-                                     
-                                    swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
-                                    window.location.reload()
-                                })
-                            })
-                    })
-            }
-             
-            const devuelveRetiro = (datos) => {
-                const datosDev = {
-                    cliente: datos.CLIENTE,
-                    contrato: datos.CONTRATO,
-                    monto: datos.MONTO,
-                    ejecutivo: "{$_SESSION['usuario']}",
-                    sucursal: "{$_SESSION['cdgco_ahorro']}",
-                    tipo: datos.TIPO_RETIRO
+                const getParameterByName = (name) => {
+                    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+                    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+                    results = regex.exec(location.search);
+                    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
                 }
-                 
-                consultaServidor("/Ahorro/DevolucionRetiro/", $.param(datosDev), (respuesta) => {
-                    if (!respuesta.success) {
-                        console.log(respuesta.error)
-                        return showError(respuesta.mensaje)
-                    }
-                     
-                    showSuccess(respuesta.mensaje).then(() => {
-                        // imprimeTicket(respuesta.datos.ticket, "{$_SESSION['cdgco_ahorro']}", false)
-                        swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
-                        window.location.reload()
+                    
+                $(document).ready(() => {
+                    configuraTabla("muestra-cupones", 2)
+                    var checkAll = 0
+                    fecha1 = getParameterByName('Inicial')
+                    fecha2 = getParameterByName('Final')
+                    
+                    $("#export_excel_consulta").click(() => {
+                        $('#all').attr('action', '/Operaciones/generarExcelPagos/?Inicial='+fecha1+'&Final='+fecha2)
+                        $('#all').attr('target', '_blank')
+                        $("#all").submit()
                     })
+                    
+                    configuraTabla("muestra-cupones1", 2)
+                    var checkAll = 0
+                    fecha1 = getParameterByName('Inicial')
+                    fecha2 = getParameterByName('Final')
                 })
-            }
-        </script>
-        script;
+                
+                const actualizaSolicitud = (valor, idSolicitud) => {
+                    const accion = valor === 1 ?  'AUTORIZAR' : 'RECHAZAR'
+                    const mensaje = document.createElement("div")
+                    mensaje.style.color = "black"
+                    mensaje.style.fontSize = "15px"
+                    mensaje.innerHTML = "<p>¿Está seguro de <b>" + accion + "</b> la solicitud de retiro Express?</p><p style='font-weight: bold'>Esta acción no se puede deshacer.</p>"
+                    
+                    confirmarMovimiento("Solicitudes de retiro Express", null, mensaje)
+                        .then((confirmacion) => {
+                            if (!confirmacion) return
+                            
+                            consultaServidor(
+                                "/AdminSucursales/ActualizaSolicitudRetiro/",
+                                { idSolicitud, estatus: valor, ejecutivo: "{$_SESSION['usuario']}" },
+                                (respuesta) => {
+                                    if (!respuesta.success) return showError(respuesta.mensaje)
+                                    showSuccess(respuesta.mensaje).then(() => {
+                                        if (valor === 2) {
+                                            return consultaServidor("/Ahorro/ResumenEntregaRetiro", $.param({id: idSolicitud}), (respuesta) => {
+                                                if (respuesta.success) return devuelveRetiro(respuesta.datos)
+                                                
+                                                console.log(respuesta.error)
+                                                return showError(respuesta.mensaje)
+                                            })
+                                        }
+                                        
+                                        swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
+                                        window.location.reload()
+                                    })
+                                })
+                        })
+                }
+                
+                const devuelveRetiro = (datos) => {
+                    const datosDev = {
+                        cliente: datos.CLIENTE,
+                        contrato: datos.CONTRATO,
+                        monto: datos.MONTO,
+                        ejecutivo: "{$_SESSION['usuario']}",
+                        sucursal: "{$_SESSION['cdgco_ahorro']}",
+                        tipo: datos.TIPO_RETIRO
+                    }
+                    
+                    consultaServidor("/Ahorro/DevolucionRetiro/", $.param(datosDev), (respuesta) => {
+                        if (!respuesta.success) {
+                            console.log(respuesta.error)
+                            return showError(respuesta.mensaje)
+                        }
+                        
+                        showSuccess(respuesta.mensaje).then(() => {
+                            // imprimeTicket(respuesta.datos.ticket, "{$_SESSION['cdgco_ahorro']}", false)
+                            swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
+                            window.location.reload()
+                        })
+                    })
+                }
+            </script>
+        HTML;
 
         $tabla =  "";
         $SolicitudesOrdinarias = CajaAhorroDao::GetSolicitudesRetiroAhorroExpress();
@@ -2349,7 +2322,7 @@ html;
             $cantidad_formateada = number_format($value['CANTIDAD_SOLICITADA'], 2, '.', ',');
             $img =  '<img src="https://cdn-icons-png.flaticon.com/512' . ($value['TIPO_PRODUCTO'] == 'AHORRO CUENTA CORRIENTE' ? '/5575/5575939' : '/2995/2995467') . '.png" style="border-radius: 3px; padding-top: 5px;" width="33" height="35">';
 
-            $tabla .= <<<html
+            $tabla .= <<<HTML
                 <tr style="padding: 15px!important;">
                     <td style="padding: 15px!important;">
                         <div>
@@ -2385,7 +2358,7 @@ html;
                         <button type="button" class="btn btn-danger btn-circle" onclick="actualizaSolicitud(2, {$value['ID_SOL_RETIRO_AHORRO']});"><i class="fa fa-close"></i></button>
                     </td>
                 </tr>
-html;
+            HTML;
         }
 
         $SolicitudesExpressHistorial = CajaAhorroDao::GetSolicitudesRetiroAhorroExpressHistorial();
@@ -2396,15 +2369,12 @@ html;
             $img =  '<img src="https://cdn-icons-png.flaticon.com/512' . ($value_historial['TIPO_PRODUCTO'] == 'AHORRO CUENTA CORRIENTE' ? '/5575/5575939' : '/2995/2995467') . '.png" style="border-radius: 3px; padding-top: 5px;" width="33" height="35">';
 
             if ($value_historial['ESTATUS_ASIGNA_ACEPTA'] == 'APROBADO') {
-                $estatus = 'ACEPTADO';
                 $color = '#31BD16';
             } else {
-                $estatus = 'RECHAZADO';
                 $color = '#9C1508';
             }
 
-
-            $tabla_historial .= <<<html
+            $tabla_historial .= <<<HTML
                 <tr style="padding: 15px!important;">
                     <td style="padding: 15px!important;">
                         <div>
@@ -2446,7 +2416,7 @@ html;
                         </div>
                      </td>
                 </tr>
-html;
+            HTML;
         }
 
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Admin retiros express")));
@@ -2605,43 +2575,32 @@ html;
 
     public function ConfiguracionUsuarios()
     {
-        $extraFooter = <<<script
-        <script>
-           $(document).ready(function(){
-            $("#muestra-cupones").tablesorter();
-          var oTable = $('#muestra-cupones').DataTable({
-                  "lengthMenu": [
-                    [10, 50, -1],
-                    [10, 50, 'Todos'],
-                ],
-                "columnDefs": [{
-                    "orderable": false,
-                    "targets": 0,
-                }],
-                 "order": false
-            });
-            // Remove accented character from search input as well
-            $('#muestra-cupones input[type=search]').keyup( function () {
-                var table = $('#example').DataTable();
-                table.search(
-                    jQuery.fn.DataTable.ext.type.search.html(this.value)
-                ).draw();
-            });
-            var checkAll = 0;
-            
-            fecha1 = getParameterByName('Inicial');
-            fecha2 = getParameterByName('Final');
-            
-             $("#export_excel_consulta").click(function(){
-              $('#all').attr('action', '/Operaciones/generarExcelPagos/?Inicial='+fecha1+'&Final='+fecha2);
-              $('#all').attr('target', '_blank');
-              $("#all").submit();
-            });        
-        });
-        </script>
-script;
-
-
+        $extraFooter = <<<HTML
+            <script>
+                $(document).ready(function(){
+                    $("#muestra-cupones").tablesorter();
+                    var oTable = $('#muestra-cupones').DataTable({
+                        "lengthMenu": [
+                            [10, 50, -1],
+                            [10, 50, 'Todos'],
+                        ],
+                        "columnDefs": [{
+                            "orderable": false,
+                            "targets": 0,
+                        }],
+                        "order": false
+                    });
+                    
+                    $('#muestra-cupones input[type=search]').keyup( function () {
+                        var table = $('#example').DataTable();
+                        table.search(
+                            jQuery.fn.DataTable.ext.type.search.html(this.value)
+                        ).draw();
+                    });
+                    var checkAll = 0;    
+                });
+            </script>
+        HTML;
 
         $userAdmin = AdminSucursalesDao::GetUsuariosAdminAhorro();
         $tabla = "";
@@ -2653,7 +2612,7 @@ script;
             } else if ($value['ESTADO'] == 2) {
                 $estatus = 'EN ESPERA';
             }
-            $tabla .= <<<html
+            $tabla .= <<<HTML
                 <tr style="padding: 0px !important;">
                     <td style="padding: 10px !important;">{$value['CODIGO']}</td>
                     <td style="padding: 10px !important;">{$value['EMPLEADO']}</td>
@@ -2662,7 +2621,7 @@ script;
                      <td style="padding: 10px !important;">{$estatus}</td>
                    
                 </tr>
-html;
+            HTML;
         }
 
         View::set('header', $this->_contenedor->header(self::GetExtraHeader("Configuración de Caja Usuarios")));
@@ -2673,11 +2632,11 @@ html;
 
     public function ConfiguracionParametros()
     {
-        $extraFooter = <<<script
+        $extraFooter = <<<HTML
             <script>
             
             </script>
-        script;
+        HTML;
 
         $opcSucursales = "";
         $tabla = "";
@@ -2914,70 +2873,70 @@ html;
     public function SituacionAhorro()
     {
         $extraFooter = <<<HTML
-        <script>
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->confirmarMovimiento}
-            {$this->consultaServidor}
-            {$this->configuraTabla}
-            {$this->noSubmit}
-            {$this->crearFilas}
-            {$this->descargaExcel}
-         
-            $(document).ready(() => {
-                configuraTabla("situacion")
-            })
-             
-            const validaFechas = (e) => {
-                if (e.target.id === "fechaF") {
-                    const fechaF = $("#fechaF").val()
-                    const fi = document.querySelector("#fechaI")
-                    const nFF = new Date(fechaF)
-                    const nFI = new Date(nFF.setMonth(nFF.getMonth() - 1)).toISOString().split('T')[0]
-                    
-                    fi.min = nFI
-                    fi.max = fechaF
-
-                    if (fi.value > fechaF) fi.value = nFI
-                    if (fi.value < nFI) fi.value = nFI
-                }
-            }
-             
-            const buscarSituacion = () => {
-                const datos = {
-                    fechaI: $("#fechaI").val(),
-                    fechaF: $("#fechaF").val()
-                }
-                 
-                if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+            <script>
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->confirmarMovimiento}
+                {$this->consultaServidor}
+                {$this->configuraTabla}
+                {$this->noSubmit}
+                {$this->crearFilas}
+                {$this->descargaExcel}
+            
+                $(document).ready(() => {
+                    configuraTabla("situacion")
+                })
                 
-                consultaServidor(
-                    "/AdminSucursales/GetSituacionAhorro/",
-                    $.param(datos),
-                    (resultado) => {
-                        $("#situacion").DataTable().destroy()
-                        $("#situacion tbody").html("")
+                const validaFechas = (e) => {
+                    if (e.target.id === "fechaF") {
+                        const fechaF = $("#fechaF").val()
+                        const fi = document.querySelector("#fechaI")
+                        const nFF = new Date(fechaF)
+                        const nFI = new Date(nFF.setMonth(nFF.getMonth() - 1)).toISOString().split('T')[0]
                         
-                        if (!resultado.success) showError(resultado.mensaje)
-                        else $("#situacion tbody").html(creaFilas(resultado.datos))
-                        
-                        configuraTabla("situacion")
-                    })
-            }
+                        fi.min = nFI
+                        fi.max = fechaF
 
-            const GetExcel = () => {
-                const datos = {
-                    fechaI: $("#fechaI").val(),
-                    fechaF: $("#fechaF").val()
+                        if (fi.value > fechaF) fi.value = nFI
+                        if (fi.value < nFI) fi.value = nFI
+                    }
                 }
-                 
-                if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+                
+                const buscarSituacion = () => {
+                    const datos = {
+                        fechaI: $("#fechaI").val(),
+                        fechaF: $("#fechaF").val()
+                    }
+                    
+                    if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+                    
+                    consultaServidor(
+                        "/AdminSucursales/GetSituacionAhorro/",
+                        $.param(datos),
+                        (resultado) => {
+                            $("#situacion").DataTable().destroy()
+                            $("#situacion tbody").html("")
+                            
+                            if (!resultado.success) showError(resultado.mensaje)
+                            else $("#situacion tbody").html(creaFilas(resultado.datos))
+                            
+                            configuraTabla("situacion")
+                        })
+                }
 
-                descargaExcel("/AdminSucursales/ExcelSituacionAhorro/?"+$.param(datos))
-            }
-               
-        </script>
+                const GetExcel = () => {
+                    const datos = {
+                        fechaI: $("#fechaI").val(),
+                        fechaF: $("#fechaF").val()
+                    }
+                    
+                    if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+
+                    descargaExcel("/AdminSucursales/ExcelSituacionAhorro/?"+$.param(datos))
+                }
+                
+            </script>
         HTML;
 
         $fechaI = date('Y-m-d', strtotime('-1 month'));
@@ -3045,67 +3004,67 @@ html;
     public function DevengoInteres()
     {
         $extraFooter = <<<HTML
-        <script>
-            {$this->showError}
-            {$this->showSuccess}
-            {$this->showInfo}
-            {$this->confirmarMovimiento}
-            {$this->consultaServidor}
-            {$this->configuraTabla}
-            {$this->noSubmit}
-            {$this->crearFilas}
-            {$this->descargaExcel}
-         
-            $(document).ready(() => {
-                configuraTabla("devengo")
-            })
-             
-            const validaFechas = (e) => {
-                if (e.target.id === "fechaF") {
-                    const fechaF = $("#fechaF").val()
-                    const fi = document.querySelector("#fechaI")
-                    const nFF = new Date(fechaF)
-                    const nFI = new Date(nFF.setMonth(nFF.getMonth() - 1)).toISOString().split('T')[0]
-    
-                    if (fi.value > fechaF) fi.value = nFI
-                    if (fi.value < nFI) fi.value = nFI
-                }
-            }
-             
-            const buscarSituacion = () => {
-                const datos = {
-                    fechaI: $("#fechaI").val(),
-                    fechaF: $("#fechaF").val()
-                }
-                 
-                if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+            <script>
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->confirmarMovimiento}
+                {$this->consultaServidor}
+                {$this->configuraTabla}
+                {$this->noSubmit}
+                {$this->crearFilas}
+                {$this->descargaExcel}
+            
+                $(document).ready(() => {
+                    configuraTabla("devengo")
+                })
                 
-                consultaServidor(
-                    "/AdminSucursales/GetDevengoAhorro/",
-                    $.param(datos),
-                    (resultado) => {
-                        $("#devengo").DataTable().destroy()
-                        $("#devengo tbody").html("")
-                        
-                        if (!resultado.success) showError(resultado.mensaje)
-                        else $("#devengo tbody").html(creaFilas(resultado.datos))
-                        
-                        configuraTabla("devengo")
-                    })
-            }
-
-            const GetExcel = () => {
-                const datos = {
-                    fechaI: $("#fechaI").val(),
-                    fechaF: $("#fechaF").val()
+                const validaFechas = (e) => {
+                    if (e.target.id === "fechaF") {
+                        const fechaF = $("#fechaF").val()
+                        const fi = document.querySelector("#fechaI")
+                        const nFF = new Date(fechaF)
+                        const nFI = new Date(nFF.setMonth(nFF.getMonth() - 1)).toISOString().split('T')[0]
+        
+                        if (fi.value > fechaF) fi.value = nFI
+                        if (fi.value < nFI) fi.value = nFI
+                    }
                 }
-                 
-                if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+                
+                const buscarSituacion = () => {
+                    const datos = {
+                        fechaI: $("#fechaI").val(),
+                        fechaF: $("#fechaF").val()
+                    }
+                    
+                    if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+                    
+                    consultaServidor(
+                        "/AdminSucursales/GetDevengoAhorro/",
+                        $.param(datos),
+                        (resultado) => {
+                            $("#devengo").DataTable().destroy()
+                            $("#devengo tbody").html("")
+                            
+                            if (!resultado.success) showError(resultado.mensaje)
+                            else $("#devengo tbody").html(creaFilas(resultado.datos))
+                            
+                            configuraTabla("devengo")
+                        })
+                }
 
-                descargaExcel("/AdminSucursales/ExcelDevengoAhorro/?"+$.param(datos))
-            }
-               
-        </script>
+                const GetExcel = () => {
+                    const datos = {
+                        fechaI: $("#fechaI").val(),
+                        fechaF: $("#fechaF").val()
+                    }
+                    
+                    if ($("#sucursal").val() !== "0") datos.sucursal = $("#sucursal").val()
+
+                    descargaExcel("/AdminSucursales/ExcelDevengoAhorro/?"+$.param(datos))
+                }
+                
+            </script>
         HTML;
 
         $fechaI = date('Y-m-d', strtotime('-7 days'));
