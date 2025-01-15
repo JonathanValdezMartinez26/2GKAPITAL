@@ -101,6 +101,7 @@ class AhorroMenus_AdminSuc extends AhorroMenus
 
     public static function mostrar()
     {
+        self::$opcPrincipal = 'Admin. Sucursales';
         return self::getMenus(self::$opcionesMenu);
     }
 }

@@ -16,10 +16,6 @@ $buscarCliente = new BuscarCliente('Para realizar un movimiento es necesario que
     <div class="col-md-9" id="bloqueoAhorro">
         <div class="modal-content">
             <div class="modal-header" style="padding-bottom: 0px">
-                <div class="navbar-header card col-md-12" style="background: #2b2b2b">
-                    <a class="navbar-brand">Mi espacio / Cuentas de ahorro corriente</a>
-                </div>
-
                 <?= $submenu; ?>
             </div>
             <div class="modal-body">

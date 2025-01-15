@@ -17,10 +17,6 @@ $buscarCliente = new BuscarCliente('Para realizar un retiro es necesario que el 
         <form id="registroOperacion" name="registroOperacion">
             <div class="modal-content">
                 <div class="modal-header" style="padding-bottom: 0px">
-                    <div class="navbar-header card col-md-12" style="background: #2b2b2b">
-                        <a class="navbar-brand">Mi espacio / Solicitud de retiro</a>
-                    </div>
-
                     <?= $submenu; ?>
                 </div>
                 <div class="modal-body">

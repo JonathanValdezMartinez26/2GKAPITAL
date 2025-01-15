@@ -14,10 +14,6 @@ use App\components\AhorroMenus_AdminSuc;
         <form id="registroOperacion" name="registroOperacion">
             <div class="modal-content">
                 <div class="modal-header" style="padding-bottom: 0px">
-                    <div class="navbar-header card col-md-12" style="background: #2b2b2b">
-                        <a class="navbar-brand">Admin sucursales / Configuración de módulo para Ahorro / Parametros de operacion</a>
-                    </div>
-
                     <?= $submenu; ?>
                 </div>
                 <div class="modal-body">

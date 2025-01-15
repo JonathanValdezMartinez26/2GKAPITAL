@@ -95,6 +95,7 @@ class AhorroMenus_MiEspacio extends AhorroMenus
 
     public static function mostrar()
     {
+        self::$opcPrincipal = 'Mi espacio';
         return self::getMenus(self::$opcionesMenu);
     }
 }

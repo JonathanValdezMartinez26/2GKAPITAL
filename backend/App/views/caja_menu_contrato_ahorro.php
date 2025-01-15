@@ -17,10 +17,6 @@ $derecha = new TarjetaMano('derecha');
     <div class="col-md-9">
         <div class="modal-content">
             <div class="modal-header" style="padding-bottom: 0px">
-                <div class="navbar-header card col-md-12" style="background: #2b2b2b">
-                    <a class="navbar-brand">Mi espacio / Nuevo contrato de ahorro corriente</a>
-                </div>
-
                 <?= $submenu; ?>
             </div>
             <div class="modal-body">

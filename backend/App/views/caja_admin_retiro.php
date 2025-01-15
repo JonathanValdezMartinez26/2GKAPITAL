@@ -14,10 +14,6 @@ use App\components\AhorroMenus_AdminSuc;
         <form id="datos" onsubmit=noSUBMIT()>
             <div class="modal-content">
                 <div class="modal-header" style="padding-bottom: 0px">
-                    <div class="navbar-header card col-md-12" style="background: #2b2b2b">
-                        <a class="navbar-brand">Admin sucursales / Fondeo de sucursal</a>
-                    </div>
-
                     <?= $submenu; ?>
                 </div>
                 <div class="modal-body">
