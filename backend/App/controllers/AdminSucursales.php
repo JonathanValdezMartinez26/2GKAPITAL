@@ -247,20 +247,6 @@ class AdminSucursales extends Controller
             return f.toLocaleString("es-MX", { year: "numeric", month:"2-digit", day:"2-digit" })
         }
     JAVASCRIPT;
-    private $descargaExcel = <<<JAVASCRIPT
-        const descargaExcel = (url) => {
-            swal({ text: "Generando archivo, espere un momento...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
-            
-            const ventana = window.open(url, "_blank")
-
-            const intervalo = setInterval(() => {
-                if (ventana.closed) {
-                    clearInterval(intervalo)
-                    swal.close()
-                }
-            }, 1000)
-        }
-    JAVASCRIPT;
 
     function __construct()
     {
@@ -379,7 +365,7 @@ class AdminSucursales extends Controller
         ];
 
         $filas = AdminSucursalesDao::GetSaldosSucursales($_GET);
-        \PHPSpreadsheet::GeneraExcel('Reporte de saldos sucursales', 'Reporte', 'Saldos Sucursales', $columnas, $filas);
+        \PHPSpreadsheet::DescargaExcel('Reporte de saldos sucursales', 'Reporte', 'Saldos Sucursales', $columnas, $filas);
     }
 
     // Validar Transacciones Día
@@ -2867,7 +2853,7 @@ html;
         $datos = AdminSucursalesDao::GetHistorialRetirosSucursal($_GET);
         $filas = $datos['success'] ? $datos['datos'] : [];
 
-        \PHPSpreadsheet::GeneraExcel("Reporte", 'Reporte', 'Historial Retiros Sucursal', $columnas, $filas);
+        \PHPSpreadsheet::DescargaExcel("Reporte", 'Reporte', 'Historial Retiros Sucursal', $columnas, $filas);
     }
 
     public function SituacionAhorro()
@@ -2987,7 +2973,7 @@ html;
 
         $datos = self::GetSituacionAhorro($_GET);
         $filas = $datos['success'] ? $datos['datos'] : [];
-        \PHPSpreadsheet::GeneraExcel('Reporte de situación de ahorro', 'Reporte', 'Situación Ahorro', $columnas, $filas);
+        \PHPSpreadsheet::DescargaExcel('Reporte de situación de ahorro', 'Reporte', 'Situación Ahorro', $columnas, $filas);
     }
 
     public function GetSucursalesReporteria()
@@ -3111,7 +3097,7 @@ html;
 
         $filas = self::GetDevengoAhorro($_GET);
         if (!$filas['success']) $filas['datos'] = [];
-        \PHPSpreadsheet::GeneraExcel('Reporte de devengo de ahorro', 'Reporte', 'Devengo Ahorro', $columnas, $filas['datos']);
+        \PHPSpreadsheet::DescargaExcel('Reporte de devengo de ahorro', 'Reporte', 'Devengo Ahorro', $columnas, $filas['datos']);
     }
 
     public function LogConfiguracion()
@@ -3232,13 +3218,12 @@ html;
 
         $filas = CajaAhorroDao::GetSolicitudesRetiroAhorroOrdinario();
 
-        \PHPSpreadsheet::GeneraExcel('Reporte Solicitudes Pendientes Ordinaria', 'Reporte', 'Consulta de Solicitudes Pendientes para Retiro de Efectivo en Sucursal Para Cuentas de Ahorro', $columnas, $filas);
+        \PHPSpreadsheet::DescargaExcel('Reporte Solicitudes Pendientes Ordinaria', 'Reporte', 'Consulta de Solicitudes Pendientes para Retiro de Efectivo en Sucursal Para Cuentas de Ahorro', $columnas, $filas);
     }
 
     public function generarExcelPagosTransaccionesAll()
     {
         $fecha_inicio = $_GET['Inicial'];
-        // $fecha_fin = $_GET['Final'];
         $operacion = $_GET['Operacion'];
         $producto = $_GET['Producto'];
         $sucursal = $_GET['Sucursal'];
@@ -3260,7 +3245,7 @@ html;
 
         $filas = CajaAhorroDao::GetAllTransacciones($fecha_inicio, $fecha_inicio, $operacion, $producto, $sucursal);
 
-        \PHPSpreadsheet::GeneraExcel('Reporte Movimientos Caja', 'Reporte', 'Flujo de Efectivo', $columnas, $filas);
+        \PHPSpreadsheet::DescargaExcel('Reporte Movimientos Caja', 'Reporte', 'Flujo de Efectivo', $columnas, $filas);
     }
 
 
@@ -3298,7 +3283,7 @@ html;
 
         $filas = CajaAhorroDao::GetAllTransaccionesDetalle($fecha_inicio, $fecha_fin, $operacion, $producto, $sucursal);
 
-        \PHPSpreadsheet::GeneraExcel('Reporte Movimientos Caja', 'Reporte', 'Consulta de Movimientos de Ahorro a Detalle (incluye transacciones virtuales)', $columnas, $filas);
+        \PHPSpreadsheet::DescargaExcel('Reporte Movimientos Caja', 'Reporte', 'Consulta de Movimientos de Ahorro a Detalle (incluye transacciones virtuales)', $columnas, $filas);
     }
 
     public function GetHistorialFondeosSucursal()

@@ -36,18 +36,24 @@ class Controller
                     zeroRecords: "No se encontraron registros",
                     lengthMenu: "Mostrar _MENU_ registros por página",
                     search: "Buscar:",
+                },
+                createdRow: (row) => {
+                    $(row).find('td').css('vertical-align', 'middle');
                 }
             }
 
             configuracion.lengthChange = noRegXvista
 
             $("#" + id).DataTable(configuracion)
-
-            $("#"  + id + " input[type=search]").keyup(() => {
-                $("#example")
-                    .DataTable()
-                    .search(jQuery.fn.DataTable.ext.type.search.html(this.value))
-                    .draw()
+        }
+    JAVASCRIPT;
+    public $actualizaDatosTabla = <<<JAVASCRIPT
+        const actualizaDatosTabla = (id, datos) => {
+            const tabla = $("#" + id).DataTable()
+            tabla.clear().draw()
+            datos.forEach((item) => {
+                if (Array.isArray(item)) tabla.row.add(item)
+                else tabla.row.add(Object.values(item))
             })
         }
     JAVASCRIPT;
@@ -131,6 +137,20 @@ class Controller
             document.getElementById(idI).value = fechaF
         }
     }';
+    public $descargaExcel = <<<JAVASCRIPT
+        const descargaExcel = (url) => {
+            swal({ text: "Generando archivo, espere un momento...", icon: "/img/wait.gif", closeOnClickOutside: false, closeOnEsc: false })
+            const ventana = window.open(url, "_blank")
+            const intervalo = setInterval(() => {
+                if (ventana.closed) {
+                    clearInterval(intervalo)
+                    swal.close()
+                }
+            }, 1000)
+
+            window.focus()
+        }
+    JAVASCRIPT;
 
     public $__usuario = '';
     public $__nombre = '';

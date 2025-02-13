@@ -3924,8 +3924,6 @@ sql;
                 SN.TASA,
                 DIA_PAGO(SN.NOACUERDO) DIA_PAGO,
                 CALCULA_PARCIALIDAD(SN.PERIODICIDAD, SN.TASA, NVL(SC.CANTAUTOR,SC.CANTSOLIC), SN.PLAZOSOL) PARCIALIDAD,
-                Q2.CDGCL ID_AVAL,
-                GET_NOMBRE_CLIENTE(Q2.CDGCL) AVAL,
                 SN.CDGCO ID_SUCURSAL,
                 GET_NOMBRE_SUCURSAL(SN.CDGCO) SUCURSAL,
                 SN.CDGOCPE ID_EJECUTIVO,
@@ -3935,12 +3933,9 @@ sql;
                     SELECT HORA_CIERRE FROM CIERRE_HORARIO WHERE CDGCO = SN.CDGCO
                 ) AS HORA_CIERRE
             FROM 
-                SN, SC, SC Q2, PRN
+                SN, SC, PRN
             WHERE
                 SC.CDGNS = :cliente
-                AND SC.CDGNS = Q2.CDGNS
-                AND SC.CICLO = Q2.CICLO
-                AND SC.CDGCL <> Q2.CDGCL
                 AND SC.CDGNS = SN.CDGNS
                 AND SC.CICLO = SN.CICLO
                 AND PRN.CICLO = SC.CICLO 

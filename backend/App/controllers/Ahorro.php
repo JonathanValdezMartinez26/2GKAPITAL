@@ -582,7 +582,7 @@ class Ahorro extends Controller
                                 document.querySelector("#mdlCurp").value = datosCliente.CURP
 
                                 if (datosCliente['PRODUCTO'] == 1) {
-                                    document.querySelector("#contratoOK").value = ""
+                                    //document.querySelector("#contratoOK").value = ""
                                     document.querySelector("#chkCreacionContrato").classList.add("red")
                                     document.querySelector("#chkCreacionContrato").classList.add("fa-times")
                                     document.querySelector("#chkCreacionContrato").classList.remove("green")
