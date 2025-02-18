@@ -2,9 +2,9 @@
 
 <?php
 
-use App\components\AhorroMenus_MiEspacio;
+use App\components\AhorroMenus_AdminSuc;
 
-[$menu, $submenu] = AhorroMenus_MiEspacio::mostrar();
+[$menu, $submenu] = AhorroMenus_AdminSuc::mostrar();
 
 ?>
 
@@ -32,8 +32,9 @@ use App\components\AhorroMenus_MiEspacio;
                                     <input class="form-control" type="date" id="fechaF" value="<?= $fecha; ?>" max="<?= $fecha; ?>">
                                     <span id="availability1">Hasta</span>
                                 </div>
-                                <div class="col-md-3">
-                                    <button class="btn btn-primary" type="button" id="buscar"><i class="fa fa-search"></i> Buscar</button>
+                                <div class="col-md-3" style="display: flex; justify-content: space-between;">
+                                    <button class="btn btn-primary" type="button" id="buscar"><i class="fa fa-search">&nbsp;</i>Buscar</button>
+                                    <button class="btn btn-success" type="button" id="exportar"><i class="fa fa-file-excel-o">&nbsp;</i>Exportar</button>
                                 </div>
                             </div>
                             <hr>

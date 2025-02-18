@@ -13,7 +13,7 @@ class AhorroMenus
     public static function getMenus($opcionesMenu)
     {
         $segmentos = explode('/', trim($_SERVER['REQUEST_URI'], '/'));
-        $controlador = $segmentos[0];
+        $controlador = $controlador ?? $segmentos[0];
         $activa = $segmentos[1];
         $ruta = self::$opcPrincipal . ' / ';
 
@@ -26,14 +26,14 @@ class AhorroMenus
         }
 
         $menu = AhorroMenu::getMenu($opcionesMenu, $controlador, $activa);
-        
+
         $subMenu = <<<HTML
             <div class="navbar-header card col-md-12" style="background: #2b2b2b">
                 <a class="navbar-brand">$ruta</a>
             </div>
         HTML;
         $subMenu .= AhorroSubMenu::getMenu($opcionesSubmenu, $controlador, $activa);
-        
+
         return [$menu, $subMenu];
     }
 }

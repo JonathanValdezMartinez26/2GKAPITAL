@@ -3295,4 +3295,98 @@ html;
     {
         echo json_encode(AdminSucursalesDao::GetHistorialRetirosSucursal($_POST));
     }
+    // Lista de pagos de créditos con layout contable
+    public function LayoutPagosCredito()
+    {
+        $extraFooter = <<<HTML
+            <script>
+                {$this->showError}
+                {$this->validaFIF}
+                {$this->configuraTabla}
+                {$this->consultaServidor}
+                {$this->descargaExcel}
+                {$this->formatoMoneda}
+
+                $(document).ready(() => {
+                    configuraTabla("historialPagos")
+                
+                    $("#fechaI").change(valFIF)
+                    $("#fechaF").change(valFIF)
+                    $("#buscar").click(generaLayout)
+                    $("#exportar").click(exportarExcel)
+                })
+
+                const valFIF = () => {
+                    validaFIF()
+                }
+
+                const generaLayout = () => {
+                    const datos = {}
+                    datos.fechaI = $("#fechaI").val()
+                    datos.fechaF = $("#fechaF").val()
+
+                    consultaServidor("/Ahorro/GetLayoutPagosCredito/", datos, (resultado) => {
+                        if (!resultado.success) return showError(resultado.mensaje)
+                        $("#historialPagos").DataTable().destroy()
+                        $("#historialPagos tbody").empty()
+
+                        resultado.datos.forEach((pago) => {
+                            const tr = document.createElement("tr")
+                            const fecha = document.createElement("td")
+                            const referencia = document.createElement("td")
+                            const monto = document.createElement("td")
+                            const moneda = document.createElement("td")
+
+                            fecha.innerText = pago.FECHA
+                            referencia.innerText = pago.REFERENCIA
+                            monto.innerText = formatoMoneda(pago.MONTO)
+                            moneda.innerText = pago.MONEDA
+
+                            tr.appendChild(fecha)
+                            tr.appendChild(referencia)
+                            tr.appendChild(monto)
+                            tr.appendChild(moneda)
+
+                            $("#historialPagos tbody").append(tr)
+                        })
+
+                        configuraTabla("historialPagos")
+                    })
+                }
+
+                const exportarExcel = () => {
+                    const datos = {
+                        fechaI: $("#fechaI").val(),
+                        fechaF: $("#fechaF").val()
+                    }
+
+                    descargaExcel("/AdminSucursales/GetLayoutPagosCreditoExcel/?"+$.param(datos))
+                }
+            </script>
+        HTML;
+
+        $fecha = date('Y-m-d');
+
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Layout de Pagos")));
+        View::set('footer', $this->_contenedor->footer($extraFooter));
+        View::set('fecha', $fecha);
+        View::render("caja_admin_credito_layout");
+    }
+
+    public function GetLayoutPagosCreditoExcel()
+    {
+        $estilos = \PHPSpreadsheet::GetEstilosExcel();
+
+        $columnas = [
+            \PHPSpreadsheet::ColumnaExcel('FECHA', 'Fecha', ['estilo' => $estilos['fecha']]),
+            \PHPSpreadsheet::ColumnaExcel('REFERENCIA', 'Referencia', ['estilo' => $estilos['centrado']]),
+            \PHPSpreadsheet::ColumnaExcel('MONTO', 'Monto', ['estilo' => $estilos['moneda']]),
+            \PHPSpreadsheet::ColumnaExcel('MONEDA', 'Moneda', ['estilo' => $estilos['centrado']]),
+        ];
+
+        $filas = AdminSucursalesDao::GetLayoutPagosCredito($_GET);
+        $filas = $filas['success'] ? $filas['datos'] : [];
+
+        \PHPSpreadsheet::DescargaExcel('Layout Pagos', 'Reporte', 'Referencias de Pago', $columnas, $filas);
+    }
 }

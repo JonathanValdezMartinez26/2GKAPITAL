@@ -96,7 +96,16 @@ class AhorroMenus_AdminSuc extends AhorroMenus
                     'etiqueta' => 'Historial transacciones'
                 ]
             ]
-        ]
+        ],
+        "Layout's" => [
+            'iconoON' => 'https://cdn-icons-png.flaticon.com/512/7310/7310500.png',
+            'iconoOFF' => 'https://cdn-icons-png.flaticon.com/512/7310/7310480.png',
+            'subMenu' => [
+                'LayoutPagosCredito' => [
+                    'etiqueta' => 'Layout de pagos'
+                ],
+            ],
+        ],
     ];
 
     public static function mostrar()
