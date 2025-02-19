@@ -906,10 +906,16 @@ sql;
                 NULL AS PLAZO,
                 PRP.COSTO_INSCRIPCION AS COMISION_APERTURA,
                 NULL AS BONIFICACION,
-                SC.SALDO_CORTE AS SALDO_AHORRO,
+                CASE 
+                    WHEN SC.SALDO_CORTE < 0 THEN 0
+                    ELSE SC.SALDO_CORTE
+                END AS SALDO_AHORRO,
                 NULL AS FECHA_INVERSION,
                 0 AS SALDO_INVERSION,
-                SC.SALDO_CORTE AS SALDO_SOCIO,
+                CASE 
+                    WHEN SC.SALDO_CORTE < 0 THEN 0
+                    ELSE SC.SALDO_CORTE
+                END AS SALDO_SOCIO,
                 CONCATENA_NOMBRE(PE.NOMBRE1, PE.NOMBRE2, PE.PRIMAPE, PE.SEGAPE) AS EJECUTIVO,
                 APA.TASA / 100 AS TASA,
                 SC.RENDIMIENTO
