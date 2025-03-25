@@ -620,7 +620,7 @@ sql;
                     _filtro_fecha_
                 )
         ORDER BY
-            FECHA DESC
+            DA.FECHA DESC
         sql;
 
         $filtroProducto = $datos['producto'] ? "AND APA.CDGPR_PRIORITARIO = '{$datos['producto']}'" : "";
@@ -846,6 +846,7 @@ sql;
         SELECT
             CDGCL,
             APA.CONTRATO AS AHORRO,
+            APA.CDGPR_PRIORITARIO AS SEGMENTO,
             (
                 SELECT
                     COUNT(CONTRATO)
@@ -869,8 +870,6 @@ sql;
             ASIGNA_PROD_AHORRO APA
         WHERE
             CONTRATO = '{$datos['CONTRATO']}'
-            AND CDGPR_PRIORITARIO = 1
-        
         sql;
 
         try {

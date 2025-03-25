@@ -1194,8 +1194,8 @@ class AdminSucursales extends Controller
         $opcSegmentos = "";
         if ($segmentos['PEQUES'] > 0) $opcSegmentos .= "<option value='2'>PEQUES</option>";
 
-        if ($opcSegmentos === "") $opcSegmentos = "<option value='1'>AHORRO</option>";
-        else $opcSegmentos = "<option value='0'>TODOS</option><option value='1'>AHORRO</option>" . $opcSegmentos;
+        if ($opcSegmentos === "") $opcSegmentos = "<option value='{$segmentos['SEGMENTO']}'>AHORRO</option>";
+        else $opcSegmentos = "<option value='0'>TODOS</option><option value='{$segmentos['SEGMENTO']}'>AHORRO</option>" . $opcSegmentos;
 
         View::set('script', $script);
         View::set('cliente', $_POST['CDGCL']);
