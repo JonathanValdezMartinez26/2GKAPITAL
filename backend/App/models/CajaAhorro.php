@@ -3754,7 +3754,7 @@ sql;
             PR_PRIORITARIO
         WHERE
             ESTATUS = 'A'
-            AND CODIGO != 2
+            AND CODIGO NOT IN (2, 5)
         SQL;
 
         try {
@@ -3779,6 +3779,30 @@ sql;
         WHERE
             ESTATUS = 'A'
             AND CODIGO = 2
+        SQL;
+
+        try {
+            $mysqli = new Database();
+            return $mysqli->queryOne($qry);
+        } catch (Exception $e) {
+            return [];
+        }
+    }
+
+    public static function GetInfoCuentaEstudiantil()
+    {
+        $qry = <<<SQL
+            SELECT
+                CODIGO,
+                DESCRIPCION,
+                COSTO_INSCRIPCION,
+                SALDO_APERTURA,
+                TASA
+            FROM
+                PR_PRIORITARIO
+            WHERE
+                ESTATUS = 'A'
+                AND CODIGO = 5
         SQL;
 
         try {

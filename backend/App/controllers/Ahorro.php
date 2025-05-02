@@ -4303,6 +4303,1221 @@ class Ahorro extends Controller
         View::render("caja_menu_solicitud_retiro_peque_historial");
     }
 
+    //********************CUENTA PEQUES********************//
+    // Apertura de contratos para cuentas de ahorro Peques
+    public function ContratoCuentaEstudiantil()
+    {
+        $extraFooter = <<<HTML
+            <script>
+                window.onload = () => {
+                    if(document.querySelector("#clienteBuscado").value !== "") buscaCliente()
+                }
+            
+                const noSucursal = "{$_SESSION['cdgco_ahorro']}"
+                let valKD = false
+                
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->confirmarMovimiento}
+                {$this->validarYbuscar}
+                {$this->getHoy}
+                {$this->soloNumeros}
+                {$this->numeroLetras}
+                {$this->primeraMayuscula}
+                {$this->muestraPDF}
+                {$this->imprimeContrato}
+                {$this->addParametro}
+                {$this->consultaServidor}
+                {$this->showHuella}
+                {$this->validaHuella}
+                {$this->parseaNumero}
+                {$this->formatoMoneda}
+                {$this->limpiaMontos}
+                {$this->imprimeTicket}
+                
+                const buscaCliente = () => {
+                    const noCliente = document.querySelector("#clienteBuscado")
+                    
+                    if (!noCliente.value) {
+                        limpiaDatosCliente()
+                        return showError("Ingrese un número de cliente a buscar.")
+                    }
+                    
+                    consultaServidor("/Ahorro/BuscaClienteEstudiantil/", { cliente: noCliente.value }, (respuesta) => {
+                        if (!respuesta.success) {
+                            if (respuesta.datos) {
+                                const datosCliente = respuesta.datos
+                                if (datosCliente["NO_CONTRATOS"] == 0) {
+                                    swal({
+                                        title: "Cuenta de ahorro Peques™",
+                                        text: "El cliente " + noCliente.value + " no tiene una cuenta de ahorro.\\nDesea aperturar una cuenta de ahorro en este momento?",
+                                        icon: "info",
+                                        buttons: ["No", "Sí"],
+                                        dangerMode: true
+                                    }).then((abreCta) => {
+                                        if (abreCta) return window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + noCliente.value
+                                    })
+                                    return
+                                }
+                                // if (datosCliente["NO_CONTRATOS"] == 1 && datosCliente["CONTRATO_COMPLETO"] == 0) {
+                                //     swal({
+                                //         title: "Cuenta de ahorro Peques™",
+                                //         text: "El cliente " + noCliente.value + " no ha completado el proceso de apertura de la cuenta de ahorro.\\nDesea completar el proceso en este momento?",
+                                //         icon: "info",
+                                //         buttons: ["No", "Sí"],
+                                //         dangerMode: true
+                                //     }).then((abreCta) => {
+                                //         if (abreCta) return window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + noCliente.value
+                                //     })
+                                //     return
+                                // }
+                            }
+                                
+                            limpiaDatosCliente()
+                            return showError(respuesta.mensaje)
+                        }
+                            
+                        const datosCliente = respuesta.datos
+                        
+                        document.querySelector("#nombre1").disabled = false
+                        document.querySelector("#nombre2").disabled = false
+                        document.querySelector("#apellido1").disabled = false
+                        document.querySelector("#apellido2").disabled = false
+                        document.querySelector("#fecha_nac").disabled = false
+                        document.querySelector("#ciudad").disabled = false
+                        document.querySelector("#curp").disabled = false
+                            
+                        document.querySelector("#fechaRegistro").value = datosCliente.FECHA_REGISTRO
+                        document.querySelector("#noCliente").value = noCliente.value
+                        document.querySelector("#nombre").value = datosCliente.NOMBRE
+                        document.querySelector("#direccion").value = datosCliente.DIRECCION
+                        noCliente.value = ""
+                    })
+                }
+                
+                const limpiaDatosCliente = () => {
+                    document.querySelector("#registroInicialAhorro").reset()
+                    
+                    document.querySelector("#fechaRegistro").value = ""
+                    document.querySelector("#noCliente").value = ""
+                    document.querySelector("#nombre").value = ""
+                    document.querySelector("#curp").value = ""
+                    document.querySelector("#edad").value = ""
+                    document.querySelector("#direccion").value = ""
+                    
+                    document.querySelector("#nombre1").disabled = true
+                    document.querySelector("#nombre2").disabled = true
+                    document.querySelector("#apellido1").disabled = true
+                    document.querySelector("#apellido2").disabled = true
+                    document.querySelector("#fecha_nac").disabled = true
+                    document.querySelector("#ciudad").disabled = true
+                    document.querySelector("#curp").disabled = true
+                    document.querySelector("#btnGeneraContrato").disabled = true
+                }
+                
+                const generaContrato = async (e) => {
+                    e.preventDefault()
+                    
+                    document.querySelector("#fecha_pago").value = getHoy()
+                    document.querySelector("#contrato").value = ""
+                    document.querySelector("#codigo_cl").value = document.querySelector("#noCliente").value
+                    document.querySelector("#nombre_cliente").value = document.querySelector("#nombre").value
+                    document.querySelector("#mdlCurp").value = document.querySelector("#curp").value
+                        
+                    await showInfo("Debe registrar el depósito por apertura de cuenta.")
+                    $("#modal_agregar_pago").modal("show")
+                }
+
+                const pagoApertura = async (e) => {
+                    e.preventDefault()
+                    
+                    if (document.querySelector("#curp").value.length !== 18) {
+                        showError("La CURP debe tener 18 caracteres.")
+                        return
+                    }
+                    
+                    if (document.querySelector("#edad").value > 17) {
+                        showError("El peque a registrar debe tener menos de 18 años.")
+                        return 
+                    }
+                    
+                    if (document.querySelector("#apellido2").value === "") {
+                        const respuesta = await swal({
+                            title: "Cuenta de ahorro Peques™",
+                            text: "No se ha capturado el segundo apellido.\\n¿Desea continuar con el registro?",
+                            icon: "info",
+                            buttons: ["No", "Sí"]
+                        })
+                        if (!respuesta) return
+                    }
+                    
+                    const cliente = document.querySelector("#nombre").value
+                    
+                    confirmarMovimiento("Cuenta de ahorro Peques™",
+                        "¿Está segura de continuar con la apertura de la cuenta Peques™ asociada al cliente "
+                        + cliente
+                        + "?"
+                    ).then((continuar) => {
+                        if (!continuar) return
+                        const noCredito = document.querySelector("#noCliente").value
+                        const datos = $("#registroInicialAhorro").serializeArray()
+                        addParametro(datos, "credito", noCredito)
+                        addParametro(datos, "sucursal", noSucursal)
+                        addParametro(datos, "ejecutivo", "{$_SESSION['usuario']}")
+                        addParametro(datos, "tasa", document.querySelector("#tasa").value)
+                        
+                        datos.forEach((dato) => {
+                            if (dato.name === "sexo") {
+                                dato.value = document.querySelector("#sexoH").checked
+                            }
+                        })
+                        
+                        consultaServidor("/Ahorro/AgregaContratoAhorroPQ/", $.param(datos), (respuesta) => {
+                            if (!respuesta.success) {
+                                console.error(respuesta.error)
+                                return showError(respuesta.mensaje)
+                            }
+
+                            regPago(respuesta.datos.contrato)
+                        })
+                    })
+                }
+
+                const regPago = (contrato) => {
+                    const datos = $("#AddPagoApertura").serializeArray()
+                    limpiaMontos(datos, ["deposito", "inscripcion", "saldo_inicial"])
+                    addParametro(datos, "sucursal", "{$_SESSION['cdgco_ahorro']}")
+                    addParametro(datos, "ejecutivo", "{$_SESSION['usuario']}")
+                    addParametro(datos, "contrato", contrato)
+                    
+                    consultaServidor("/Ahorro/PagoApertura/", $.param(datos), (respuesta) => {
+                        if (!respuesta.success) return showError(respuesta.mensaje)
+                    
+                        showSuccess(respuesta.mensaje)
+                        .then(() => {
+                            document.querySelector("#registroInicialAhorro").reset()
+                            document.querySelector("#AddPagoApertura").reset()
+                            $("#modal_agregar_pago").modal("hide")
+                            limpiaDatosCliente()
+                            
+                            showSuccess("Se ha generado el contrato: " + contrato + ".")
+                            .then(() => {
+                                imprimeContrato(contrato, 3)
+                                imprimeTicket(respuesta.datos.ticket, "{$_SESSION['cdgco_ahorro']}")
+                            })
+                        })
+                    })
+                }
+                
+                const validaDeposito = (e) => {
+                    if (!valKD) return
+                    
+                    const monto = parseaNumero(e.target.value) || 0
+                    if (monto <= 0) {
+                        e.preventDefault()
+                        e.target.value = ""
+                        showError("El monto a depositar debe ser mayor a 0")
+                    }
+                    
+                    if (monto > 1000000) {
+                        e.preventDefault()
+                        e.target.value = 1000000.00
+                    }
+                    
+                    const valor = e.target.value.split(".")
+                    if (valor[1] && valor[1].length > 2) {
+                        e.preventDefault()
+                        e.target.value = parseaNumero(valor[0] + "." + valor[1].substring(0, 2))
+                    }
+                    
+                    document.querySelector("#monto_letra").value = numeroLetras(parseaNumero(e.target.value))
+                    calculaSaldoFinal(e)
+                }
+                
+                const calculaSaldoFinal = (e) => {
+                    const monto = parseaNumero(e.target.value)
+                    const saldoInicial = (monto - parseaNumero(document.querySelector("#inscripcion").value))
+                    const saldoMinimoApertura = parseFloat(document.querySelector("#sma").value)
+
+                    document.querySelector("#deposito").value = formatoMoneda(monto)
+                    document.querySelector("#saldo_inicial").value = formatoMoneda(saldoInicial > 0 ? saldoInicial : 0)
+                    document.querySelector("#monto_letra").value = numeroLetras(monto)
+
+                    if (monto < saldoMinimoApertura) {
+                        document.querySelector("#saldo_inicial").setAttribute("style", "color: red")
+                        document.querySelector("#tipSaldo").setAttribute("style", "opacity: 100%;")
+                        document.querySelector("#registraDepositoInicial").disabled = true
+                    } else {
+                        document.querySelector("#saldo_inicial").removeAttribute("style")
+                        document.querySelector("#tipSaldo").setAttribute("style", "opacity: 0%;")
+                        document.querySelector("#registraDepositoInicial").disabled = false
+                    }
+                }
+
+                const iniveCambio = (e) => e.preventDefault()
+                
+                const camposLlenos = (e) => {
+                    document.querySelector("#nombre1").value = document.querySelector("#nombre1").value.toUpperCase()
+                    document.querySelector("#nombre2").value = document.querySelector("#nombre2").value.toUpperCase()
+                    document.querySelector("#apellido1").value = document.querySelector("#apellido1").value.toUpperCase()
+                    document.querySelector("#apellido2").value = document.querySelector("#apellido2").value.toUpperCase()
+                    
+                    const val = () => {
+                        const campos = [
+                            document.querySelector("#nombre1").value,
+                            document.querySelector("#apellido1").value,
+                            document.querySelector("#fecha_nac").value,
+                            document.querySelector("#ciudad").value,
+                            document.querySelector("#curp").value,
+                            document.querySelector("#edad").value,
+                            document.querySelector("#direccion").value,
+                            document.querySelector("#confirmaDir").checked,
+                            document.querySelector("#edad").value <= 17
+                        ]
+                        
+                        return campos.every((campo) => campo)
+                    }
+                    if (e.target.id === "fecha_nac") calculaEdad(e)
+                    if (e.target.id !== "curp") generaCURP({
+                        nombre1: document.querySelector("#nombre1").value,
+                        nombre2: document.querySelector("#nombre1").value,
+                        apellido1: document.querySelector("#apellido1").value,
+                        apellido2: document.querySelector("#apellido2").value,
+                        fecha: document.querySelector("#fecha_nac").value,
+                        sexo: document.querySelector("#sexoH").checked ? "H" : "M",
+                        entidad: document.querySelector("#ciudad").value
+                    })
+                    document.querySelector("#btnGeneraContrato").disabled = !val()
+                }
+                
+                const calculaEdad = (e) => {
+                    const fecha = new Date(e.target.value)
+                    const hoy = new Date()
+                    let edad = hoy.getFullYear() - fecha.getFullYear()
+                    
+                    const mesActual = hoy.getMonth()
+                    const diaActual = hoy.getDate()
+                    const mesNacimiento = fecha.getMonth()
+                    const diaNacimiento = fecha.getDate()
+                    if (mesActual < mesNacimiento || (mesActual === mesNacimiento && diaActual < diaNacimiento)) edad--
+                    
+                    document.querySelector("#edad").value = edad
+                    if (edad > 17) {
+                        document.querySelector("#edad").setAttribute("style", "color: red")
+                        showError("El peque a registrar debe tener menos de 18 años.")
+                    } else document.querySelector("#edad").removeAttribute("style")
+                }
+                
+                const generaCURP = (datos) => {
+                    datos.apellido1 = datos.apellido1.toUpperCase()
+                    datos.apellido2 = datos.apellido2.toUpperCase()
+                    datos.nombre1 = datos.nombre1.toUpperCase()
+                    datos.nombre2 = datos.nombre2.toUpperCase()
+                    
+                    const CURP = []
+                    CURP[0] = datos.apellido1 ? datos.apellido1.charAt(0) : "X"
+                    CURP[1] = datos.apellido1 ? datos.apellido1.slice(1).replace(/\a\e\i\o\u/gi, "").charAt(0) : "X"
+                    CURP[2] = datos.apellido2 ? datos.apellido2.charAt(0) : "X"
+                    CURP[3] = datos.nombre1 ? datos.nombre1.charAt(0) : "X"
+                    CURP[4] = datos.fecha ? datos.fecha.slice(2, 4) : "00"
+                    CURP[5] = datos.fecha ? datos.fecha.slice(5, 7) : "00"
+                    CURP[6] = datos.fecha ? datos.fecha.slice(8, 10) : "00"
+                    CURP[7] = datos.sexo ? datos.sexo : "X"
+                    CURP[8] = datos.entidad ? datos.entidad : "NE"
+                    CURP[9] = datos.apellido1 ? datos.apellido1.slice(1).replace(/[aeiou]/gi, "").charAt(0) : "X"
+                    CURP[10] = datos.apellido2 ? datos.apellido2.slice(1).replace(/[aeiou]/gi, "").charAt(0) : "X"
+                    CURP[11] = datos.nombre1 ? datos.nombre1.slice(1).replace(/[aeiou]/gi, "").charAt(0) : "X"
+                    CURP[12] = "00"
+                    
+                    document.querySelector("#curp").value = CURP.join("")
+                }
+            </script>
+        HTML;
+
+        $infoCuenta = CajaAhorroDao::GetInfoCuentaEstudiantil();
+
+        $ComboEntidades = CajaAhorroDao::GetEFed();
+        $opciones_ent = "";
+        foreach ($ComboEntidades as $key => $val2) {
+            $opciones_ent .= <<<html
+                <option  value="{$val2['CDGCURP']}"> {$val2['NOMBRE']}</option>
+            html;
+        }
+
+        $sucursales = CajaAhorroDao::GetSucursalAsignadaCajeraAhorro($this->__usuario);
+        $opcSucursales = "";
+        foreach ($sucursales as $sucursales) {
+            $opcSucursales .= "<option value='{$sucursales['CODIGO']}'>{$sucursales['NOMBRE']}</option>";
+        }
+
+        if ($_GET['cliente']) View::set('cliente', $_GET['cliente']);
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Contrato Cuenta Estudiantil", [$this->swal2, $this->huellas])));
+        View::set('footer', $this->_contenedor->footer($extraFooter));
+        View::set('fecha', date('Y-m-d'));
+        View::set('sucursales', $opcSucursales);
+        View::set('tasaView', sprintf("%.1f %%", $infoCuenta['TASA']));
+        View::set('tasa', $infoCuenta['TASA']);
+        View::set('inscripcion', number_format($infoCuenta['COSTO_INSCRIPCION'], 2, '.', ','));
+        View::set('saldoMinimo', number_format($infoCuenta['SALDO_APERTURA'], 2, '.', ','));
+        View::set('opciones_ent', $opciones_ent);
+        View::render("caja_menu_contrato_estudiantil");
+    }
+
+    public function BuscaClienteEstudiantil()
+    {
+        if (self::ValidaHorario()) {
+            echo json_encode(CajaAhorroDao::BuscaClienteNvoContratoPQ($_POST));
+            return;
+        }
+        echo self::FueraHorario();
+    }
+
+    public function AgregaContratoAhorroEstudiantil()
+    {
+        echo json_encode(CajaAhorroDao::AgregaContratoAhorroPQ($_POST));
+    }
+
+    public function BuscaContratoEstudiantil()
+    {
+        if (self::ValidaHorario()) {
+            echo json_encode(CajaAhorroDao::BuscaClienteContratoPQ($_POST));
+            return;
+        }
+        echo self::FueraHorario();
+    }
+
+    // Movimientos sobre cuentas de ahorro Peques
+    public function CuentaEstudiantil()
+    {
+        $maximoRetiroDia = 50000;
+        $montoMaximoRetiro = 1000000;
+
+        $extraFooter = <<<HTML
+            <script>
+                const noSucursal = "{$_SESSION['cdgco_ahorro']}"
+                const maximoRetiroDia = $maximoRetiroDia
+                const montoMaximoRetiro = $montoMaximoRetiro
+                let retiroDispobible = maximoRetiroDia
+                let retiroBloqueado = false
+                let valKD = false
+                let huellas = 0
+                let mano
+            
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->showWarning}
+                {$this->confirmarMovimiento}
+                {$this->validarYbuscar}
+                {$this->getHoy}
+                {$this->soloNumeros}
+                {$this->numeroLetras}
+                {$this->primeraMayuscula}
+                {$this->muestraPDF}
+                {$this->imprimeTicket}
+                {$this->addParametro}
+                {$this->parseaNumero}
+                {$this->formatoMoneda}
+                {$this->limpiaMontos}
+                {$this->consultaServidor}
+                {$this->showBloqueo}
+                {$this->validaHorarioOperacion}
+                {$this->valida_MCM_Complementos}
+                {$this->showHuella}
+                {$this->validaHuella}
+                {$this->autorizaOperacion}
+            
+                window.onload = () => {
+                    validaHorarioOperacion("{$_SESSION['inicio']}", "{$_SESSION['fin']}")
+                    if (document.querySelector("#clienteBuscado").value !== "") buscaCliente()
+                }
+                
+                const buscaCliente = () => {
+                    retiroBloqueado = false
+                    const noCliente = document.querySelector("#clienteBuscado").value
+                    
+                    if (!noCliente) {
+                        limpiaDatosCliente()
+                        return showError("Ingrese un número de cliente a buscar.")
+                    }
+                    
+                    consultaServidor("/Ahorro/BuscaContratoPQ/", { cliente: noCliente }, (respuesta) => {
+                        limpiaDatosCliente()
+                        if (!respuesta.success) {
+                            if (!respuesta.datos) return showError(respuesta.mensaje)
+                            const datosCliente = respuesta.datos
+                                
+                            if (datosCliente["NO_CONTRATOS"] == 0) {
+                                swal({
+                                    title: "Cuenta de ahorro Peques™",
+                                    text: "La cuenta " + noCliente + " no tiene una cuenta de ahorro.\\nDesea realizar la apertura en este momento?",
+                                    icon: "info",
+                                    buttons: ["No", "Sí"],
+                                    dangerMode: true
+                                }).then((realizarDeposito) => {
+                                    if (realizarDeposito) return window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + noCliente
+                                })
+                                return
+                            }
+                            if (datosCliente["NO_CONTRATOS"] == 1 && datosCliente["CONTRATO_COMPLETO"] == 0) {
+                                swal({
+                                    title: "Cuenta de ahorro Peques™",
+                                    text: "La cuenta " + noCliente + " no ha concluido con el proceso de apertura de la cuenta de ahorro.\\nDesea completar el contrato en este momento?",
+                                    icon: "info",
+                                    buttons: ["No", "Sí"],
+                                    dangerMode: true
+                                }).then((realizarDeposito) => {
+                                    if (realizarDeposito) return window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + noCliente
+                                })
+                            }
+                            if (datosCliente["NO_CONTRATOS"] == 1 && datosCliente["CONTRATO_COMPLETO"] == 1) {
+                                swal({
+                                    title: "Cuenta de ahorro Peques™",
+                                    text: "La cuenta " + noCliente + " no tiene asignadas cuentas Peques™.\\nDesea aperturar una cuenta Peques™ en este momento?",
+                                    icon: "info",
+                                    buttons: ["No", "Sí"],
+                                    dangerMode: true
+                                }).then((realizarDeposito) => {
+                                    if (realizarDeposito) return window.location.href = "/Ahorro/ContratoCuentaPeque/?cliente=" + noCliente
+                                })
+                                return
+                            }
+                        }
+                    
+                        if (respuesta.datos[0].SUCURSAL !== noSucursal) {
+                            limpiaDatosCliente()
+                            return showError("El cliente " + noCliente + " no puede realizar transacciones en esta sucursal, su contrato esta asignado a la sucursal " + respuesta.datos[0].NOMBRE_SUCURSAL + ", contacte a la gerencia de Administración.")
+                        }
+                        
+                        const datosCliente = respuesta.datos
+                        const contratos = document.createDocumentFragment()
+                        const seleccionar = document.createElement("option")
+                        seleccionar.value = ""
+                        seleccionar.disabled = true
+                        seleccionar.innerText = "Seleccionar"
+                        contratos.appendChild(seleccionar)
+                            
+                        datosCliente.forEach(cliente => {
+                            const opcion = document.createElement("option")
+                            opcion.value = cliente.CDG_CONTRATO
+                            opcion.innerText = cliente.NOMBRE
+                            contratos.appendChild(opcion)
+                            huellas = cliente.HUELLAS
+                        })
+                            
+                        document.querySelector("#contrato").appendChild(contratos)
+                        if (document.querySelector("#contrato").options.length == 2) {
+                            document.querySelector("#contrato").selectedIndex = 1
+                            pqSeleccionado(datosCliente, document.querySelector("#contrato").value)
+                        } else {
+                            document.querySelector("#contrato").selectedIndex = 0
+                            document.querySelector("#contrato").addEventListener("change", (e) => {
+                                pqSeleccionado(datosCliente, e.target.value)
+                            })
+                        }
+                        
+                        if (document.querySelector("#contratoSel").value !== "") {
+                            document.querySelector("#contrato").selectedIndex = document.querySelector("#contratoSel").value
+                            document.querySelector("#contrato").dispatchEvent(new Event("change"))
+                            document.querySelector("#retiro").checked = true
+                            document.querySelector("#retiro").dispatchEvent(new Event("change"))
+                        }
+                        
+                        document.querySelector("#clienteBuscado").value = ""
+                        document.querySelector("#contrato").disabled = false
+                    })
+                }
+                
+                const pqSeleccionado = (datosCliente, pq) => {
+                    retiroDispobible = maximoRetiroDia
+                    retiroBloqueado = false
+                    datosCliente.forEach(contrato => {
+                        if (contrato.CDG_CONTRATO == pq) {
+                            consultaServidor("/Ahorro/ValidaRetirosDia/", $.param({ contrato: contrato.CDG_CONTRATO }), (respuesta) => {
+                                if (!respuesta.success && respuesta.datos.RETIROS >= maximoRetiroDia) {
+                                    showWarning("El peque " + contrato.NOMBRE + " ha alcanzado el límite de retiros diarios.")
+                                    retiroBloqueado = true   
+                                    retiroDispobible = maximoRetiroDia - respuesta.datos.RETIROS
+                                }
+                                
+                                document.querySelector("#nombre").value = contrato.CDG_CONTRATO
+                                document.querySelector("#curp").value = contrato.CURP
+                                document.querySelector("#cliente").value = contrato.CDGCL
+                                document.querySelector("#saldoActual").value = formatoMoneda(contrato.SALDO)
+                                document.querySelector("#deposito").disabled = false
+                                document.querySelector("#retiro").disabled = retiroBloqueado
+                            })
+                        }
+                    })
+                }
+                
+                const limpiaDatosCliente = () => {
+                    huellas = 0
+                    document.querySelector("#registroOperacion").reset()
+                    document.querySelector("#fecha_pago").value = getHoy()
+                    document.querySelector("#monto").disabled = true
+                    document.querySelector("#deposito").disabled = true
+                    document.querySelector("#retiro").disabled = true
+                    document.querySelector("#contrato").innerHTML = ""
+                    document.querySelector("#contrato").disabled = true
+                }
+                
+                const boton_contrato = (numero_contrato) => {
+                    const host = window.location.origin
+                    
+                    let plantilla = "<!DOCTYPE html>"
+                    plantilla += '<html lang="es">'
+                    plantilla += '<head>'
+                    plantilla += '<meta charset="UTF-8">'
+                    plantilla += '<meta name="viewport" content="width=device-width, initial-scale=1.0">'
+                    plantilla += '<link rel="shortcut icon" href="' + host + '/img/logo.png">'
+                    plantilla += '<title>Contrato ' + numero_contrato + '</title>'
+                    plantilla += '</head>'
+                    plantilla += '<body style="margin: 0; padding: 0; background-color: #333333;">'
+                    plantilla +=
+                        '<iframe src="' + host + '/Ahorro/ImprimeContrato/' +
+                        numero_contrato +
+                        '/" style="width: 100%; height: 99vh; border: none; margin: 0; padding: 0;"></iframe>'
+                    plantilla += "</body>"
+                    plantilla += "</html>"
+                
+                    const blob = new Blob([plantilla], { type: "text/html" })
+                    const url = URL.createObjectURL(blob)
+                    window.open(url, "_blank")
+                }
+                
+                const validaDeposito = (e) => {
+                    if (!valKD) return
+                    
+                    let monto = parseaNumero(e.target.value) || 0
+                    if (monto <= 0) {
+                        e.preventDefault()
+                        e.target.value = ""
+                        showError("El monto a depositar debe ser mayor a 0")
+                    }
+                    
+                    if (!document.querySelector("#deposito").checked && monto > montoMaximoRetiro) {
+                        monto = montoMaximoRetiro
+                        swal({
+                            title: "Cuenta de ahorro Peques™",
+                            text: "Para retiros mayores a " + montoMaximoRetiro.toLocaleString("es-MX", { style: "currency", currency: "MXN" }) + " es necesario realizar una solicitud de retiro.\\nDesea generar una solicitud de retiro ahora?.",
+                            icon: "info",
+                            buttons: ["No", "Sí"],
+                            dangerMode: true
+                        }).then((regRetiro) => {
+                            if (regRetiro) {
+                                window.location.href = "/Ahorro/SolicitudRetiroCuentaPeque/?cliente=" + document.querySelector("#cliente").value + "&contrato=" + document.querySelector("#contrato").selectedIndex
+                                return
+                            }
+                        })
+                        e.target.value = monto
+                    }
+                    
+                    if (monto > 1000000) {
+                        monto = 1000000
+                        e.preventDefault()
+                        e.target.value = 1000000.00
+                    }
+                    
+                    const valor = e.target.value.split(".")
+                    if (valor[1] && valor[1].length > 2) {
+                        e.preventDefault()
+                        e.target.value = parseaNumero(valor[0] + "." + valor[1].substring(0, 2))
+                    }
+                    
+                    document.querySelector("#monto_letra").value = numeroLetras(parseaNumero(e.target.value))
+                    if (document.querySelector("#deposito").checked || document.querySelector("#retiro").checked) calculaSaldoFinal()
+                }
+                
+                const calculaSaldoFinal = () => {
+                    const esDeposito = document.querySelector("#deposito").checked
+                    const saldoActual = parseaNumero(document.querySelector("#saldoActual").value)
+                    const monto = parseaNumero(document.querySelector("#monto").value)
+                    document.querySelector("#montoOperacion").value = formatoMoneda(monto)
+                    document.querySelector("#saldoFinal").value = formatoMoneda(esDeposito ? saldoActual + monto : saldoActual - monto)
+                    compruebaSaldoFinal(document.querySelector("#saldoFinal").value)
+                }
+                
+                const cambioMovimiento = (e) => {
+                    document.querySelector("#monto").disabled = false
+                    const esDeposito = document.querySelector("#deposito").checked
+                    document.querySelector("#simboloOperacion").innerText = esDeposito ? "+" : "-"
+                    document.querySelector("#descOperacion").innerText = (esDeposito ? "Depósito" : "Retiro") + " a cuenta ahorro corriente"
+                    calculaSaldoFinal()
+                }
+                
+                const compruebaSaldoFinal = () => {
+                    const saldoFinal = parseaNumero(document.querySelector("#saldoFinal").value)
+                    if (saldoFinal < 0) {
+                        document.querySelector("#saldoFinal").setAttribute("style", "color: red")
+                        document.querySelector("#tipSaldo").setAttribute("style", "opacity: 100%;")
+                        document.querySelector("#tipSaldo").innerText = "El monto a retirar no puede ser mayor al saldo de la cuenta."
+                        document.querySelector("#btnRegistraOperacion").disabled = true
+                        return
+                    } else {
+                        document.querySelector("#saldoFinal").removeAttribute("style")
+                        document.querySelector("#tipSaldo").setAttribute("style", "opacity: 0%;")
+                    }
+                    if (document.querySelector("#retiro").checked && retiroDispobible < parseaNumero(document.querySelector("#montoOperacion").value)) {
+                        document.querySelector("#saldoFinal").setAttribute("style", "color: red")
+                        document.querySelector("#tipSaldo").setAttribute("style", "opacity: 100%;")
+                        document.querySelector("#tipSaldo").innerText = "El monto a retirar excede el límite de retiros diarios, disponible para retirar el día de hoy: " + retiroDispobible.toLocaleString("es-MX", { style: "currency", currency: "MXN" })
+                        document.querySelector("#btnRegistraOperacion").disabled = true
+                        return
+                    }
+                    document.querySelector("#btnRegistraOperacion").disabled = !(saldoFinal >= 0 && parseaNumero(document.querySelector("#montoOperacion").value) > 0)
+                }
+                
+                const registraOperacion = async (e) => {
+                    if (!await valida_MCM_Complementos()) return
+                    
+                    e.preventDefault()
+                    const datos = $("#registroOperacion").serializeArray()
+                    
+                    limpiaMontos(datos, ["saldoActual", "montoOperacion", "saldoFinal"])
+                    addParametro(datos, "sucursal", noSucursal)
+                    addParametro(datos, "ejecutivo", "{$_SESSION['usuario']}")
+                    addParametro(datos, "producto", "cuenta de ahorro Peques")
+                    
+                    if (!document.querySelector("#deposito").checked && !document.querySelector("#retiro").checked) {
+                        return showError("Seleccione el tipo de operación a realizar.")
+                    }
+                    
+                    datos.forEach((dato) => {
+                        if (dato.name === "esDeposito") {
+                            dato.value = document.querySelector("#deposito").checked
+                        }
+                    })
+                    
+                    confirmarMovimiento(
+                        "Confirmación de movimiento de cuenta ahorro Peques™",
+                        "¿Está segur(a) de continuar con el registro de un "
+                        + (document.querySelector("#deposito").checked ? "depósito" : "retiro")
+                        + " de cuenta ahorro peque, por la cantidad de "
+                        + parseaNumero(document.querySelector("#montoOperacion").value).toLocaleString("es-MX", { style: "currency", currency: "MXN" })
+                        + " (" + document.querySelector("#monto_letra").value + ")?"
+                    ).then((continuar) => {
+                        if (!continuar) return
+                        if (!document.querySelector("#deposito").checked && huellas > 0) return showHuella(true, datos)
+                        enviaRegistroOperacion(datos)
+                    })
+                }
+
+                const enviaRegistroOperacion = (datos) => {
+                    consultaServidor("/Ahorro/registraOperacion/", $.param(datos), (respuesta) => {
+                        if (!respuesta.success){
+                            if (respuesta.error) return showError(respuesta.error)
+                            return showError(respuesta.mensaje)
+                        }
+                        showSuccess(respuesta.mensaje).then(() => {
+                            imprimeTicket(respuesta.datos.ticket, noSucursal)
+                            limpiaDatosCliente()
+                        })
+                    })
+                }
+            </script>
+        HTML;
+
+        if ($_GET['cliente']) View::set('cliente', $_GET['cliente']);
+        if ($_GET['contrato']) View::set('contratoSel', $_GET['contrato']);
+
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Cuenta Peque", [$this->swal2, $this->huellas])));
+        View::set('footer', $this->_contenedor->footer($extraFooter));
+        View::set('fecha', date('d/m/Y H:i:s'));
+        View::render("caja_menu_peque");
+    }
+
+    public function SolicitudRetiroCuentaEstudiantil()
+    {
+        $montoMinimoRetiro = 10000;
+        $montoMaximoExpress = 49999.99;
+        $montoMaximoRetiro = 1000000;
+
+        $extraFooter = <<<HTML
+            <script>
+                window.onload = () => {
+                    if(document.querySelector("#clienteBuscado").value !== "") buscaCliente()
+                }
+                
+                const noSucursal = "{$_SESSION['cdgco_ahorro']}"
+                const montoMinimoRetiro = $montoMinimoRetiro
+                const montoMaximoExpress = $montoMaximoExpress
+                const montoMaximoRetiro = $montoMaximoRetiro
+                let valKD = false
+                let huellas = 0
+                let mano
+            
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->confirmarMovimiento}
+                {$this->validarYbuscar}
+                {$this->soloNumeros}
+                {$this->primeraMayuscula}
+                {$this->numeroLetras}
+                {$this->muestraPDF}
+                {$this->addParametro}
+                {$this->sinContrato}
+                {$this->getHoy}
+                {$this->parseaNumero}
+                {$this->formatoMoneda}
+                {$this->limpiaMontos}
+                {$this->consultaServidor}
+                {$this->showHuella}
+                {$this->validaHuella}
+                {$this->autorizaOperacion}
+                
+                const buscaCliente = () => {
+                    const noCliente = document.querySelector("#clienteBuscado").value
+                    
+                    if (!noCliente) {
+                        limpiaDatosCliente()
+                        return showError("Ingrese un número de cliente a buscar.")
+                    }
+                    
+                    consultaServidor("/Ahorro/BuscaContratoPQ/", { cliente: noCliente }, (respuesta) => {
+                        limpiaDatosCliente()
+                        if (!respuesta.success) {
+                            if (!respuesta.datos) return showError(respuesta.mensaje)
+                            const datosCliente = respuesta.datos
+                                
+                            if (datosCliente["NO_CONTRATOS"] == 0) {
+                                swal({
+                                    title: "Cuenta de ahorro Peques™",
+                                    text: "La cuenta " + noCliente + " no tiene una cuenta de ahorro.\\nDesea realizar la apertura en este momento?",
+                                    icon: "info",
+                                    buttons: ["No", "Sí"],
+                                    dangerMode: true
+                                }).then((realizarDeposito) => {
+                                    if (realizarDeposito) return window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + noCliente
+                                })
+                                return
+                            }
+                            if (datosCliente["NO_CONTRATOS"] == 1 && datosCliente["CONTRATO_COMPLETO"] == 0) {
+                                swal({
+                                    title: "Cuenta de ahorro Peques™",
+                                    text: "La cuenta " + noCliente + " no ha concluido con el proceso de apertura de la cuenta de ahorro.\\nDesea completar el contrato en este momento?",
+                                    icon: "info",
+                                    buttons: ["No", "Sí"],
+                                    dangerMode: true
+                                }).then((realizarDeposito) => {
+                                    if (realizarDeposito) return window.location.href = "/Ahorro/ContratoCuentaCorriente/?cliente=" + noCliente
+                                })
+                            }
+                            if (datosCliente["NO_CONTRATOS"] == 1 && datosCliente["CONTRATO_COMPLETO"] == 1) {
+                                swal({
+                                    title: "Cuenta de ahorro Peques™",
+                                    text: "La cuenta " + noCliente + " no tiene asignadas cuentas Peques™.\\nDesea aperturar una cuenta Peques™ en este momento?",
+                                    icon: "info",
+                                    buttons: ["No", "Sí"],
+                                    dangerMode: true
+                                }).then((realizarDeposito) => {
+                                    if (realizarDeposito) return window.location.href = "/Ahorro/ContratoCuentaPeque/?cliente=" + noCliente
+                                })
+                                return
+                            }
+                        }
+                    
+                        if (respuesta.datos[0].SUCURSAL !== noSucursal) {
+                            limpiaDatosCliente()
+                            return showError("El cliente " + noCliente + " no puede realizar transacciones en esta sucursal, su contrato esta asignado a la sucursal " + respuesta.datos[0].NOMBRE_SUCURSAL + ", contacte a la gerencia de Administración.")
+                        }
+                        
+                        const datosCliente = respuesta.datos
+                        const contratos = document.createDocumentFragment()
+                        const seleccionar = document.createElement("option")
+                        seleccionar.value = ""
+                        seleccionar.disabled = true
+                        seleccionar.innerText = "Seleccionar"
+                        contratos.appendChild(seleccionar)
+                            
+                        datosCliente.forEach(cliente => {
+                            hue = cliente.HUELLAS
+                            const opcion = document.createElement("option")
+                            opcion.value = cliente.CDG_CONTRATO
+                            opcion.innerText = cliente.NOMBRE
+                            contratos.appendChild(opcion)
+                        })
+                            
+                        document.querySelector("#contrato").appendChild(contratos)
+                        document.querySelector("#contrato").selectedIndex = 0
+                        document.querySelector("#contrato").disabled = false
+                        document.querySelector("#contrato").addEventListener("change", (e) => {
+                            datosCliente.forEach(contrato => {
+                                if (contrato.CDG_CONTRATO == e.target.value) {
+                                    document.querySelector("#nombre").value = contrato.CDG_CONTRATO
+                                    document.querySelector("#curp").value = contrato.CURP
+                                    document.querySelector("#cliente").value = contrato.CDGCL
+                                    document.querySelector("#saldoActual").value = formatoMoneda(contrato.SALDO)
+                                    document.querySelector("#express").disabled = false
+                                    document.querySelector("#programado").disabled = false
+                                    document.querySelector("#monto").disabled = !(contrato.SALDO > montoMinimoRetiro)
+                                    if (contrato.SALDO < montoMinimoRetiro) {
+                                        swal({
+                                            title: "Retiro de cuenta corriente peques™",
+                                            text: "El saldo actual de la cuenta del Peque es menor al monto mínimo para retiros express.\\n¿Desea realizar un retiro simple?",
+                                            icon: "info",
+                                            buttons: ["No", "Sí"]
+                                        }).then((retSimple) => {
+                                            if (retSimple) {
+                                                window.location.href = "/Ahorro/CuentaPeque/?cliente=" + document.querySelector("#cliente").value + "&contrato=" + e.target.selectedIndex
+                                                return
+                                            }
+                                        })
+                                    }
+                                    
+                                }
+                            })
+                        })
+                        
+                        if (document.querySelector("#contratoSel").value !== "") {
+                            document.querySelector("#contrato").selectedIndex = document.querySelector("#contratoSel").value
+                            document.querySelector("#contrato").dispatchEvent(new Event("change"))
+                        }
+                        document.querySelector("#clienteBuscado").value = ""
+                    })
+                }
+                
+                const limpiaDatosCliente = () => {
+                    huellas = 0
+                    document.querySelector("#registroOperacion").reset()
+                    document.querySelector("#fecha_retiro").value = getHoy()
+                    document.querySelector("#monto").disabled = true
+                    document.querySelector("#express").disabled = true
+                    document.querySelector("#programado").disabled = true
+                    document.querySelector("#contrato").innerHTML = ""
+                    document.querySelector("#contrato").disabled = true
+                    document.querySelector("#monto").disabled = true
+                }
+                
+                const validaMonto = () => {
+                    document.querySelector("#express").disabled = false
+                    const montoIngresado = document.querySelector("#monto")
+                    
+                    let monto = parseaNumero(montoIngresado.value) || 0
+                    
+                    if (monto > montoMaximoExpress) {
+                        document.querySelector("#programado").checked = true
+                        document.querySelector("#express").disabled = true
+                        cambioMovimiento()
+                    }
+                    
+                    if (monto > montoMaximoRetiro) {
+                        monto = montoMaximoRetiro
+                        montoIngresado.value = monto
+                    }
+                                    
+                    document.querySelector("#monto_letra").value = primeraMayuscula(numeroLetras(monto))
+                    const saldoActual = parseaNumero(document.querySelector("#saldoActual").value)
+                    document.querySelector("#montoOperacion").value = formatoMoneda(monto)
+                    const saldoFinal = (saldoActual - monto)
+                    compruebaSaldoFinal(saldoFinal)
+                    document.querySelector("#saldoFinal").value = formatoMoneda(saldoFinal)
+                }
+                
+                const valSalMin = () => {
+                    const montoIngresado = document.querySelector("#monto")
+                    
+                    let monto = parseFloat(montoIngresado.value) || 0
+                    
+                    if (monto < montoMinimoRetiro) {
+                        monto = montoMinimoRetiro
+                        swal({
+                            title: "Retiro de cuenta corriente",
+                            text: "El monto mínimo para retiros express es de " + montoMinimoRetiro.toLocaleString("es-MX", {
+                                style: "currency",
+                                currency: "MXN"
+                            }) + ", para un monto menor debe realizar el retiro de manera simple.\\n¿Desea realizar el retiro de manera simple?",
+                            icon: "info",
+                            buttons: ["No", "Sí"]
+                        }).then((retSimple) => {
+                            if (retSimple) {
+                                window.location.href = "/Ahorro/CuentaCorriente/?cliente=" + document.querySelector("#cliente").value
+                                return
+                            }
+                        })
+                    }
+                }
+                
+                const cambioMovimiento = (e) => {
+                    const express = document.querySelector("#express").checked
+                    
+                    if (express) {
+                        document.querySelector("#fecha_retiro").removeAttribute("style")
+                        document.querySelector("#fecha_retiro_hide").setAttribute("style", "display: none;")
+                        document.querySelector("#fecha_retiro").value = getHoy()
+                        return
+                    }
+                    
+                    document.querySelector("#fecha_retiro_hide").removeAttribute("style")
+                    document.querySelector("#fecha_retiro").setAttribute("style", "display: none;")
+                    pasaFecha({ target: document.querySelector("#fecha_retiro") })
+                }
+                
+                const compruebaSaldoFinal = () => {
+                    const saldoFinal = parseaNumero(document.querySelector("#saldoFinal").value)
+                    if (saldoFinal < 0) {
+                        document.querySelector("#saldoFinal").setAttribute("style", "color: red")
+                        document.querySelector("#tipSaldo").setAttribute("style", "opacity: 100%;")
+                        document.querySelector("#btnRegistraOperacion").disabled = true
+                        return
+                    } else {
+                        document.querySelector("#saldoFinal").removeAttribute("style")
+                        document.querySelector("#tipSaldo").setAttribute("style", "opacity: 0%;")
+                    }
+                    document.querySelector("#btnRegistraOperacion").disabled = !(saldoFinal >= 0 && parseaNumero(document.querySelector("#montoOperacion").value) >= montoMinimoRetiro && parseaNumero(document.querySelector("#montoOperacion").value) < montoMaximoRetiro)
+                }
+                
+                const pasaFecha = (e) => {
+                    const fechaSeleccionada = new Date(e.target.value)
+                    if (fechaSeleccionada.getDay() === 5 || fechaSeleccionada.getDay() === 6) {
+                        showError("No se pueden realizar retiros los fines de semana.")
+                        const f = getHoy(false).split("/")
+                        e.target.value = f[2] + "-" + f[1] + "-" + f[0]
+                        return
+                    }
+                    const f = document.querySelector("#fecha_retiro_hide").value.split("-")
+                    document.querySelector("#fecha_retiro").value = f[2] + "/" + f[1] + "/" + f[0]
+                }
+                
+                const registraSolicitud = (e) => {
+                    e.preventDefault()
+                    const datos = $("#registroOperacion").serializeArray()
+                    
+                    limpiaMontos(datos, ["saldoActual", "montoOperacion", "saldoFinal"])
+                    addParametro(datos, "sucursal", "{$_SESSION['cdgco_ahorro']}")
+                    addParametro(datos, "ejecutivo", "{$_SESSION['usuario']}")
+                    addParametro(datos, "retiroExpress", document.querySelector("#express").checked)
+                    
+                    confirmarMovimiento(
+                        "Confirmación de movimiento ahorro corriente",
+                        "¿Está segur(a) de continuar con el registro de un retiro "
+                        + (document.querySelector("#express").checked ? "express" : "programado")
+                        + ", por la cantidad de "
+                        + parseaNumero(document.querySelector("#montoOperacion").value).toLocaleString("es-MX", { style: "currency", currency: "MXN" })
+                        + " (" + document.querySelector("#monto_letra").value + ")?"
+                    ).then((continuar) => {
+                        if (!continuar) return
+                        if (huellas > 0) return showHuella(true, datos)
+                        enviaRegistroOperacion(datos)
+                    })
+                }
+
+                const enviaRegistroOperacion = (datos) => {
+                    consultaServidor("/Ahorro/RegistraSolicitud/", $.param(datos), (respuesta) => {
+                        if (!respuesta.success) {
+                            console.log(respuesta.error)
+                            return showError(respuesta.mensaje)
+                        }
+                        showSuccess(respuesta.mensaje).then(() => {
+                            document.querySelector("#registroOperacion").reset()
+                            limpiaDatosCliente()
+                        })
+                    })
+                }
+            </script>
+        HTML;
+
+        $fechaMax = new DateTime();
+        for ($i = 0; $i < 7; $i++) {
+            $fechaMax->modify('+1 day');
+            if ($fechaMax->format('N') >= 6 || $fechaMax->format('N') === 0) $fechaMax->modify('+1 day');
+        }
+
+        if ($_GET['cliente']) View::set('cliente', $_GET['cliente']);
+        if ($_GET['contrato']) View::set('contratoSel', $_GET['contrato']);
+
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Solicitud de Retiro Peque", [$this->swal2, $this->huellas])));
+        View::set('footer', $this->_contenedor->footer($extraFooter));
+        View::set('montoMinimoRetiro', $montoMinimoRetiro);
+        View::set('montoMaximoExpress', $montoMaximoExpress);
+        View::set('montoMaximoRetiro', $montoMaximoRetiro);
+        View::set('fecha', date('d/m/Y H:i:s'));
+        View::set('fechaInput', date('Y-m-d', strtotime('+1 day')));
+        View::set('fechaInputMax', $fechaMax->format('Y-m-d'));
+        View::render("caja_menu_retiro_peque");
+    }
+
+    public function HistorialSolicitudRetiroCuentaEstudiantil()
+    {
+        $extraFooter = <<<HTML
+            <script>
+                {$this->showError}
+                {$this->showSuccess}
+                {$this->showInfo}
+                {$this->confirmarMovimiento}
+                {$this->consultaServidor}
+                {$this->configuraTabla}
+                {$this->exportaExcel}
+                {$this->imprimeTicket}
+                {$this->muestraPDF}
+                {$this->addParametro}
+                {$this->valida_MCM_Complementos}
+            
+                $(document).ready(() => {
+                    configuraTabla("hstSolicitudes")
+                })
+                
+                const validaFIF = (idI, idF) => {
+                    const fechaI = document.getElementById(idI).value
+                    const fechaF = document.getElementById(idF).value
+                    if (fechaI && fechaF && fechaI > fechaF) {
+                        document.getElementById(idI).value = fechaF
+                    }
+                }
+                
+                const imprimeExcel = () => exportaExcel("hstSolicitudes", "Historial solicitudes de retiro")
+                
+                const actualizaEstatus = async (estatus, id) => {
+                    if (!await valida_MCM_Complementos()) return
+                    
+                    const accion = estatus === 3 ? "entrega" : "cancelación"
+                    
+                    consultaServidor("/Ahorro/ResumenEntregaRetiro", $.param({id}), (respuesta) => {
+                        if (!respuesta.success) {
+                            console.log(respuesta.error)
+                            return showError(respuesta.mensaje)
+                        }
+                        
+                        const resumen = respuesta.datos
+                        confirmarMovimiento(
+                            "Seguimiento solicitudes de retiro",
+                            null,
+                            resumenRetiro(resumen, accion)
+                        ).then((continuar) => {
+                            if (!continuar) return
+                            const datos = {
+                                estatus, 
+                                id, 
+                                ejecutivo: "{$_SESSION['usuario']}", 
+                                sucursal: "{$_SESSION['cdgco_ahorro']}", 
+                                monto: resumen.MONTO, 
+                                contrato: resumen.CONTRATO,
+                                cliente: resumen.CLIENTE,
+                                tipo: resumen.TIPO_RETIRO
+                            }
+                            
+                            consultaServidor("/Ahorro/EntregaRetiro/", $.param(datos), (respuesta) => {
+                                if (!respuesta.success) {
+                                    if (respuesta.error) return showError(respuesta.error)
+                                    return showError(respuesta.mensaje)
+                                }
+                                
+                                showSuccess(respuesta.mensaje).then(() => {
+                                    if (estatus === 3) {
+                                        imprimeTicket(respuesta.datos.CODIGO, "{$_SESSION['cdgco_ahorro']}")
+                                        swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
+                                        window.location.reload()
+                                    }
+                                    if (estatus === 4) devuelveRetiro(resumen)
+                                })
+                            })
+                        })
+                    })
+                }
+                
+                const resumenRetiro = (datos, accion) => {
+                    const resumen = document.createElement("div")
+                    resumen.setAttribute("style", "color: rgba(0, 0, 0, .65); text-align: left;")
+                    
+                    const tabla = document.createElement("table")
+                    tabla.setAttribute("style", "width: 100%;")
+                    tabla.innerHTML = "<thead><tr><th colspan='2' style='font-size: 25px; text-align: center;'>Retiro " + (datos.TIPO_RETIRO == 1 ? "express" : "programado") + "</th></tr></thead>"
+                    
+                    const tbody = document.createElement("tbody")
+                    tbody.setAttribute("style", "width: 100%;")
+                    tbody.innerHTML += "<tr><td><strong>Cliente:</strong></td><td style='text-align: center;'>" + datos.NOMBRE + "</td></tr>"
+                    tbody.innerHTML += "<tr><td><strong>Contrato:</strong></td><td style='text-align: center;'>" + datos.CONTRATO + "</td></tr>"
+                    tbody.innerHTML += "<tr><td><strong>Monto:</strong></td><td style='text-align: center;'>" + parseFloat(datos.MONTO).toLocaleString("es-MX", { style: "currency", currency: "MXN" }) + "</td></tr>"
+                    
+                    const tInterno = document.createElement("table")
+                    tInterno.setAttribute("style", "width: 100%; margin-top: 20px;")
+                    const tbodyI = document.createElement("tbody")
+                    tbodyI.innerHTML += "<tr><td><strong>Autorizado por:</strong></td style='text-align: center;'><td>" + datos.APROBADO_POR + "</td></tr>"
+                    tbodyI.innerHTML += "<tr><td><strong>A " + (accion === "entrega" ? "entregar" : "cancelar") + " por:</strong></td style='text-align: center;'><td>{$_SESSION['nombre']}</td></tr>"
+                    tInterno.appendChild(tbodyI)
+                    
+                    const tFechas = document.createElement("table")
+                    tFechas.setAttribute("style", "width: 100%; margin-top: 20px;")
+                    const tbodyF = document.createElement("tbody")
+                    tbodyF.innerHTML += "<tr><td style='text-align: center; width: 50%;'><strong>Fecha entrega solicitada</strong></td><td style='text-align: center; width: 50%;'><strong>Fecha " + (accion === "entrega" ? accion + " real" : accion) + "</strong></td></tr>"
+                    tbodyF.innerHTML += "<tr><td style='text-align: center; width: 50%;'>" + datos.FECHA_ESPERADA + "</td><td style='text-align: center; width: 50%;'>" + new Date().toLocaleString("es-MX", { day: "2-digit", month: "2-digit", year: "numeric"}) + "</td></tr>"
+                    tFechas.appendChild(tbodyF)
+                    
+                    tabla.appendChild(tbody)
+                    resumen.appendChild(tabla)
+                    resumen.appendChild(tInterno)
+                    resumen.appendChild(tFechas)
+                    
+                    const pregunta = document.createElement("label")
+                    pregunta.setAttribute("style", "width: 100%; font-size: 20px; text-align: center; font-weight: bold; margin-top: 20px;")
+                    pregunta.innerText = "¿Desea continuar con la " + accion + " del retiro?"
+                    
+                    const advertencia = document.createElement("label")
+                    advertencia.setAttribute("style", "width: 100%; color: red; font-size: 15px; text-align: center;")
+                    advertencia.innerText = "Esta acción no se puede deshacer."
+                    
+                    resumen.appendChild(pregunta)
+                    resumen.appendChild(advertencia)
+                    return resumen
+                }
+                
+                const devuelveRetiro = (datos) => {
+                    const datosDev = {
+                        contrato: datos.CONTRATO,
+                        monto: datos.MONTO,
+                        ejecutivo: "{$_SESSION['usuario']}",
+                        sucursal: "{$_SESSION['cdgco_ahorro']}",
+                        tipo: datos.TIPO_RETIRO
+                    }
+                    
+                    consultaServidor("/Ahorro/DevolucionRetiro/", $.param(datosDev), (respuesta) => {
+                        if (!respuesta.success) {
+                            console.log(respuesta.error)
+                            return showError(respuesta.mensaje)
+                        }
+                        
+                        showSuccess(respuesta.mensaje).then(() => {
+                            imprimeTicket(respuesta.datos.ticket, "{$_SESSION['cdgco_ahorro']}", false)
+                            swal({ text: "Actualizando pagina...", icon: "/img/wait.gif", button: false, closeOnClickOutside: false, closeOnEsc: false })
+                            window.location.reload()
+                        })
+                    })
+                }
+                
+                const buscar = () => {
+                    const datos = []
+                    addParametro(datos, "producto", 2)
+                    addParametro(datos, "fechaI", document.querySelector("#fechaI").value)
+                    addParametro(datos, "fechaF", document.querySelector("#fechaF").value)
+                    addParametro(datos, "estatus", document.querySelector("#estatus").value)
+                    addParametro(datos, "tipo", document.querySelector("#tipo").value)
+                    
+                    consultaServidor("/Ahorro/HistoricoSolicitudRetiro/", $.param(datos), (respuesta) => {
+                        $("#hstSolicitudes").DataTable().destroy()
+                        
+                        if (respuesta.datos == "") showError("No se encontraron solicitudes de retiro en el rango de fechas seleccionado.")
+                        
+                        $("#hstSolicitudes tbody").html(respuesta.datos)
+                        configuraTabla("hstSolicitudes")
+                    })
+                }
+                
+                const validaFechaEntrega = (fecha) => showError("La solicitud no está disponible para entrega, la fecha programada de entrega es el " + fecha + ".")
+            </script>
+        HTML;
+
+        $tabla = self::HistoricoSolicitudRetiro(2);
+        $tabla = $tabla['success'] ? $tabla['datos'] : "";
+
+        View::set('header', $this->_contenedor->header(self::GetExtraHeader("Historial de solicitudes de retiro", [$this->XLSX])));
+        View::set('footer', $this->_contenedor->footer($extraFooter));
+        View::set('tabla', $tabla);
+        View::set('fecha', date('Y-m-d'));
+        View::render("caja_menu_solicitud_retiro_peque_historial");
+    }
+
     //******************REPORTE DE SALDO EN CAJA******************//
     // Muestra un reporte para el segimiento de los saldos en caja
     public function SaldosDia()

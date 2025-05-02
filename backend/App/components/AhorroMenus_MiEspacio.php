@@ -61,6 +61,24 @@ class AhorroMenus_MiEspacio extends AhorroMenus
                 ]
             ]
         ],
+        'Ahorro Estudiantil' => [
+            'iconoON' => 'https://cdn-icons-png.flaticon.com/512/3135/3135755.png',
+            'iconoOFF' => 'https://cdn-icons-png.flaticon.com/512/3135/3135773.png',
+            'subMenu' => [
+                'CuentaEstudiantil' => [
+                    'etiqueta' => 'Ahorro cuenta estudiantil'
+                ],
+                'ContratoCuentaEstudiantil' => [
+                    'etiqueta' => 'Nuevo contrato estudiantil'
+                ],
+                'SolicitudRetiroCuentaEstudiantil' => [
+                    'etiqueta' => 'Solicitud de retiro'
+                ],
+                'HistorialSolicitudRetiroCuentaEstudiantil' => [
+                    'etiqueta' => 'Procesar solicitudes de retiro'
+                ]
+            ]
+        ],
         'Resumen Movimientos' => [
             'iconoON' => 'https://cdn-icons-png.flaticon.com/512/12202/12202918.png',
             'iconoOFF' => 'https://cdn-icons-png.flaticon.com/512/12202/12202939.png',
