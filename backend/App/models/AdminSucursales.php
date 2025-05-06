@@ -1128,6 +1128,7 @@ sql;
         $query = <<<SQL
         	SELECT
                 TO_CHAR(FECHA, 'DD/MM/YYYY') FECHA,
+                TIPO_OPERACION(PGD.TIPO) TIPO,
                 CASE
                     WHEN (PGD.TIPO = 'P' OR PGD.TIPO = 'X') THEN 'P' || PRN.CDGNS || PRN.CDGTPC || FN_DV('P' || PRN.CDGNS || PRN.CDGTPC)
                     WHEN PGD.TIPO = 'G' THEN '0' || PRN.CDGNS || PRN.CDGTPC || FN_DV('0' || PRN.CDGNS || PRN.CDGTPC)
@@ -1143,7 +1144,7 @@ sql;
                 AND PGD.CICLO = PRN.CICLO
                 AND PGD.CDGEM = 'EMPFIN'
                 AND PGD.ESTATUS = 'A'
-                AND PGD.TIPO IN ('P','G', 'X')
+                --AND PGD.TIPO IN ('P','G', 'X')
                 AND PGD.FECHA BETWEEN TO_DATE(:fechaI, 'YYYY-MM-DD') AND TO_DATE(:fechaF, 'YYYY-MM-DD') 
             ORDER BY
                 PGD.FECHA

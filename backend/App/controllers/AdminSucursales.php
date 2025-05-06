@@ -3325,7 +3325,7 @@ html;
                     datos.fechaI = $("#fechaI").val()
                     datos.fechaF = $("#fechaF").val()
 
-                    consultaServidor("/Ahorro/GetLayoutPagosCredito/", datos, (resultado) => {
+                    consultaServidor("/AdminSucursales/GetLayoutPagosCredito/", datos, (resultado) => {
                         if (!resultado.success) return showError(resultado.mensaje)
                         $("#historialPagos").DataTable().destroy()
                         $("#historialPagos tbody").empty()
@@ -3333,16 +3333,19 @@ html;
                         resultado.datos.forEach((pago) => {
                             const tr = document.createElement("tr")
                             const fecha = document.createElement("td")
+                            const tipo = document.createElement("td")
                             const referencia = document.createElement("td")
                             const monto = document.createElement("td")
                             const moneda = document.createElement("td")
 
                             fecha.innerText = pago.FECHA
+                            tipo.innerText = pago.TIPO
                             referencia.innerText = pago.REFERENCIA
                             monto.innerText = formatoMoneda(pago.MONTO)
                             moneda.innerText = pago.MONEDA
 
                             tr.appendChild(fecha)
+                            tr.appendChild(tipo)
                             tr.appendChild(referencia)
                             tr.appendChild(monto)
                             tr.appendChild(moneda)
@@ -3373,12 +3376,18 @@ html;
         View::render("caja_admin_credito_layout");
     }
 
+    public function GetLayoutPagosCredito()
+    {
+        echo json_encode(AdminSucursalesDao::GetLayoutPagosCredito($_POST));
+    }
+
     public function GetLayoutPagosCreditoExcel()
     {
         $estilos = \PHPSpreadsheet::GetEstilosExcel();
 
         $columnas = [
             \PHPSpreadsheet::ColumnaExcel('FECHA', 'Fecha', ['estilo' => $estilos['fecha']]),
+            \PHPSpreadsheet::ColumnaExcel('TIPO', 'Tipo', ['estilo' => $estilos['centrado']]),
             \PHPSpreadsheet::ColumnaExcel('REFERENCIA', 'Referencia', ['estilo' => $estilos['centrado']]),
             \PHPSpreadsheet::ColumnaExcel('MONTO', 'Monto', ['estilo' => $estilos['moneda']]),
             \PHPSpreadsheet::ColumnaExcel('MONEDA', 'Moneda', ['estilo' => $estilos['centrado']]),

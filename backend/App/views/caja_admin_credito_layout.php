@@ -43,6 +43,7 @@ use App\components\AhorroMenus_AdminSuc;
                                     <thead>
                                         <tr>
                                             <th>Fecha</th>
+                                            <th>Tipo</th>
                                             <th>Referencia</th>
                                             <th>Monto</th>
                                             <th>Moneda</th>

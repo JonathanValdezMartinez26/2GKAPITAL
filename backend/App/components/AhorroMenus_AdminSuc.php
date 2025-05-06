@@ -102,7 +102,7 @@ class AhorroMenus_AdminSuc extends AhorroMenus
             'iconoOFF' => 'https://cdn-icons-png.flaticon.com/512/7310/7310480.png',
             'subMenu' => [
                 'LayoutPagosCredito' => [
-                    'etiqueta' => 'Layout de pagos'
+                    'etiqueta' => 'Layout Contable'
                 ],
             ],
         ],
