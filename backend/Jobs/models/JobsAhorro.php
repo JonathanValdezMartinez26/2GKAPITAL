@@ -13,16 +13,53 @@ class JobsAhorro extends Model
     public static function GetCuentasActivas()
     {
         $qry = <<<SQL
+            WITH FECHAS AS (
+                SELECT
+                    APA.CONTRATO,
+                    TRUNC(APA.FECHA_APERTURA) + LEVEL - 1 AS FECHA
+                FROM
+                    ASIGNA_PROD_AHORRO APA 
+                CONNECT BY 
+                    LEVEL <= TRUNC(SYSDATE) - TRUNC(APA.FECHA_APERTURA) + 1
+                    AND PRIOR APA.CONTRATO = APA.CONTRATO
+                    AND PRIOR DBMS_RANDOM.VALUE IS NOT NULL
+            ),
+            DEVENGOS AS (
+                SELECT 
+                    F.CONTRATO,
+                    F.FECHA,
+                    APA.CDGCL AS CLIENTE,
+                    APA.TASA,
+                    COALESCE(PREV.SALDO_CIERRE, APA.SALDO) AS SALDO,
+                    DA.DEVENGO
+                FROM
+                    FECHAS F
+                    LEFT JOIN ASIGNA_PROD_AHORRO APA ON F.CONTRATO = APA.CONTRATO AND APA.ESTATUS = 'A'
+                    LEFT JOIN DEVENGO_AHORRO DA ON F.CONTRATO = DA.CONTRATO AND F.FECHA = TRUNC(DA.FECHA)
+                    LEFT JOIN LATERAL (
+                        SELECT DA_PREV.SALDO_CIERRE
+                        FROM DEVENGO_AHORRO DA_PREV
+                        WHERE DA_PREV.CONTRATO = F.CONTRATO
+                        AND DA_PREV.FECHA < F.FECHA
+                        ORDER BY DA_PREV.FECHA DESC
+                        FETCH FIRST 1 ROW ONLY
+                    ) PREV ON 1 = 1
+            )
             SELECT
-                APA.CDGCL AS CLIENTE,
-                APA.CONTRATO,
-                APA.SALDO,
-                APA.TASA,
-                APA.FECHA_APERTURA
+                CONTRATO,
+                TO_CHAR(FECHA + (SYSDATE - TRUNC(SYSDATE)), 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
+                CLIENTE,
+                (TASA / 100) AS TASA,
+                SALDO,
+                SALDO * ((TASA / 100) / 360) AS DEVENGO
             FROM
-                ASIGNA_PROD_AHORRO APA
+                DEVENGOS
             WHERE
-                APA.ESTATUS = 'A'
+                DEVENGO IS NULL
+                AND FECHA > DATE '2025-03-01'
+            ORDER BY
+                CONTRATO,
+                FECHA
         SQL;
 
         try {
@@ -36,7 +73,6 @@ class JobsAhorro extends Model
 
     public static function AplicaDevengoAhorro($datos)
     {
-        $f = $datos["fecha"] ? ':fecha' : 'SYSDATE';
         $qryDevengo = <<<SQL
             INSERT INTO
                 DEVENGO_AHORRO (
@@ -50,7 +86,7 @@ class JobsAhorro extends Model
                 (
                     :contrato,
                     :saldo,
-                    $f,
+                    TO_DATE(:fecha, 'DD/MM/YYYY HH24:MI:SS'),
                     :devengo,
                     :tasa
                 )
@@ -66,6 +102,7 @@ class JobsAhorro extends Model
             [
                 "contrato" => $datos["contrato"],
                 "saldo" => $datos["saldo"],
+                "fecha" => $datos["fecha"],
                 "devengo" => $datos["devengo"],
                 "tasa" => $datos["tasa"]
             ],
@@ -81,8 +118,6 @@ class JobsAhorro extends Model
                 "cliente" => $datos["cliente"]
             ]
         ];
-
-        if ($datos["fecha"]) $parametros[0]["fecha"] = $datos["fecha"];
 
         try {
             $db = new Database();
@@ -532,46 +567,6 @@ class JobsAhorro extends Model
             return $mysqli->queryOne($queryTicket);
         } catch (\Exception $e) {
             return 0;
-        }
-    }
-
-    public static function GetCuentasAhorroValidacionDevengo()
-    {
-        $qry = <<<SQL
-            WITH FECHAS AS (
-                SELECT
-                    APA.CONTRATO,
-                    TRUNC(APA.FECHA_APERTURA) + LEVEL - 1 AS FECHA
-                FROM
-                    ASIGNA_PROD_AHORRO APA CONNECT BY LEVEL <= TRUNC(SYSDATE) - TRUNC(APA.FECHA_APERTURA) + 1
-                    AND PRIOR APA.CONTRATO = APA.CONTRATO
-                    AND PRIOR SYS_GUID() IS NOT NULL
-            )
-            SELECT
-                F.CONTRATO,
-                F.FECHA,
-                APA.CDGCL AS CLIENTE,
-                APA.CONTRATO,
-                APA.SALDO,
-                APA.TASA
-            FROM
-                FECHAS F
-                LEFT JOIN DEVENGO_AHORRO DA ON F.CONTRATO = DA.CONTRATO
-                LEFT JOIN ASIGNA_PROD_AHORRO APA ON F.CONTRATO = APA.CONTRATO
-            WHERE
-                DA.CONTRATO IS NULL
-                AND TRUNC(F.FECHA) != TRUNC(SYSDATE)
-            ORDER BY
-                F.CONTRATO,
-                F.FECHA
-        SQL;
-
-        try {
-            $db = new Database();
-            $res = $db->queryAll($qry);
-            return self::Responde(true, "Créditos activos obtenidos correctamente", $res ?? []);
-        } catch (\Exception $e) {
-            return self::Responde(false, "Error al obtener los créditos activos", null, $e->getMessage());
         }
     }
 }
