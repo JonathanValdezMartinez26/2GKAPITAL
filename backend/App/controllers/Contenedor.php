@@ -81,7 +81,7 @@ class Contenedor extends Controller
         HTML;
 
         $menu = '';
-        $permisos = ['LGFR', 'GASC', 'PAES', 'PMAB', 'AMGM', 'DCRI', 'GUGJ', 'JUSA', 'HEDC', 'JACJ'];
+        $permisos = ['LGFR', 'GASC', 'PAES', 'PMAB', 'AMGM', 'DCRI', 'GUGJ', 'JUSA', 'HEDC', 'JACJ', 'VMSM2'];
         if ($permiso_ahorro == '1' || in_array($this->__usuario, $permisos)) {
             $menu .= <<<HTML
                 <hr>
@@ -95,7 +95,7 @@ class Contenedor extends Controller
             $menu .= '<li><a href="/Ahorro/CuentaCorriente/"><i class="glyphicon glyphicon-usd"> </i>&nbsp; Mi espacio </a> </li>';
         }
 
-        $permisos = ['AMGM', 'LGFR', 'GASC', 'PAES', 'PMAB', 'DCRI', 'GUGJ', 'JUSA', 'HEDC', 'JACJ', 'PHEE', 'HECL'];
+        $permisos = ['AMGM', 'LGFR', 'GASC', 'PAES', 'PMAB', 'DCRI', 'GUGJ', 'JUSA', 'HEDC', 'JACJ', 'PHEE', 'HECL', 'VMSM2'];
         if (in_array($this->__usuario, $permisos)) {
             $menu .= <<<HTML
                 <li><a href="/AdminSucursales/SaldosDiarios/"><i class="glyphicon glyphicon-paste"> </i>&nbsp; Admin Sucursales </a> </li>
