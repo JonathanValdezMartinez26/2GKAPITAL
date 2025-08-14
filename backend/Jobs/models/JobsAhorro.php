@@ -30,7 +30,10 @@ class JobsAhorro extends Model
                     F.FECHA,
                     APA.CDGCL AS CLIENTE,
                     APA.TASA,
-                    COALESCE(PREV.SALDO_CIERRE, APA.SALDO) AS SALDO,
+                    CASE
+                        WHEN F.FECHA = TRUNC(SYSDATE) THEN APA.SALDO
+                        ELSE COALESCE(PREV.SALDO_CIERRE, APA.SALDO)
+                    END AS SALDO,
                     DA.DEVENGO
                 FROM
                     FECHAS F
