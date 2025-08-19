@@ -60,7 +60,8 @@ class JobsAhorro extends Job
                 "contrato" => $inversion["CONTRATO"],
                 "monto" => $inversion["MONTO"],
                 "tasa" => $inversion["TASA"],
-                "rendimiento" => $inversion["RENDIMIENTO"]
+                "rendimiento" => $inversion["RENDIMIENTO"],
+                "fecha" => $inversion["FECHA"]
             ];
 
             $resumen[] = [

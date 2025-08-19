@@ -229,7 +229,7 @@ class JobsAhorro extends Model
             INSERT INTO DEVENGO_DIARIO_INVERSION
             (CONTRATO, ID_INVERSION, FECHA, MONTO, TASA, DEVENGO)
             VALUES
-            (:contrato, :id, SYSDATE, :monto, :tasa, :rendimiento)
+            (:contrato, :id, :fecha, :monto, :tasa, :rendimiento)
         SQL;
 
         try {
