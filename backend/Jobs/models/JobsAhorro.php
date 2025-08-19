@@ -171,7 +171,7 @@ class JobsAhorro extends Model
                 CONTRATO,
                 TO_CHAR(FECHA + (SYSDATE - TRUNC(SYSDATE)), 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
                 MONTO,
-                (TASA / 100) AS TASA,
+                TASA,
                 MONTO * ((TASA / 100) / 365) AS RENDIMIENTO,
                 VENCIMIENTO
             FROM
