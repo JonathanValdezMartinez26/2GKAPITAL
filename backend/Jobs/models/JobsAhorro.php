@@ -140,7 +140,8 @@ class JobsAhorro extends Model
                     CI.CDG_CONTRATO AS CONTRATO,
                     TRUNC(CI.FECHA_APERTURA) + LEVEL - 1 AS FECHA,
                     CI.MONTO_INVERSION AS MONTO,
-                    TI.TASA
+                    TI.TASA,
+                    CI.FECHA_VENCIMIENTO
                 FROM
                     CUENTA_INVERSION CI
                     JOIN TASA_INVERSION TI ON CI.CDG_TASA = TI.CODIGO
@@ -158,7 +159,8 @@ class JobsAhorro extends Model
                     F.FECHA,
                     F.MONTO,
                     F.TASA,
-                    DDI.DEVENGO
+                    DDI.DEVENGO,
+                    TO_CHAR(F.FECHA_VENCIMIENTO, 'DD/MM/YYYY') AS VENCIMIENTO
                 FROM
                     FECHAS F
                     LEFT JOIN DEVENGO_DIARIO_INVERSION DDI ON F.ID_INVERSION = DDI.ID_INVERSION 
@@ -170,7 +172,8 @@ class JobsAhorro extends Model
                 TO_CHAR(FECHA + (SYSDATE - TRUNC(SYSDATE)), 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
                 MONTO,
                 (TASA / 100) AS TASA,
-                MONTO * ((TASA / 100) / 365) AS RENDIMIENTO
+                MONTO * ((TASA / 100) / 365) AS RENDIMIENTO,
+                VENCIMIENTO
             FROM
                 DEVENGOS
             WHERE
