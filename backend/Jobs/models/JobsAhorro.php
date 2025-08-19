@@ -347,7 +347,25 @@ class JobsAhorro extends Model
                 "cliente" => $datosInversion["CLIENTE"]
             ];
 
-            return self::LiquidaInversion($datosLiquidacion);
+            $liquidacion = self::LiquidaInversion($datosLiquidacion);
+            if (!$liquidacion["success"]) {
+                $contabiliza = <<<SQL
+                    UPDATE DEVENGO_DIARIO_INVERSION
+                    SET CONTABILIZADO = SYSDATE
+                    WHERE CDG_CONTRATO = :contrato AND ID_INVERSION = :codigo
+                SQL;
+
+                try {
+                    $db = new Database();
+                    $db->insert($contabiliza, [
+                        "contrato" => $datosInversion["CONTRATO"],
+                        "codigo" => $datos["codigo"]
+                    ]);
+                    return self::Responde(true, "Inversión liquidada de manera anticipada correctamente.");
+                } catch (\Exception $e) {
+                    return self::Responde(false, "Error al contabilizar la inversión anticipada", null, $e->getMessage());
+                }
+            }
         } catch (\Exception $e) {
             return self::Responde(false, "Error al liquidar la inversión anticipada", null, $e->getMessage());
         }
