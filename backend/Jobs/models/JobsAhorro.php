@@ -257,12 +257,19 @@ class JobsAhorro extends Model
                 AND CODIGO = :codigo
         SQL;
 
+        $contabiliza = <<<SQL
+            UPDATE DEVENGO_DIARIO_INVERSION
+            SET CONTABILIZADO = SYSDATE
+            WHERE CONTRATO = :contrato AND ID_INVERSION = :codigo
+        SQL;
+
         $qrys = [
             $qryLiquidacion,
             self::GetQueryTicket(),
             self::GetQueryMovimientoAhorro(),
             self::GetQueryTicket(),
-            self::GetQueryMovimientoAhorro()
+            self::GetQueryMovimientoAhorro(),
+            $contabiliza
         ];
 
         $parametros = [
@@ -292,6 +299,10 @@ class JobsAhorro extends Model
                 "tipo_pago" => 17,
                 "movimiento" => 1,
                 "cliente" => $datos["cliente"],
+            ],
+            [
+                "contrato" => $datos["contrato"],
+                "codigo" => $datos["codigo"]
             ]
         ];
 
@@ -347,25 +358,7 @@ class JobsAhorro extends Model
                 "cliente" => $datosInversion["CLIENTE"]
             ];
 
-            $liquidacion = self::LiquidaInversion($datosLiquidacion);
-            if ($liquidacion["success"]) {
-                $contabiliza = <<<SQL
-                    UPDATE DEVENGO_DIARIO_INVERSION
-                    SET CONTABILIZADO = SYSDATE
-                    WHERE CONTRATO = :contrato AND ID_INVERSION = :codigo
-                SQL;
-
-                try {
-                    $db->insert($contabiliza, [
-                        "contrato" => $datosInversion["CONTRATO"],
-                        "codigo" => $datos["codigo"]
-                    ]);
-                    return self::Responde(true, "Inversión liquidada de manera anticipada correctamente.");
-                } catch (\Exception $e) {
-                    return self::Responde(false, "Error al contabilizar la inversión anticipada", null, $e->getMessage());
-                }
-            }
-            return $liquidacion;
+            return self::LiquidaInversion($datosLiquidacion);
         } catch (\Exception $e) {
             return self::Responde(false, "Error al liquidar la inversión anticipada", null, $e->getMessage());
         }
