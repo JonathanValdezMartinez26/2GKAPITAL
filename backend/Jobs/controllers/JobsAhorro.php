@@ -251,6 +251,10 @@ if (isset($argv[1])) {
             // Programar 11:50 pm, todos los dias
             $jobs->LiquidaInversion();
             break;
+        case 'LiquidaInversionAnticipada':
+            // Programar 11:50 pm, todos los dias
+            $jobs->LiquidaInversionAnticipada();
+            break;
         case 'prueba_horario':
             echo date("Y-m-d H:i:s") . "\n";
             break;
