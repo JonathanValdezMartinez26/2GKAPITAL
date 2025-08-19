@@ -56,8 +56,8 @@ class JobsAhorro extends Job
             $vencimiento = strtotime($inversion["VENCIMIENTO"]);
             if ($vencimiento > strtotime(date("Y-m-d"))) continue;
             $datos = [
+                "id" => $inversion["ID"],
                 "contrato" => $inversion["CONTRATO"],
-                "id" => $inversion["CODIGO"],
                 "monto" => $inversion["MONTO"],
                 "tasa" => $inversion["TASA"],
                 "rendimiento" => $inversion["RENDIMIENTO"]

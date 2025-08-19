@@ -178,7 +178,7 @@ class JobsAhorro extends Model
                 AND FECHA <= TRUNC(SYSDATE)
             ORDER BY
                 CONTRATO,
-                FECHA
+                TO_DATE(FECHA, 'DD/MM/YYYY HH24:MI:SS')
         SQL;
 
         try {
