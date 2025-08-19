@@ -48,7 +48,7 @@ class JobsAhorro extends Job
     {
         self::SaveLog("Inicio");
         $resumen = [];
-        $inversiones = JobsDao::GetInversiones();
+        $inversiones = JobsDao::GetDevengo_Inversion();
         if (!$inversiones["success"]) return self::SaveLog("Error al obtener las inversiones: " . $inversiones["error"]);
         if (count($inversiones["datos"]) == 0) return self::SaveLog("No se encontraron inversiones para aplicar devengo.");
 
@@ -105,6 +105,35 @@ class JobsAhorro extends Job
 
         self::SaveLog(json_encode($resumen)); //, JSON_PRETTY_PRINT));
         self::SaveLog("Finalizado -> Liquidación de Inversiones");
+    }
+
+    public function LiquidaInversionAnticipada()
+    {
+        self::SaveLog("Inicio -> Liquidación Anticipada de Inversión");
+
+        // Datos específicos de la inversión a liquidar
+        $contrato = ""; // Especificar el número de contrato
+        $codigoInversion = ""; // Especificar el código de inversión
+
+        if (empty($contrato) || empty($codigoInversion)) {
+            return self::SaveLog("Error: Debe especificar el contrato y el código de inversión en el código fuente.");
+        }
+
+        $datos = [
+            "contrato" => $contrato,
+            "codigo" => $codigoInversion
+        ];
+
+        $resultado = JobsDao::LiquidaInversionAnticipada($datos);
+
+        $resumen = [
+            "fecha" => date("Y-m-d H:i:s"),
+            "datos" => $datos,
+            "resultado" => $resultado,
+        ];
+
+        self::SaveLog(json_encode($resumen, JSON_PRETTY_PRINT));
+        self::SaveLog("Finalizado -> Liquidación Anticipada de Inversión");
     }
 
     public function RechazaSolicitudesSinAtender()

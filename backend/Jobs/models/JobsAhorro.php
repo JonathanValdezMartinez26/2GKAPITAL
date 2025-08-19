@@ -131,6 +131,65 @@ class JobsAhorro extends Model
         }
     }
 
+    public static function GetDevengo_Inversion()
+    {
+        $qry = <<<SQL
+            WITH FECHAS AS (
+                SELECT
+                    CI.CODIGO AS ID_INVERSION,
+                    CI.CDG_CONTRATO AS CONTRATO,
+                    TRUNC(CI.FECHA_APERTURA) + LEVEL - 1 AS FECHA,
+                    CI.MONTO_INVERSION AS MONTO,
+                    TI.TASA
+                FROM
+                    CUENTA_INVERSION CI
+                    JOIN TASA_INVERSION TI ON CI.CDG_TASA = TI.CODIGO
+                WHERE
+                    CI.ESTATUS = 'A'
+                CONNECT BY 
+                    LEVEL <= TRUNC(CI.FECHA_VENCIMIENTO) - TRUNC(CI.FECHA_APERTURA) + 1
+                    AND PRIOR CI.CODIGO = CI.CODIGO
+                    AND PRIOR DBMS_RANDOM.VALUE IS NOT NULL
+            ),
+            DEVENGOS AS (
+                SELECT 
+                    F.ID_INVERSION,
+                    F.CONTRATO,
+                    F.FECHA,
+                    F.MONTO,
+                    F.TASA,
+                    DDI.DEVENGO
+                FROM
+                    FECHAS F
+                    LEFT JOIN DEVENGO_DIARIO_INVERSION DDI ON F.ID_INVERSION = DDI.ID_INVERSION 
+                        AND F.FECHA = TRUNC(DDI.FECHA)
+            )
+            SELECT
+                ID_INVERSION AS ID,
+                CONTRATO,
+                TO_CHAR(FECHA + (SYSDATE - TRUNC(SYSDATE)), 'DD/MM/YYYY HH24:MI:SS') AS FECHA,
+                MONTO,
+                (TASA / 100) AS TASA,
+                MONTO * ((TASA / 100) / 365) AS RENDIMIENTO
+            FROM
+                DEVENGOS
+            WHERE
+                DEVENGO IS NULL
+                AND FECHA <= TRUNC(SYSDATE)
+            ORDER BY
+                CONTRATO,
+                FECHA
+        SQL;
+
+        try {
+            $db = new Database();
+            $res = $db->queryAll($qry);
+            return self::Responde(true, "Inversiones pendientes de devengo obtenidas correctamente", ($res ?? []));
+        } catch (\Exception $e) {
+            return self::Responde(false, "Error al obtener las inversiones pendientes", null, $e->getMessage());
+        }
+    }
+
     public static function GetInversiones()
     {
         $qry = <<<SQL
@@ -155,9 +214,9 @@ class JobsAhorro extends Model
         try {
             $db = new Database();
             $res = $db->queryAll($qry);
-            return self::Responde(true, "Inversiones obtenidas correctamente", ($res ?? []));
+            return self::Responde(true, "Inversiones pendientes de devengo obtenidas correctamente", ($res ?? []));
         } catch (\Exception $e) {
-            return self::Responde(false, "Error al obtener las inversiones", null, $e->getMessage());
+            return self::Responde(false, "Error al obtener las inversiones pendientes", null, $e->getMessage());
         }
     }
 
@@ -239,6 +298,55 @@ class JobsAhorro extends Model
             return self::Responde(true, "Inversión liquidada correctamente");
         } catch (\Exception $e) {
             return self::Responde(false, "Error al liquidar la inversión", null, $e->getMessage());
+        }
+    }
+
+    public static function LiquidaInversionAnticipada($datos)
+    {
+        // Obtener el total de intereses devengados
+        $qryDevengos = <<<SQL
+            SELECT
+                CI.MONTO_INVERSION AS MONTO,
+                CI.CDG_CONTRATO AS CONTRATO,
+                NVL(SUM(DDI.DEVENGO), 0) AS RENDIMIENTO,
+                APA.CDGCL AS CLIENTE
+            FROM
+                CUENTA_INVERSION CI
+                JOIN ASIGNA_PROD_AHORRO APA ON CI.CDG_CONTRATO = APA.CONTRATO
+                LEFT JOIN DEVENGO_DIARIO_INVERSION DDI ON CI.CODIGO = DDI.ID_INVERSION
+            WHERE
+                CI.CDG_CONTRATO = :contrato
+                AND CI.CODIGO = :codigo
+                AND CI.ESTATUS = 'A'
+            GROUP BY
+                CI.MONTO_INVERSION,
+                CI.CDG_CONTRATO,
+                APA.CDGCL
+        SQL;
+
+        try {
+            $db = new Database();
+            $datosInversion = $db->queryOne($qryDevengos, [
+                "contrato" => $datos["contrato"],
+                "codigo" => $datos["codigo"]
+            ]);
+
+            if (!$datosInversion) {
+                return self::Responde(false, "No se encontró la inversión especificada");
+            }
+
+            // Usar el método existente LiquidaInversion con los datos obtenidos
+            $datosLiquidacion = [
+                "rendimiento" => $datosInversion["RENDIMIENTO"],
+                "contrato" => $datosInversion["CONTRATO"],
+                "codigo" => $datos["codigo"],
+                "monto" => $datosInversion["MONTO"],
+                "cliente" => $datosInversion["CLIENTE"]
+            ];
+
+            return self::LiquidaInversion($datosLiquidacion);
+        } catch (\Exception $e) {
+            return self::Responde(false, "Error al liquidar la inversión anticipada", null, $e->getMessage());
         }
     }
 
